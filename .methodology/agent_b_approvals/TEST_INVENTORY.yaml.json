@@ -15,6 +15,8 @@
     }
   ],
   "docs_embedded": [
+    "SRS.md",
+    "TRACEABILITY_MATRIX.md",
     "TEST_INVENTORY.yaml"
   ],
   "fr": "TEST_INVENTORY.yaml"

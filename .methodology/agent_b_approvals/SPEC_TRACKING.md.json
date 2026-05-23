@@ -14,6 +14,7 @@
     }
   ],
   "docs_embedded": [
+    "SRS.md",
     "SPEC_TRACKING.md"
   ],
   "fr": "SPEC_TRACKING.md"
