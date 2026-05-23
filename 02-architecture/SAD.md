@@ -35,41 +35,39 @@ OmniBot Phase 1 implements an **eight-layer pipeline architecture** for multi-pl
   |   Executed in fixed order per SPEC.md §Interceptor Sequence:     |
   |   1. IP Whitelist (FR-22)         → 403/400 on reject            |
   |   2. Webhook Signature (FR-04,05) → 401 on fail                  |
-  |   3. Platform Adapter Parse (FR-02,03) → 422 on malformed        |
-  |   4. Rate Limiter (FR-10)         → 429 on exceed                |
+  |   3. Rate Limiter (FR-10)         → 429 on exceed                |
+  +------+---------------------------------------------------------+
+         |
+  +------+---------------------------------------------------------+
+  |              Adapters Layer                                      |
+  |   app.adapters (FR-06, FR-20)                                    |
+  |   - Parse raw platform payload into UnifiedMessage               |
+  |   - Translate UnifiedResponse back to platform format            |
   +------+---------------------------------------------------------+
          |
   +------+---------------------------------------------------------+
   |              Processing Pipeline                                 |
   |   app.processing.pipeline (FR-19): 11-stage PipelineOrchestrator |
-  |   Stages 5-8 (post-rate-limit):                                  |
+  |   (Note: Stages 1-4 in Security/Adapters, 9-11 in response path) |
+  |   Stages 5-8:                                                    |
   |   5. Input Sanitization L2  (FR-08)                              |
   |   6. PII Masking L4          (FR-09)                             |
   |   7. Knowledge Match Layer 1 (FR-11)                             |
   |   8. Basic Escalation        (FR-12) if no match                 |
-  |   Stages 9-11 (response + observe):                              |
-  |   9. Construct UnifiedResponse   (FR-20)                         |
-  |   10. Send reply via platform adapter                            |
-  |   11. Structured log completion  (FR-13)                         |
   +------+---------------------------------------------------------+
          |
   +------+---------------------------------------------------------+
   |              Knowledge Layer                                     |
   |   app.knowledge.matcher (FR-11)                                  |
   |   - Rule-based matching via ILIKE + keywords array               |
-  |   - Returns KnowledgeResult(source="rule", confidence 0.7-0.95)  |
   |   app.knowledge.escalation (FR-12)                               |
   |   - Fallback when no rule match: creates escalation_queue row    |
-  |   - Returns KnowledgeResult(source="escalate", id=-1)            |
   +------+---------------------------------------------------------+
          |
   +------+---------------------------------------------------------+
   |              Data Layer                                          |
   |   app.models (FR-01): PostgreSQL 16 schema                       |
-  |   - 8 tables: users, conversations, messages, knowledge_base,    |
-  |     platform_configs, escalation_queue, user_feedback,           |
-  |     security_logs                                                |
-  |   - 11 indexes + Phase 2/3 columns with defaults                 |
+  |   - 8 tables + 11 indexes                                        |
   |   - Redis 7: Token Bucket state (FR-10), no persistence          |
   +------+---------------------------------------------------------+
          |
@@ -78,10 +76,11 @@ OmniBot Phase 1 implements an **eight-layer pipeline architecture** for multi-pl
   |   app.infrastructure.config (FR-21): Env-var config, fail-fast   |
   |   app.infrastructure.logger (FR-13): Structured JSON logging     |
   |   app.infrastructure.errors (FR-17): Standard error codes        |
-  |   app.infrastructure.health (FR-14): Health check endpoint       |
+  +=================================================================+
+  |              Operations Layer (Sidecar / OOB)                    |
   |   docker-compose.yml (FR-15): 3-service dev environment          |
   |   queries/ (FR-16): ODD SQL scripts                              |
-  +------+---------------------------------------------------------+
+  +-----------------------------------------------------------------+
 ```
 
 ### 1.2 Design Principles
@@ -178,6 +177,7 @@ TLS (reverse proxy)
 - Token consumption is atomic per `check()` call — no partial credit
 - Must execute **after** platform adapter parse (requires `UnifiedMessage.platform` and `.platform_user_id`), per SPEC.md §Interceptor Sequence
 - Redis-backed for stateless horizontal scaling; in-memory fallback acceptable for single-node dev
+- **Fail-open Requirement**: If Redis connection fails or times out, the `check()` method must return `True` (allow request) and log a warning, rather than raising an exception that crashes the pipeline.
 - Exceeded limit → HTTP 429 with `RATE_LIMIT_EXCEEDED` error code
 
 ### 2.5 app.adapters.telegram_adapter

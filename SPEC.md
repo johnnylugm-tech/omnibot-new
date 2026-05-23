@@ -685,6 +685,8 @@ class PIIMasking:
 
 ### 基礎速率限制（Phase 1）
 
+> **Fail-open (放行) 約束**：為避免快取服務（如 Redis）中斷時導致 API 全面癱瘓，Rate Limiter 必須實作 Fail-open 策略。當底層儲存連線失敗或超時，應紀錄 Warning Log 並回傳 `True`（允許請求通過）。
+
 ```python
 import time
 from dataclasses import dataclass, field
