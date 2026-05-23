@@ -245,6 +245,7 @@ async def create_schema() -> None:
       - SRS.md §FR-01 (requirement description)
     """
     from omnibot.config import get_database_url
+    from sqlalchemy import text
 
     engine = _build_engine(get_database_url())
     async with engine.begin() as conn:
