@@ -1,0 +1,91 @@
+{
+  "version": "1.0",
+  "created_at": "2026-05-23",
+  "phase": 2,
+  "project": "omnibot",
+  "layers": [
+    {
+      "name": "transport",
+      "modules": [
+        "app.api.webhooks",
+        "app.infrastructure.health"
+      ],
+      "allowed_dependencies": []
+    },
+    {
+      "name": "security",
+      "modules": [
+        "app.security.ip_whitelist",
+        "app.security.signature",
+        "app.security.rate_limiter"
+      ],
+      "allowed_dependencies": []
+    },
+    {
+      "name": "adapters",
+      "modules": [
+        "app.adapters.telegram_adapter",
+        "app.adapters.line_adapter",
+        "app.adapters.unified"
+      ],
+      "allowed_dependencies": []
+    },
+    {
+      "name": "processing",
+      "modules": [
+        "app.processing.sanitizer",
+        "app.processing.pii_masker",
+        "app.processing.pipeline"
+      ],
+      "allowed_dependencies": []
+    },
+    {
+      "name": "knowledge",
+      "modules": [
+        "app.knowledge.matcher",
+        "app.knowledge.escalation"
+      ],
+      "allowed_dependencies": []
+    },
+    {
+      "name": "data",
+      "modules": [
+        "app.models"
+      ],
+      "allowed_dependencies": []
+    },
+    {
+      "name": "infrastructure",
+      "modules": [
+        "app.infrastructure.config",
+        "app.infrastructure.logger",
+        "app.infrastructure.errors"
+      ],
+      "allowed_dependencies": []
+    },
+    {
+      "name": "operations",
+      "modules": [
+        "queries",
+        "docker-compose.yml"
+      ],
+      "allowed_dependencies": []
+    }
+  ],
+  "dependencies": {},
+  "quality_targets": {
+    "max_complexity": 10,
+    "min_coverage": 80,
+    "max_coupling": 0.3,
+    "p95_latency_ms": 3000,
+    "fcr_target_pct": 50,
+    "max_function_lines": 50,
+    "service_health_timeout_ms": 500,
+    "docker_startup_seconds": 60,
+    "pii_recall_pct": 95,
+    "pii_precision_pct": 99
+  },
+  "nfr_dimension_mapping": {},
+  "architecture_constraints": [],
+  "high_risk_modules": []
+}
