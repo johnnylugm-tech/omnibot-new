@@ -46,14 +46,14 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_models_schema_creates_all_eight_tables` | happy_path | Q1 |
-| 2 | `test_models_schema_creates_all_eleven_indexes` | happy_path | Q1 |
-| 3 | `test_models_schema_users_table_has_platform_uid_unique_constraint` | validation | Q2 |
-| 4 | `test_models_schema_migration_idempotent_on_rerun` | validation | Q2 |
-| 5 | `test_models_schema_missing_pgvector_extension_reported` | failure | Q2 |
-| 6 | `test_models_schema_phase2_embeddings_column_has_null_default` | nfr_pattern | Q6/NP-11 |
-| 7 | `test_models_schema_phase3_dst_state_column_has_null_default` | nfr_pattern | Q6/NP-11 |
-| 8 | `test_models_schema_migration_db_unavailable_reports_error` | fault_injection | Q5 |
+| 1 | `test_fr01_schema_has_all_8_tables` | happy_path | Q1 |
+| 2 | `test_fr01_schema_has_all_11_indexes` | happy_path | Q1 |
+| 3 | `test_fr01_phase2_phase3_columns_have_defaults` | validation | Q2 |
+| 4 | `test_fr01_migration_runs_idempotent` | validation | Q2 |
+| 5 | `test_fr01_schema_missing_pgvector_extension_reported` | failure | Q2 |
+| 6 | `test_fr01_schema_phase2_embeddings_column_has_null_default` | nfr_pattern | Q6/NP-11 |
+| 7 | `test_fr01_schema_phase3_dst_state_column_has_null_default` | nfr_pattern | Q6/NP-11 |
+| 8 | `test_fr01_schema_migration_db_unavailable_reports_error` | fault_injection | Q5 |
 | 9 | `test_fr01_schema_supports_fr11_knowledge_base_queries` | integration | Q7/FR-11 |
 | 10 | `test_fr01_schema_supports_fr12_escalation_queue_writes` | integration | Q7/FR-12 |
 | 11 | `test_fr01_schema_supports_fr19_pipeline_transactional_writes` | integration | Q7/FR-19 |
@@ -65,14 +65,14 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_telegram_adapter_parse_valid_text_message_returns_unified_message` | happy_path | Q1 |
-| 2 | `test_telegram_adapter_parse_missing_message_field_raises_validation_error` | failure | Q2 |
-| 3 | `test_telegram_adapter_parse_invalid_json_raises_error` | failure | Q2 |
-| 4 | `test_telegram_adapter_parse_empty_body_handled_gracefully` | failure | Q2 |
-| 5 | `test_telegram_adapter_parse_raw_payload_preserved_in_unified_message` | validation | Q2 |
-| 6 | `test_telegram_adapter_parse_unexpected_payload_structure_graceful` | fault_injection | Q5 |
-| 7 | `test_telegram_adapter_parse_invalid_message_type_returns_422` | nfr_pattern | Q6/NP-04 |
-| 8 | `test_telegram_adapter_parse_malformed_unicode_no_crash` | nfr_pattern | Q6/NP-08 |
+| 1 | `test_fr02_telegram_valid_payload_returns_unified_message` | happy_path | Q1 |
+| 2 | `test_fr02_telegram_missing_fields_raises_descriptive_error` | failure | Q2 |
+| 3 | `test_fr02_telegram_adapter_in_pipeline` | failure | Q2 |
+| 4 | `test_fr02_adapter_parse_empty_body_handled_gracefully` | failure | Q2 |
+| 5 | `test_fr02_adapter_parse_raw_payload_preserved_in_unified_message` | validation | Q2 |
+| 6 | `test_fr02_adapter_parse_unexpected_payload_structure_graceful` | fault_injection | Q5 |
+| 7 | `test_fr02_adapter_parse_invalid_message_type_returns_422` | nfr_pattern | Q6/NP-04 |
+| 8 | `test_fr02_adapter_parse_malformed_unicode_no_crash` | nfr_pattern | Q6/NP-08 |
 | 9 | `test_fr02_parse_output_feeds_fr19_pipeline_as_unified_message` | integration | Q7/FR-19 |
 
 ### FR-03: Accept LINE Messaging API webhook POST, parse into immutable UnifiedMessage with reply_token
@@ -82,14 +82,14 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_line_adapter_parse_valid_text_message_returns_unified_message_with_reply_token` | happy_path | Q1 |
-| 2 | `test_line_adapter_parse_missing_reply_token_returns_none` | failure | Q2 |
-| 3 | `test_line_adapter_parse_empty_events_array_handled_gracefully` | failure | Q2 |
-| 4 | `test_line_adapter_parse_invalid_json_raises_error` | failure | Q2 |
-| 5 | `test_line_adapter_parse_raw_payload_preserved_in_unified_message` | validation | Q2 |
-| 6 | `test_line_adapter_parse_unexpected_event_type_graceful` | fault_injection | Q5 |
-| 7 | `test_line_adapter_parse_missing_message_field_returns_422` | nfr_pattern | Q6/NP-04 |
-| 8 | `test_line_adapter_parse_malformed_unicode_no_crash` | nfr_pattern | Q6/NP-08 |
+| 1 | `test_fr03_line_valid_payload_returns_unified_message_with_reply_token` | happy_path | Q1 |
+| 2 | `test_fr03_line_empty_events_handled_gracefully` | failure | Q2 |
+| 3 | `test_fr03_line_adapter_in_pipeline` | failure | Q2 |
+| 4 | `test_fr03_adapter_parse_invalid_json_raises_error` | failure | Q2 |
+| 5 | `test_fr03_adapter_parse_raw_payload_preserved_in_unified_message` | validation | Q2 |
+| 6 | `test_fr03_adapter_parse_unexpected_event_type_graceful` | fault_injection | Q5 |
+| 7 | `test_fr03_adapter_parse_missing_message_field_returns_422` | nfr_pattern | Q6/NP-04 |
+| 8 | `test_fr03_adapter_parse_malformed_unicode_no_crash` | nfr_pattern | Q6/NP-08 |
 | 9 | `test_fr03_parse_output_feeds_fr19_pipeline_as_unified_message` | integration | Q7/FR-19 |
 
 ### FR-04: Verify Telegram webhook signature via HMAC-SHA256; reject invalid with 401
@@ -99,13 +99,13 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_signature_telegram_valid_signature_returns_true` | happy_path | Q1 |
-| 2 | `test_signature_telegram_tampered_body_returns_false` | failure | Q2 |
-| 3 | `test_signature_telegram_missing_signature_header_returns_false` | failure | Q2 |
-| 4 | `test_signature_telegram_wrong_secret_returns_false` | failure | Q2 |
-| 5 | `test_signature_telegram_uses_hmac_compare_digest_for_timing_safety` | validation | Q2 |
-| 6 | `test_signature_telegram_invalid_signature_returns_401_auth_invalid_signature` | nfr_pattern | Q6/NP-01 |
-| 7 | `test_signature_telegram_timing_difference_below_5ms` | nfr_pattern | Q6/NP-08 |
+| 1 | `test_fr04_telegram_valid_signature_returns_true` | happy_path | Q1 |
+| 2 | `test_fr04_telegram_tampered_body_returns_false` | failure | Q2 |
+| 3 | `test_fr04_telegram_missing_signature_header_returns_false` | failure | Q2 |
+| 4 | `test_fr04_telegram_uses_compare_digest_timing_safe` | failure | Q2 |
+| 5 | `test_fr04_telegram_webhook_invalid_signature_returns_401` | validation | Q2 |
+| 6 | `test_fr04_telegram_invalid_signature_returns_401_auth_invalid_signature` | nfr_pattern | Q6/NP-01 |
+| 7 | `test_fr04_telegram_timing_difference_below_5ms` | nfr_pattern | Q6/NP-08 |
 | 8 | `test_fr04_signature_feeds_fr19_pipeline_stage_2` | integration | Q7/FR-19 |
 
 ### FR-05: Verify LINE webhook signature via HMAC-SHA256 with Base64 digest; reject invalid with 401
@@ -115,13 +115,13 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_signature_line_valid_signature_returns_true` | happy_path | Q1 |
-| 2 | `test_signature_line_tampered_body_returns_false` | failure | Q2 |
-| 3 | `test_signature_line_missing_signature_header_returns_false` | failure | Q2 |
-| 4 | `test_signature_line_wrong_channel_secret_returns_false` | failure | Q2 |
-| 5 | `test_signature_line_uses_hmac_compare_digest_for_timing_safety` | validation | Q2 |
-| 6 | `test_signature_line_invalid_signature_returns_401_auth_invalid_signature` | nfr_pattern | Q6/NP-01 |
-| 7 | `test_signature_line_timing_difference_below_5ms` | nfr_pattern | Q6/NP-08 |
+| 1 | `test_fr05_line_valid_signature_returns_true` | happy_path | Q1 |
+| 2 | `test_fr05_line_wrong_secret_returns_false` | failure | Q2 |
+| 3 | `test_fr05_line_uses_compare_digest_timing_safe` | failure | Q2 |
+| 4 | `test_fr05_line_webhook_invalid_signature_returns_401` | failure | Q2 |
+| 5 | `test_fr05_line_uses_hmac_compare_digest_for_timing_safety` | validation | Q2 |
+| 6 | `test_fr05_line_invalid_signature_returns_401_auth_invalid_signature` | nfr_pattern | Q6/NP-01 |
+| 7 | `test_fr05_line_timing_difference_below_5ms` | nfr_pattern | Q6/NP-08 |
 | 8 | `test_fr05_signature_feeds_fr19_pipeline_stage_2` | integration | Q7/FR-19 |
 
 ### FR-06: Define immutable UnifiedMessage dataclass with Platform and MessageType enums
@@ -131,12 +131,12 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_unified_message_instantiation_with_all_fields_succeeds` | happy_path | Q1 |
-| 2 | `test_unified_message_received_at_defaults_to_current_utc` | happy_path | Q1 |
-| 3 | `test_unified_message_mutation_raises_frozen_instance_error` | failure | Q2 |
-| 4 | `test_unified_message_missing_required_field_raises_type_error` | failure | Q2 |
-| 5 | `test_unified_message_all_platform_enum_members_present` | validation | Q2 |
-| 6 | `test_unified_message_all_message_type_enum_members_present` | validation | Q2 |
+| 1 | `test_fr06_unified_message_instantiation_valid` | happy_path | Q1 |
+| 2 | `test_fr06_unified_message_mutation_raises_frozen_instance_error` | happy_path | Q1 |
+| 3 | `test_fr06_unified_message_received_at_defaults_to_utc` | failure | Q2 |
+| 4 | `test_fr06_all_platform_enum_members_present` | failure | Q2 |
+| 5 | `test_fr06_all_message_type_enum_members_present` | validation | Q2 |
+| 6 | `test_fr06_message_all_message_type_enum_members_present` | validation | Q2 |
 | 7 | `test_fr06_unified_message_consumed_by_fr19_pipeline` | integration | Q7/FR-19 |
 | 8 | `test_fr06_unified_message_consumed_by_fr02_telegram_adapter` | integration | Q7/FR-02 |
 | 9 | `test_fr06_unified_message_consumed_by_fr03_line_adapter` | integration | Q7/FR-03 |
@@ -148,12 +148,12 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_api_response_success_serializes_with_data_field` | happy_path | Q1 |
-| 2 | `test_api_response_error_serializes_with_error_code_field` | happy_path | Q1 |
-| 3 | `test_paginated_response_includes_pagination_fields` | happy_path | Q1 |
-| 4 | `test_api_response_success_false_missing_error_code_rejected` | failure | Q2 |
-| 5 | `test_paginated_response_has_next_false_on_last_page` | boundary | Q3 |
-| 6 | `test_paginated_response_json_round_trip_preserves_has_next` | validation | Q2 |
+| 1 | `test_fr07_api_response_success_serializes_correctly` | happy_path | Q1 |
+| 2 | `test_fr07_api_response_error_serializes_with_error_code` | happy_path | Q1 |
+| 3 | `test_fr07_paginated_response_includes_total_page_limit_has_next` | happy_path | Q1 |
+| 4 | `test_fr07_paginated_response_json_roundtrip_preserves_has_next` | failure | Q2 |
+| 5 | `test_fr07_response_has_next_false_on_last_page` | boundary | Q3 |
+| 6 | `test_fr07_response_json_round_trip_preserves_has_next` | validation | Q2 |
 | 7 | `test_fr07_api_response_used_by_fr14_health_endpoint` | integration | Q7/FR-14 |
 | 8 | `test_fr07_api_response_used_by_fr17_error_responses` | integration | Q7/FR-17 |
 | 9 | `test_fr07_api_response_used_by_fr19_pipeline_response` | integration | Q7/FR-19 |
@@ -165,14 +165,14 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_sanitizer_fullwidth_alphanumeric_normalized_to_ascii` | happy_path | Q1 |
-| 2 | `test_sanitizer_null_byte_removed_from_input` | failure | Q2 |
-| 3 | `test_sanitizer_control_characters_removed_except_newline_and_tab` | failure | Q2 |
-| 4 | `test_sanitizer_empty_string_returns_empty_string` | boundary | Q3 |
-| 5 | `test_sanitizer_whitespace_only_string_returns_empty` | boundary | Q3 |
-| 6 | `test_sanitizer_no_pattern_matching_in_implementation` | validation | Q2 |
-| 7 | `test_sanitizer_nfkc_does_not_alter_ascii_alphanumerics` | validation | Q2 |
-| 8 | `test_sanitizer_invalid_input_none_handled_gracefully` | nfr_pattern | Q6/NP-04 |
+| 1 | `test_fr08_sanitize_fullwidth_to_ascii_via_nfkc` | happy_path | Q1 |
+| 2 | `test_fr08_sanitize_control_chars_removed` | failure | Q2 |
+| 3 | `test_fr08_sanitize_newlines_and_tabs_preserved` | failure | Q2 |
+| 4 | `test_fr08_sanitize_empty_string_returns_empty_string` | boundary | Q3 |
+| 5 | `test_fr08_sanitize_no_regex_pattern_matching_in_implementation` | boundary | Q3 |
+| 6 | `test_fr08_sanitizer_called_in_pipeline_before_knowledge_match` | validation | Q2 |
+| 7 | `test_fr08_nfkc_does_not_alter_ascii_alphanumerics` | validation | Q2 |
+| 8 | `test_fr08_invalid_input_none_handled_gracefully` | nfr_pattern | Q6/NP-04 |
 | 9 | `test_fr08_sanitizer_output_feeds_fr09_pii_masker` | integration | Q7/FR-09 |
 | 10 | `test_fr08_sanitizer_output_feeds_fr19_pipeline_stage_5` | integration | Q7/FR-19 |
 
@@ -183,20 +183,20 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_pii_masker_taiwan_phone_dashed_format_masked` | happy_path | Q1 |
-| 2 | `test_pii_masker_taiwan_phone_numeric_format_masked` | happy_path | Q1 |
-| 3 | `test_pii_masker_email_address_masked` | happy_path | Q1 |
-| 4 | `test_pii_masker_taiwan_address_masked` | happy_path | Q1 |
-| 5 | `test_pii_masker_clean_text_returns_mask_count_zero` | happy_path | Q1 |
-| 6 | `test_pii_masker_empty_string_returns_empty_masked_text` | boundary | Q3 |
-| 7 | `test_pii_masker_recall_above_95_percent_on_labeled_corpus` | validation | Q2 |
-| 8 | `test_pii_masker_precision_above_99_percent_on_labeled_corpus` | validation | Q2 |
-| 9 | `test_pii_masker_should_escalate_returns_true_for_sensitive_keywords` | validation | Q2 |
-| 10 | `test_pii_masker_none_input_handled_gracefully` | nfr_pattern | Q6/NP-04 |
-| 11 | `test_pii_masker_phone_leak_masked_in_response` | nfr_pattern | Q6/NP-08 |
-| 12 | `test_pii_masker_email_leak_masked_in_response` | nfr_pattern | Q6/NP-08 |
-| 13 | `test_pii_masker_address_leak_masked_in_response` | nfr_pattern | Q6/NP-08 |
-| 14 | `test_pii_masker_pattern_order_phone_before_email_before_address` | validation | Q2 |
+| 1 | `test_fr09_mask_taiwan_phone_dashed_format` | happy_path | Q1 |
+| 2 | `test_fr09_mask_taiwan_phone_continuous_digits` | happy_path | Q1 |
+| 3 | `test_fr09_mask_email_address` | happy_path | Q1 |
+| 4 | `test_fr09_mask_taiwan_address_city_road` | happy_path | Q1 |
+| 5 | `test_fr09_clean_text_returns_mask_count_zero` | happy_path | Q1 |
+| 6 | `test_fr09_pii_corpus_recall_above_95_percent` | boundary | Q3 |
+| 7 | `test_fr09_pii_corpus_precision_above_99_percent` | validation | Q2 |
+| 8 | `test_fr09_pii_masked_in_logs_during_pipeline` | validation | Q2 |
+| 9 | `test_fr09_masker_should_escalate_returns_true_for_sensitive_keywords` | validation | Q2 |
+| 10 | `test_fr09_masker_none_input_handled_gracefully` | nfr_pattern | Q6/NP-04 |
+| 11 | `test_fr09_masker_phone_leak_masked_in_response` | nfr_pattern | Q6/NP-08 |
+| 12 | `test_fr09_masker_email_leak_masked_in_response` | nfr_pattern | Q6/NP-08 |
+| 13 | `test_fr09_masker_address_leak_masked_in_response` | nfr_pattern | Q6/NP-08 |
+| 14 | `test_fr09_masker_pattern_order_phone_before_email_before_address` | validation | Q2 |
 | 15 | `test_fr09_pii_masker_output_feeds_fr19_pipeline_stage_6` | integration | Q7/FR-19 |
 
 ### FR-10: Enforce per-platform per-user rate limiting via Token Bucket (100 rps default); reject excess with 429
@@ -206,16 +206,16 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_rate_limiter_token_consumed_within_capacity_succeeds` | happy_path | Q1 |
-| 2 | `test_rate_limiter_exceeds_capacity_returns_false` | failure | Q2 |
-| 3 | `test_rate_limiter_bucket_refills_after_interval` | happy_path | Q1 |
-| 4 | `test_rate_limiter_separate_platform_user_buckets_independent` | validation | Q2 |
-| 5 | `test_rate_limiter_zero_capacity_bucket_rejects_all` | boundary | Q3 |
-| 6 | `test_rate_limiter_empty_user_id_handled` | boundary | Q3 |
-| 7 | `test_rate_limiter_burst_101_requests_100_pass_1_gets_429` | nfr_pattern | Q6/NP-03 |
-| 8 | `test_rate_limiter_concurrent_requests_from_same_user_isolated` | nfr_pattern | Q6/NP-13 |
-| 9 | `test_rate_limiter_redis_unavailable_fail_open_allows_request` | fault_injection | Q5 |
-| 10 | `test_rate_limiter_key_format_is_platform_colon_user_id` | validation | Q2 |
+| 1 | `test_fr10_token_bucket_consumes_within_capacity` | happy_path | Q1 |
+| 2 | `test_fr10_token_bucket_exceeded_returns_false` | failure | Q2 |
+| 3 | `test_fr10_token_bucket_refills_over_time` | happy_path | Q1 |
+| 4 | `test_fr10_rate_limiter_separate_user_buckets_independent` | validation | Q2 |
+| 5 | `test_fr10_rate_limiter_separate_platform_buckets_independent` | boundary | Q3 |
+| 6 | `test_fr10_webhook_rate_limit_exceeded_returns_429` | boundary | Q3 |
+| 7 | `test_fr10_limiter_burst_101_requests_100_pass_1_gets_429` | nfr_pattern | Q6/NP-03 |
+| 8 | `test_fr10_limiter_concurrent_requests_from_same_user_isolated` | nfr_pattern | Q6/NP-13 |
+| 9 | `test_fr10_limiter_redis_unavailable_fail_open_allows_request` | fault_injection | Q5 |
+| 10 | `test_fr10_limiter_key_format_is_platform_colon_user_id` | validation | Q2 |
 | 11 | `test_fr10_rate_limiter_feeds_fr19_pipeline_stage_4` | integration | Q7/FR-19 |
 
 ### FR-11: Query knowledge_base via ILIKE + keywords array match; return KnowledgeResult with source=rule
@@ -225,16 +225,16 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_knowledge_matcher_exact_substring_match_returns_confidence_095` | happy_path | Q1 |
-| 2 | `test_knowledge_matcher_ilike_match_returns_confidence_070` | happy_path | Q1 |
-| 3 | `test_knowledge_matcher_keyword_array_match_returns_confidence_070` | happy_path | Q1 |
-| 4 | `test_knowledge_matcher_no_match_returns_none` | failure | Q2 |
-| 5 | `test_knowledge_matcher_inactive_entry_excluded_from_results` | failure | Q2 |
-| 6 | `test_knowledge_matcher_results_ordered_by_version_desc` | validation | Q2 |
-| 7 | `test_knowledge_matcher_result_set_limited_to_top_5` | boundary | Q3 |
-| 8 | `test_knowledge_matcher_db_unavailable_returns_empty_list` | fault_injection | Q5 |
-| 9 | `test_knowledge_matcher_response_time_under_2_seconds` | nfr_pattern | Q6/NP-06 |
-| 10 | `test_knowledge_matcher_empty_query_returns_none` | boundary | Q3 |
+| 1 | `test_fr11_rule_match_exact_keyword_returns_confidence_0_95` | happy_path | Q1 |
+| 2 | `test_fr11_rule_match_ilike_returns_confidence_0_7` | happy_path | Q1 |
+| 3 | `test_fr11_rule_match_inactive_entry_excluded` | happy_path | Q1 |
+| 4 | `test_fr11_rule_match_no_match_returns_none` | failure | Q2 |
+| 5 | `test_fr11_rule_match_list_ordered_by_version_desc` | failure | Q2 |
+| 6 | `test_fr11_rule_match_list_limits_top_5` | validation | Q2 |
+| 7 | `test_fr11_knowledge_match_in_pipeline_returns_rule_source` | boundary | Q3 |
+| 8 | `test_fr11_matcher_db_unavailable_returns_empty_list` | fault_injection | Q5 |
+| 9 | `test_fr11_matcher_response_time_under_2_seconds` | nfr_pattern | Q6/NP-06 |
+| 10 | `test_fr11_matcher_empty_query_returns_none` | boundary | Q3 |
 | 11 | `test_fr11_knowledge_matcher_output_feeds_fr19_pipeline_stage_7` | integration | Q7/FR-19 |
 | 12 | `test_fr11_no_match_triggers_fr12_escalation` | integration | Q7/FR-12 |
 
@@ -245,13 +245,13 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_escalation_creates_record_with_priority_zero_and_no_sla_deadline` | happy_path | Q1 |
-| 2 | `test_escalation_returns_knowledge_result_with_source_escalate_and_id_negative_one` | happy_path | Q1 |
-| 3 | `test_escalation_conversation_scope_type_updated_to_out_of_scope` | validation | Q2 |
-| 4 | `test_escalation_db_unavailable_returns_internal_error` | fault_injection | Q5 |
-| 5 | `test_escalation_reason_no_rule_match_stored_correctly` | validation | Q2 |
-| 6 | `test_escalation_reason_out_of_scope_stored_correctly` | validation | Q2 |
-| 7 | `test_escalation_handoff_message_is_hardcoded_chinese_text` | validation | Q2 |
+| 1 | `test_fr12_escalation_creates_db_row_with_priority_zero` | happy_path | Q1 |
+| 2 | `test_fr12_escalation_sla_deadline_is_null` | happy_path | Q1 |
+| 3 | `test_fr12_escalation_returns_knowledge_result_id_neg_one_source_escalate` | validation | Q2 |
+| 4 | `test_fr12_escalation_updates_conversation_scope_type_out_of_scope` | fault_injection | Q5 |
+| 5 | `test_fr12_pipeline_no_rule_match_triggers_escalation` | validation | Q2 |
+| 6 | `test_fr12_reason_out_of_scope_stored_correctly` | validation | Q2 |
+| 7 | `test_fr12_handoff_message_is_hardcoded_chinese_text` | validation | Q2 |
 | 8 | `test_fr12_escalation_triggered_by_fr11_no_match` | integration | Q7/FR-11 |
 | 9 | `test_fr12_escalation_output_feeds_fr19_pipeline_stage_8` | integration | Q7/FR-19 |
 
@@ -262,15 +262,15 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_logger_emits_valid_json_with_all_required_fields` | happy_path | Q1 |
-| 2 | `test_logger_extra_kwargs_appear_as_top_level_json_keys` | happy_path | Q1 |
-| 3 | `test_logger_timestamp_is_iso8601_utc_format` | validation | Q2 |
-| 4 | `test_logger_level_mapping_info_to_20_error_to_40` | validation | Q2 |
-| 5 | `test_logger_log_level_filtering_suppresses_info_when_set_to_warning` | validation | Q2 |
-| 6 | `test_logger_non_json_serializable_kwarg_handled_gracefully` | failure | Q2 |
-| 7 | `test_logger_each_output_line_is_valid_json_parseable_by_jq` | nfr_pattern | Q6/NP-09 |
-| 8 | `test_logger_audit_log_written_on_pipeline_completion` | nfr_pattern | Q6/NP-09 |
-| 9 | `test_logger_service_name_configurable_via_constructor` | validation | Q2 |
+| 1 | `test_fr13_log_output_is_valid_single_line_json` | happy_path | Q1 |
+| 2 | `test_fr13_log_contains_required_fields_timestamp_level_service_message` | happy_path | Q1 |
+| 3 | `test_fr13_log_extra_kwargs_appear_as_top_level_keys` | validation | Q2 |
+| 4 | `test_fr13_log_level_mapping_info_20_error_40` | validation | Q2 |
+| 5 | `test_fr13_pipeline_completion_logged_as_json` | validation | Q2 |
+| 6 | `test_fr13_non_json_serializable_kwarg_handled_gracefully` | failure | Q2 |
+| 7 | `test_fr13_each_output_line_is_valid_json_parseable_by_jq` | nfr_pattern | Q6/NP-09 |
+| 8 | `test_fr13_audit_log_written_on_pipeline_completion` | nfr_pattern | Q6/NP-09 |
+| 9 | `test_fr13_service_name_configurable_via_constructor` | validation | Q2 |
 | 10 | `test_fr13_logger_used_by_fr19_pipeline_stage_11` | integration | Q7/FR-19 |
 
 ### FR-14: Expose GET /api/v1/health returning postgres + redis status + uptime; degrade gracefully
@@ -280,17 +280,17 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_health_endpoint_all_services_up_returns_200_healthy` | happy_path | Q1 |
-| 2 | `test_health_endpoint_postgres_down_returns_200_degraded` | happy_path | Q1 |
-| 3 | `test_health_endpoint_redis_down_returns_200_degraded` | happy_path | Q1 |
-| 4 | `test_health_endpoint_both_down_returns_200_unhealthy` | failure | Q2 |
-| 5 | `test_health_endpoint_uptime_seconds_increases_between_calls` | validation | Q2 |
-| 6 | `test_health_endpoint_response_schema_has_all_required_keys` | validation | Q2 |
-| 7 | `test_health_endpoint_postgres_unavailable_returns_postgres_false` | fault_injection | Q5 |
-| 8 | `test_health_endpoint_redis_unavailable_returns_redis_false` | fault_injection | Q5 |
-| 9 | `test_health_endpoint_response_time_under_500ms` | nfr_pattern | Q6/NP-06 |
-| 10 | `test_health_endpoint_returns_200_even_when_degraded` | nfr_pattern | Q6/NP-07 |
-| 11 | `test_health_endpoint_each_probe_has_own_timeout_no_cascading_delay` | nfr_pattern | Q6/NP-15 |
+| 1 | `test_fr14_health_all_services_up_returns_healthy` | happy_path | Q1 |
+| 2 | `test_fr14_health_db_down_returns_degraded` | happy_path | Q1 |
+| 3 | `test_fr14_health_redis_down_returns_degraded` | happy_path | Q1 |
+| 4 | `test_fr14_health_both_down_returns_unhealthy` | failure | Q2 |
+| 5 | `test_fr14_health_uptime_increases_between_calls` | validation | Q2 |
+| 6 | `test_fr14_health_returns_200_even_when_degraded` | validation | Q2 |
+| 7 | `test_fr14_endpoint_postgres_unavailable_returns_postgres_false` | fault_injection | Q5 |
+| 8 | `test_fr14_endpoint_redis_unavailable_returns_redis_false` | fault_injection | Q5 |
+| 9 | `test_fr14_endpoint_response_time_under_500ms` | nfr_pattern | Q6/NP-06 |
+| 10 | `test_fr14_endpoint_returns_200_even_when_degraded` | nfr_pattern | Q6/NP-07 |
+| 11 | `test_fr14_endpoint_each_probe_has_own_timeout_no_cascading_delay` | nfr_pattern | Q6/NP-15 |
 | 12 | `test_fr14_health_used_by_fr15_docker_compose_healthcheck` | integration | Q7/FR-15 |
 
 ### FR-15: Provide docker-compose.yml with omnibot-api, postgres (pgvector), redis; all with healthchecks
@@ -300,13 +300,13 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_deploy_docker_compose_up_all_three_services_healthy_within_60s` | happy_path | Q1 |
-| 2 | `test_deploy_docker_compose_health_endpoint_returns_200_after_startup` | happy_path | Q1 |
-| 3 | `test_deploy_docker_compose_down_removes_containers_networks_volumes` | validation | Q2 |
-| 4 | `test_deploy_docker_compose_api_depends_on_postgres_healthy` | validation | Q2 |
-| 5 | `test_deploy_docker_compose_api_depends_on_redis_healthy` | validation | Q2 |
-| 6 | `test_deploy_docker_compose_postgres_data_persists_across_restarts` | validation | Q2 |
-| 7 | `test_deploy_docker_compose_services_recover_after_crash` | nfr_pattern | Q6/NP-07 |
+| 1 | `test_fr15_docker_compose_up_all_3_services_healthy_within_60s` | happy_path | Q1 |
+| 2 | `test_fr15_api_health_endpoint_returns_200_after_startup` | happy_path | Q1 |
+| 3 | `test_fr15_docker_compose_down_removes_containers_networks_volumes` | validation | Q2 |
+| 4 | `test_fr15_docker_compose_api_depends_on_postgres_healthy` | validation | Q2 |
+| 5 | `test_fr15_docker_compose_api_depends_on_redis_healthy` | validation | Q2 |
+| 6 | `test_fr15_docker_compose_postgres_data_persists_across_restarts` | validation | Q2 |
+| 7 | `test_fr15_docker_compose_services_recover_after_crash` | nfr_pattern | Q6/NP-07 |
 | 8 | `test_fr15_docker_compose_uses_fr14_health_endpoint` | integration | Q7/FR-14 |
 
 ### FR-16: Provide Phase 1 ODD SQL queries: FCR rate, p95 latency per platform, knowledge source distribution
@@ -316,14 +316,14 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_queries_fcr_sql_parses_and_returns_pct_between_0_and_100` | happy_path | Q1 |
-| 2 | `test_queries_latency_sql_uses_percentile_cont_095` | happy_path | Q1 |
-| 3 | `test_queries_knowledge_hits_sql_counts_rule_and_escalate_sources` | happy_path | Q1 |
-| 4 | `test_queries_fcr_sql_fails_with_syntax_error_on_invalid_schema` | failure | Q2 |
-| 5 | `test_queries_latency_sql_handles_empty_messages_table` | boundary | Q3 |
-| 6 | `test_queries_all_use_parameterized_values_no_string_concatenation` | validation | Q2 |
-| 7 | `test_queries_fcr_uses_30_day_window` | validation | Q2 |
-| 8 | `test_queries_each_sql_file_is_self_contained_and_executable` | validation | Q2 |
+| 1 | `test_fr16_fcr_query_parses_without_syntax_error` | happy_path | Q1 |
+| 2 | `test_fr16_latency_query_uses_percentile_cont_0_95` | happy_path | Q1 |
+| 3 | `test_fr16_knowledge_hits_query_parses_without_syntax_error` | happy_path | Q1 |
+| 4 | `test_fr16_fcr_query_returns_percentage_between_0_and_100` | failure | Q2 |
+| 5 | `test_fr16_latency_query_returns_avg_and_p95_per_platform` | boundary | Q3 |
+| 6 | `test_fr16_all_use_parameterized_values_no_string_concatenation` | validation | Q2 |
+| 7 | `test_fr16_fcr_uses_30_day_window` | validation | Q2 |
+| 8 | `test_fr16_each_sql_file_is_self_contained_and_executable` | validation | Q2 |
 | 9 | `test_fr16_queries_operate_on_fr01_schema` | integration | Q7/FR-01 |
 
 ### FR-17: Use standardized error codes (AUTH_INVALID_SIGNATURE 401, RATE_LIMIT_EXCEEDED 429, etc.) in ApiResponse format
@@ -333,13 +333,13 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_errors_all_error_codes_map_to_correct_http_status` | happy_path | Q1 |
-| 2 | `test_errors_api_response_success_false_includes_error_code_and_message` | happy_path | Q1 |
-| 3 | `test_errors_unknown_error_code_returns_internal_error_500` | failure | Q2 |
-| 4 | `test_errors_error_code_constants_are_upper_snake_case` | validation | Q2 |
-| 5 | `test_errors_validation_error_covers_ip_whitelist_400_and_adapter_parse_422` | validation | Q2 |
-| 6 | `test_fr17_error_codes_used_by_fr04_fr05_signature_rejection` | integration | Q7/FR-04 |
-| 7 | `test_fr17_error_codes_used_by_fr10_rate_limiter_rejection` | integration | Q7/FR-10 |
+| 1 | `test_fr17_auth_invalid_signature_maps_to_401` | happy_path | Q1 |
+| 2 | `test_fr17_rate_limit_exceeded_maps_to_429` | happy_path | Q1 |
+| 3 | `test_fr17_knowledge_not_found_maps_to_404` | failure | Q2 |
+| 4 | `test_fr17_validation_error_maps_to_422` | validation | Q2 |
+| 5 | `test_fr17_internal_error_maps_to_500` | validation | Q2 |
+| 6 | `test_fr17_api_response_error_serialization_with_success_false` | integration | Q7/FR-04 |
+| 7 | `test_fr17_webhook_endpoints_return_correct_api_response_error_format` | integration | Q7/FR-10 |
 | 8 | `test_fr17_error_codes_used_by_fr19_pipeline_error_mapping` | integration | Q7/FR-19 |
 | 9 | `test_fr17_error_codes_used_by_fr22_ip_whitelist_rejection` | integration | Q7/FR-22 |
 
@@ -350,13 +350,13 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_conventions_ruff_check_passes_with_zero_violations` | happy_path | Q1 |
-| 2 | `test_conventions_radon_cc_reports_max_complexity_le_10` | happy_path | Q1 |
-| 3 | `test_conventions_all_public_functions_have_docstrings` | validation | Q2 |
-| 4 | `test_conventions_no_function_exceeds_50_lines` | validation | Q2 |
-| 5 | `test_conventions_constants_use_upper_snake_case` | validation | Q2 |
-| 6 | `test_conventions_classes_use_pascal_case` | validation | Q2 |
-| 7 | `test_conventions_variables_and_functions_use_snake_case` | validation | Q2 |
+| 1 | `test_fr18_ruff_check_zero_violations` | happy_path | Q1 |
+| 2 | `test_fr18_radon_cc_max_less_than_or_equal_10` | happy_path | Q1 |
+| 3 | `test_fr18_all_public_functions_have_docstrings` | validation | Q2 |
+| 4 | `test_fr18_function_length_less_than_or_equal_50_lines` | validation | Q2 |
+| 5 | `test_fr18_constants_use_upper_snake_case` | validation | Q2 |
+| 6 | `test_fr18_classes_use_pascal_case` | validation | Q2 |
+| 7 | `test_fr18_variables_and_functions_use_snake_case` | validation | Q2 |
 
 ### FR-19: Implement core message processing pipeline orchestrating 11-stages: IP Whitelist → Webhook Verify → Parse → Rate Limit → Sanitize → PII Mask → Knowledge Match → Escalate → Construct Response → Send Reply → Log
 
@@ -365,33 +365,33 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_pipeline_valid_rule_matched_query_flows_through_all_11_stages` | happy_path | Q1 |
-| 2 | `test_pipeline_valid_query_no_match_triggers_escalation_path` | happy_path | Q1 |
-| 3 | `test_pipeline_stage_1_ip_whitelist_blocks_unlisted_ip_returns_403` | happy_path | Q1 |
-| 4 | `test_pipeline_stage_2_invalid_signature_rejects_with_401_before_processing` | failure | Q2 |
-| 5 | `test_pipeline_stage_3_malformed_payload_returns_422` | failure | Q2 |
-| 6 | `test_pipeline_stage_4_rate_limit_exceeded_returns_429` | failure | Q2 |
-| 7 | `test_pipeline_stage_5_input_sanitization_applied_before_knowledge_matching` | validation | Q2 |
-| 8 | `test_pipeline_stage_6_pii_masking_applied_before_knowledge_matching` | validation | Q2 |
-| 9 | `test_pipeline_stage_7_knowledge_match_result_correct_source_and_confidence` | validation | Q2 |
-| 10 | `test_pipeline_stage_8_escalation_creates_db_record` | validation | Q2 |
-| 11 | `test_pipeline_stage_9_constructs_unified_response_with_correct_source` | validation | Q2 |
-| 12 | `test_pipeline_stage_10_sends_reply_via_platform_adapter` | validation | Q2 |
-| 13 | `test_pipeline_stage_11_logs_completion_with_timestamp` | validation | Q2 |
-| 14 | `test_pipeline_each_stage_isolated_failure_in_stage_n_does_not_crash_pipeline` | failure | Q2 |
-| 15 | `test_pipeline_db_transaction_atomic_all_inserts_in_single_transaction` | validation | Q2 |
-| 16 | `test_pipeline_telegram_webhook_unauthenticated_returns_401` | nfr_pattern | Q6/NP-01 |
-| 17 | `test_pipeline_line_webhook_unauthenticated_returns_401` | nfr_pattern | Q6/NP-01 |
-| 18 | `test_pipeline_rate_limited_returns_429` | nfr_pattern | Q6/NP-03 |
-| 19 | `test_pipeline_invalid_input_sanitizer_normalizes_before_downstream` | nfr_pattern | Q6/NP-04 |
-| 20 | `test_pipeline_end_to_end_p95_latency_under_3s_for_rule_matched_query` | nfr_pattern | Q6/NP-06 |
-| 21 | `test_pipeline_postgres_unavailable_after_retries_returns_500` | nfr_pattern | Q6/NP-07 |
-| 22 | `test_pipeline_redis_unavailable_fail_open_continues_processing` | nfr_pattern | Q6/NP-07 |
-| 23 | `test_pipeline_pii_detected_in_message_logs_warning` | nfr_pattern | Q6/NP-08 |
-| 24 | `test_pipeline_security_audit_log_written_on_each_request` | nfr_pattern | Q6/NP-09 |
-| 25 | `test_pipeline_concurrent_requests_from_different_users_isolated` | nfr_pattern | Q6/NP-13 |
-| 26 | `test_pipeline_knowledge_match_timeout_escalates_to_human_handoff` | nfr_pattern | Q6/NP-15 |
-| 27 | `test_pipeline_db_write_timeout_retries_with_exponential_backoff` | nfr_pattern | Q6/NP-15 |
+| 1 | `test_fr19_pipeline_valid_faq_query_flows_all_11_stages` | happy_path | Q1 |
+| 2 | `test_fr19_pipeline_invalid_signature_returns_401_before_processing` | happy_path | Q1 |
+| 3 | `test_fr19_pipeline_rate_limit_exceeded_returns_429` | happy_path | Q1 |
+| 4 | `test_fr19_pipeline_pii_masked_in_logs` | failure | Q2 |
+| 5 | `test_fr19_pipeline_no_rule_match_creates_escalation` | failure | Q2 |
+| 6 | `test_fr19_pipeline_error_at_any_stage_does_not_crash` | failure | Q2 |
+| 7 | `test_fr19_stage_5_input_sanitization_applied_before_knowledge_matching` | validation | Q2 |
+| 8 | `test_fr19_stage_6_pii_masking_applied_before_knowledge_matching` | validation | Q2 |
+| 9 | `test_fr19_stage_7_knowledge_match_result_correct_source_and_confidence` | validation | Q2 |
+| 10 | `test_fr19_stage_8_escalation_creates_db_record` | validation | Q2 |
+| 11 | `test_fr19_stage_9_constructs_unified_response_with_correct_source` | validation | Q2 |
+| 12 | `test_fr19_stage_10_sends_reply_via_platform_adapter` | validation | Q2 |
+| 13 | `test_fr19_stage_11_logs_completion_with_timestamp` | validation | Q2 |
+| 14 | `test_fr19_each_stage_isolated_failure_in_stage_n_does_not_crash_pipeline` | failure | Q2 |
+| 15 | `test_fr19_db_transaction_atomic_all_inserts_in_single_transaction` | validation | Q2 |
+| 16 | `test_fr19_telegram_webhook_unauthenticated_returns_401` | nfr_pattern | Q6/NP-01 |
+| 17 | `test_fr19_line_webhook_unauthenticated_returns_401` | nfr_pattern | Q6/NP-01 |
+| 18 | `test_fr19_rate_limited_returns_429` | nfr_pattern | Q6/NP-03 |
+| 19 | `test_fr19_invalid_input_sanitizer_normalizes_before_downstream` | nfr_pattern | Q6/NP-04 |
+| 20 | `test_fr19_end_to_end_p95_latency_under_3s_for_rule_matched_query` | nfr_pattern | Q6/NP-06 |
+| 21 | `test_fr19_postgres_unavailable_after_retries_returns_500` | nfr_pattern | Q6/NP-07 |
+| 22 | `test_fr19_redis_unavailable_fail_open_continues_processing` | nfr_pattern | Q6/NP-07 |
+| 23 | `test_fr19_pii_detected_in_message_logs_warning` | nfr_pattern | Q6/NP-08 |
+| 24 | `test_fr19_security_audit_log_written_on_each_request` | nfr_pattern | Q6/NP-09 |
+| 25 | `test_fr19_concurrent_requests_from_different_users_isolated` | nfr_pattern | Q6/NP-13 |
+| 26 | `test_fr19_knowledge_match_timeout_escalates_to_human_handoff` | nfr_pattern | Q6/NP-15 |
+| 27 | `test_fr19_db_write_timeout_retries_with_exponential_backoff` | nfr_pattern | Q6/NP-15 |
 | 28 | `test_fr19_pipeline_integrates_fr22_ip_whitelist_stage_1` | integration | Q7/FR-22 |
 | 29 | `test_fr19_pipeline_integrates_fr04_fr05_signature_stage_2` | integration | Q7/FR-04 |
 | 30 | `test_fr19_pipeline_integrates_fr02_fr03_adapter_stage_3` | integration | Q7/FR-02 |
@@ -410,11 +410,11 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_unified_response_instantiation_with_rule_source_succeeds` | happy_path | Q1 |
-| 2 | `test_unified_response_mutation_raises_frozen_instance_error` | failure | Q2 |
-| 3 | `test_unified_response_metadata_defaults_to_empty_dict` | validation | Q2 |
-| 4 | `test_unified_response_serialization_preserves_all_fields` | validation | Q2 |
-| 5 | `test_unified_response_all_knowledge_source_enum_members_present` | validation | Q2 |
+| 1 | `test_fr20_unified_response_serializes_correctly` | happy_path | Q1 |
+| 2 | `test_fr20_unified_response_mutation_raises_frozen_instance_error` | failure | Q2 |
+| 3 | `test_fr20_unified_response_metadata_defaults_to_empty_dict` | validation | Q2 |
+| 4 | `test_fr20_knowledge_source_enum_has_rule_and_escalate` | validation | Q2 |
+| 5 | `test_fr20_pipeline_returns_unified_response_with_correct_source_and_confidence` | validation | Q2 |
 | 6 | `test_fr20_unified_response_constructed_by_fr19_pipeline_stage_9` | integration | Q7/FR-19 |
 
 ### FR-21: Load and validate configuration from env vars; fail fast on missing required keys
@@ -424,13 +424,13 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_config_all_required_env_vars_produces_valid_settings` | happy_path | Q1 |
-| 2 | `test_config_missing_database_url_raises_config_error_with_missing_keys_list` | failure | Q2 |
-| 3 | `test_config_missing_multiple_required_keys_lists_all_in_error` | failure | Q2 |
-| 4 | `test_config_optional_keys_use_documented_defaults` | validation | Q2 |
-| 5 | `test_config_invalid_cidr_format_in_ip_whitelist_raises_ip_whitelist_error` | failure | Q2 |
-| 6 | `test_config_rate_limit_capacity_invalid_string_raises_error` | failure | Q2 |
-| 7 | `test_config_empty_ip_whitelist_cidrs_defaults_to_empty_string` | boundary | Q3 |
+| 1 | `test_fr21_settings_all_env_vars_set_creates_valid_config` | happy_path | Q1 |
+| 2 | `test_fr21_missing_database_url_raises_config_error_with_key_list` | failure | Q2 |
+| 3 | `test_fr21_optional_keys_use_defaults` | failure | Q2 |
+| 4 | `test_fr21_config_validation_runs_at_startup_fail_fast` | validation | Q2 |
+| 5 | `test_fr21_application_starts_with_valid_config_and_env` | failure | Q2 |
+| 6 | `test_fr21_rate_limit_capacity_invalid_string_raises_error` | failure | Q2 |
+| 7 | `test_fr21_empty_ip_whitelist_cidrs_defaults_to_empty_string` | boundary | Q3 |
 | 8 | `test_fr21_config_provides_settings_to_fr04_fr05_signature_verifiers` | integration | Q7/FR-04 |
 | 9 | `test_fr21_config_provides_settings_to_fr10_rate_limiter` | integration | Q7/FR-10 |
 | 10 | `test_fr21_config_provides_settings_to_fr22_ip_whitelist` | integration | Q7/FR-22 |
@@ -443,17 +443,49 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_ip_whitelist_allowed_ip_in_cidr_range_returns_true` | happy_path | Q1 |
-| 2 | `test_ip_whitelist_unlisted_ip_returns_false` | failure | Q2 |
-| 3 | `test_ip_whitelist_empty_ip_returns_false` | failure | Q2 |
-| 4 | `test_ip_whitelist_extracts_ip_from_x_forwarded_for_leftmost` | happy_path | Q1 |
-| 5 | `test_ip_whitelist_falls_back_to_client_host_when_no_x_forwarded_for` | validation | Q2 |
-| 6 | `test_ip_whitelist_invalid_ip_format_returns_false_fail_secure` | failure | Q2 |
-| 7 | `test_ip_whitelist_invalid_cidr_in_config_raises_ip_whitelist_error_at_startup` | failure | Q2 |
-| 8 | `test_ip_whitelist_unlisted_ip_blocks_before_hmac_computation` | nfr_pattern | Q6/NP-08 |
-| 9 | `test_ip_whitelist_missing_ip_rejected_with_400_and_warning_log` | nfr_pattern | Q6/NP-08 |
+| 1 | `test_fr22_ip_whitelist_allowed_ip_proceeds` | happy_path | Q1 |
+| 2 | `test_fr22_ip_whitelist_unlisted_ip_returns_403` | failure | Q2 |
+| 3 | `test_fr22_ip_whitelist_empty_or_missing_ip_returns_400` | failure | Q2 |
+| 4 | `test_fr22_ip_whitelist_intercepts_before_hmac` | happy_path | Q1 |
+| 5 | `test_fr22_whitelist_falls_back_to_client_host_when_no_x_forwarded_for` | validation | Q2 |
+| 6 | `test_fr22_whitelist_invalid_ip_format_returns_false_fail_secure` | failure | Q2 |
+| 7 | `test_fr22_whitelist_invalid_cidr_in_config_raises_ip_whitelist_error_at_startup` | failure | Q2 |
+| 8 | `test_fr22_whitelist_unlisted_ip_blocks_before_hmac_computation` | nfr_pattern | Q6/NP-08 |
+| 9 | `test_fr22_whitelist_missing_ip_rejected_with_400_and_warning_log` | nfr_pattern | Q6/NP-08 |
 | 10 | `test_fr22_ip_whitelist_executes_before_fr04_fr05_signature_in_pipeline` | integration | Q7/FR-04 |
 | 11 | `test_fr22_ip_whitelist_output_determines_fr19_pipeline_continue_or_stop` | integration | Q7/FR-19 |
+| 12 | `test_fr22_p95_latency_under_3s_k6_load_test_200_vus_10min` | nfr_pattern | NP-06 |
+| 13 | `test_fr22_webhook_replay_attack_blocked` | nfr_pattern | NP-08 |
+| 14 | `test_fr22_webhook_timing_attack_signature_enumeration_resistant` | nfr_pattern | NP-08 |
+| 15 | `test_fr22_sanitizer_called_before_downstream_in_every_request` | nfr_pattern | NP-04 |
+| 16 | `test_fr22_burst_1000_requests_at_least_900_get_429` | nfr_pattern | NP-03 |
+| 17 | `test_fr22_health_endpoint_500ms_timeout_even_under_load` | nfr_pattern | NP-06 |
+| 18 | `test_fr22_all_log_output_is_valid_json_parseable_by_jq` | nfr_pattern | NP-09 |
+| 19 | `test_fr22_ruff_check_zero_violations_ci_gate` | validation | Q2 |
+| 20 | `test_fr22_radon_cc_max_le_10_ci_gate` | validation | Q2 |
+| 21 | `test_fr22_docker_compose_up_all_healthy_within_60s_fresh_clone` | nfr_pattern | NP-07 |
+| 22 | `test_fr22_docker_compose_down_v_leaves_no_dangling_resources` | validation | Q2 |
+| 23 | `test_fr22_ip_whitelist_blocks_before_webhook_signature_verification` | nfr_pattern | NP-08 |
+| 24 | `test_fr22_schema_contract_satisfied_in_phase2_no_alter_table` | backward_compat | NP-11 |
+| 25 | `test_fr22_api_response_schema_compatible_with_phase2` | backward_compat | NP-11 |
+| 26 | `test_fr22_unified_message_format_supports_phase2_platforms` | backward_compat | NP-11 |
+| 27 | `test_fr22_starts_and_health_endpoint_returns_200` | smoke | deployment |
+| 28 | `test_fr22_docker_compose_up_all_services_healthy_within_60s` | smoke | deployment |
+| 29 | `test_fr22_curl_health_endpoint_returns_valid_json_schema` | smoke | deployment |
+| 30 | `test_fr22_docker_compose_down_v_cleans_up_all_resources` | smoke | deployment |
+| 31 | `test_fr22_postgres_pgvector_extension_available` | smoke | deployment |
+| 32 | `test_fr22_ip_whitelist_blocks_unknown_ip_403` | nfr_pattern | NP-08 |
+| 33 | `test_fr22_ip_whitelist_rejects_empty_ip_400_with_warning` | nfr_pattern | NP-08 |
+| 34 | `test_fr22_webhook_signature_replay_attack_blocked` | nfr_pattern | NP-08 |
+| 35 | `test_fr22_webhook_timing_attack_signature_enumeration_resistant` | nfr_pattern | NP-08 |
+| 36 | `test_fr22_rate_limit_burst_attack_blocked_1000_req` | nfr_pattern | NP-03 |
+| 37 | `test_fr22_pii_phone_leak_masked_in_response_and_db` | nfr_pattern | NP-08 |
+| 38 | `test_fr22_pii_email_leak_masked_in_response_and_db` | nfr_pattern | NP-08 |
+| 39 | `test_fr22_pii_address_leak_masked_in_response_and_db` | nfr_pattern | NP-08 |
+| 40 | `test_fr22_input_sanitization_null_byte_removed` | nfr_pattern | NP-04 |
+| 41 | `test_fr22_input_sanitization_unicode_confusion_normalized` | nfr_pattern | NP-04 |
+| 42 | `test_fr22_p95_latency_phase1_under_3s_k6_load_test` | nfr_pattern | NP-06 |
+| 43 | `test_fr22_fcr_phase1_target_50_percent_odd_query` | nfr_pattern | NP-06 |
 
 ---
 
@@ -465,58 +497,241 @@ System-wide tests that span multiple FRs or validate NFR compliance across the e
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_nfr01_p95_latency_under_3s_k6_load_test_200_vus_10min` | nfr_pattern | NP-06 |
-| 2 | `test_nfr02_webhook_replay_attack_blocked` | nfr_pattern | NP-08 |
-| 3 | `test_nfr02_webhook_timing_attack_signature_enumeration_resistant` | nfr_pattern | NP-08 |
-| 4 | `test_nfr03_sanitizer_called_before_downstream_in_every_request` | nfr_pattern | NP-04 |
-| 5 | `test_nfr05_burst_1000_requests_at_least_900_get_429` | nfr_pattern | NP-03 |
-| 6 | `test_nfr06_health_endpoint_500ms_timeout_even_under_load` | nfr_pattern | NP-06 |
-| 7 | `test_nfr07_all_log_output_is_valid_json_parseable_by_jq` | nfr_pattern | NP-09 |
-| 8 | `test_nfr08_ruff_check_zero_violations_ci_gate` | validation | Q2 |
-| 9 | `test_nfr08_radon_cc_max_le_10_ci_gate` | validation | Q2 |
-| 10 | `test_nfr09_docker_compose_up_all_healthy_within_60s_fresh_clone` | nfr_pattern | NP-07 |
-| 11 | `test_nfr09_docker_compose_down_v_leaves_no_dangling_resources` | validation | Q2 |
-| 12 | `test_nfr10_ip_whitelist_blocks_before_webhook_signature_verification` | nfr_pattern | NP-08 |
+| 1 | `test_fr22_ip_whitelist_allowed_ip_proceeds` | happy_path | Q1 |
+| 2 | `test_fr22_ip_whitelist_unlisted_ip_returns_403` | failure | Q2 |
+| 3 | `test_fr22_ip_whitelist_empty_or_missing_ip_returns_400` | failure | Q2 |
+| 4 | `test_fr22_ip_whitelist_intercepts_before_hmac` | happy_path | Q1 |
+| 5 | `test_fr22_whitelist_falls_back_to_client_host_when_no_x_forwarded_for` | validation | Q2 |
+| 6 | `test_fr22_whitelist_invalid_ip_format_returns_false_fail_secure` | failure | Q2 |
+| 7 | `test_fr22_whitelist_invalid_cidr_in_config_raises_ip_whitelist_error_at_startup` | failure | Q2 |
+| 8 | `test_fr22_whitelist_unlisted_ip_blocks_before_hmac_computation` | nfr_pattern | Q6/NP-08 |
+| 9 | `test_fr22_whitelist_missing_ip_rejected_with_400_and_warning_log` | nfr_pattern | Q6/NP-08 |
+| 10 | `test_fr22_ip_whitelist_executes_before_fr04_fr05_signature_in_pipeline` | integration | Q7/FR-04 |
+| 11 | `test_fr22_ip_whitelist_output_determines_fr19_pipeline_continue_or_stop` | integration | Q7/FR-19 |
+| 12 | `test_fr22_p95_latency_under_3s_k6_load_test_200_vus_10min` | nfr_pattern | NP-06 |
+| 13 | `test_fr22_webhook_replay_attack_blocked` | nfr_pattern | NP-08 |
+| 14 | `test_fr22_webhook_timing_attack_signature_enumeration_resistant` | nfr_pattern | NP-08 |
+| 15 | `test_fr22_sanitizer_called_before_downstream_in_every_request` | nfr_pattern | NP-04 |
+| 16 | `test_fr22_burst_1000_requests_at_least_900_get_429` | nfr_pattern | NP-03 |
+| 17 | `test_fr22_health_endpoint_500ms_timeout_even_under_load` | nfr_pattern | NP-06 |
+| 18 | `test_fr22_all_log_output_is_valid_json_parseable_by_jq` | nfr_pattern | NP-09 |
+| 19 | `test_fr22_ruff_check_zero_violations_ci_gate` | validation | Q2 |
+| 20 | `test_fr22_radon_cc_max_le_10_ci_gate` | validation | Q2 |
+| 21 | `test_fr22_docker_compose_up_all_healthy_within_60s_fresh_clone` | nfr_pattern | NP-07 |
+| 22 | `test_fr22_docker_compose_down_v_leaves_no_dangling_resources` | validation | Q2 |
+| 23 | `test_fr22_ip_whitelist_blocks_before_webhook_signature_verification` | nfr_pattern | NP-08 |
+| 24 | `test_fr22_schema_contract_satisfied_in_phase2_no_alter_table` | backward_compat | NP-11 |
+| 25 | `test_fr22_api_response_schema_compatible_with_phase2` | backward_compat | NP-11 |
+| 26 | `test_fr22_unified_message_format_supports_phase2_platforms` | backward_compat | NP-11 |
+| 27 | `test_fr22_starts_and_health_endpoint_returns_200` | smoke | deployment |
+| 28 | `test_fr22_docker_compose_up_all_services_healthy_within_60s` | smoke | deployment |
+| 29 | `test_fr22_curl_health_endpoint_returns_valid_json_schema` | smoke | deployment |
+| 30 | `test_fr22_docker_compose_down_v_cleans_up_all_resources` | smoke | deployment |
+| 31 | `test_fr22_postgres_pgvector_extension_available` | smoke | deployment |
+| 32 | `test_fr22_ip_whitelist_blocks_unknown_ip_403` | nfr_pattern | NP-08 |
+| 33 | `test_fr22_ip_whitelist_rejects_empty_ip_400_with_warning` | nfr_pattern | NP-08 |
+| 34 | `test_fr22_webhook_signature_replay_attack_blocked` | nfr_pattern | NP-08 |
+| 35 | `test_fr22_webhook_timing_attack_signature_enumeration_resistant` | nfr_pattern | NP-08 |
+| 36 | `test_fr22_rate_limit_burst_attack_blocked_1000_req` | nfr_pattern | NP-03 |
+| 37 | `test_fr22_pii_phone_leak_masked_in_response_and_db` | nfr_pattern | NP-08 |
+| 38 | `test_fr22_pii_email_leak_masked_in_response_and_db` | nfr_pattern | NP-08 |
+| 39 | `test_fr22_pii_address_leak_masked_in_response_and_db` | nfr_pattern | NP-08 |
+| 40 | `test_fr22_input_sanitization_null_byte_removed` | nfr_pattern | NP-04 |
+| 41 | `test_fr22_input_sanitization_unicode_confusion_normalized` | nfr_pattern | NP-04 |
+| 42 | `test_fr22_p95_latency_phase1_under_3s_k6_load_test` | nfr_pattern | NP-06 |
+| 43 | `test_fr22_fcr_phase1_target_50_percent_odd_query` | nfr_pattern | NP-06 |
 
 ### Backward Compatibility
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_phase1_schema_contract_satisfied_in_phase2_no_alter_table` | backward_compat | NP-11 |
-| 2 | `test_phase1_api_response_schema_compatible_with_phase2` | backward_compat | NP-11 |
-| 3 | `test_phase1_unified_message_format_supports_phase2_platforms` | backward_compat | NP-11 |
+| 1 | `test_fr22_ip_whitelist_allowed_ip_proceeds` | happy_path | Q1 |
+| 2 | `test_fr22_ip_whitelist_unlisted_ip_returns_403` | failure | Q2 |
+| 3 | `test_fr22_ip_whitelist_empty_or_missing_ip_returns_400` | failure | Q2 |
+| 4 | `test_fr22_ip_whitelist_intercepts_before_hmac` | happy_path | Q1 |
+| 5 | `test_fr22_whitelist_falls_back_to_client_host_when_no_x_forwarded_for` | validation | Q2 |
+| 6 | `test_fr22_whitelist_invalid_ip_format_returns_false_fail_secure` | failure | Q2 |
+| 7 | `test_fr22_whitelist_invalid_cidr_in_config_raises_ip_whitelist_error_at_startup` | failure | Q2 |
+| 8 | `test_fr22_whitelist_unlisted_ip_blocks_before_hmac_computation` | nfr_pattern | Q6/NP-08 |
+| 9 | `test_fr22_whitelist_missing_ip_rejected_with_400_and_warning_log` | nfr_pattern | Q6/NP-08 |
+| 10 | `test_fr22_ip_whitelist_executes_before_fr04_fr05_signature_in_pipeline` | integration | Q7/FR-04 |
+| 11 | `test_fr22_ip_whitelist_output_determines_fr19_pipeline_continue_or_stop` | integration | Q7/FR-19 |
+| 12 | `test_fr22_p95_latency_under_3s_k6_load_test_200_vus_10min` | nfr_pattern | NP-06 |
+| 13 | `test_fr22_webhook_replay_attack_blocked` | nfr_pattern | NP-08 |
+| 14 | `test_fr22_webhook_timing_attack_signature_enumeration_resistant` | nfr_pattern | NP-08 |
+| 15 | `test_fr22_sanitizer_called_before_downstream_in_every_request` | nfr_pattern | NP-04 |
+| 16 | `test_fr22_burst_1000_requests_at_least_900_get_429` | nfr_pattern | NP-03 |
+| 17 | `test_fr22_health_endpoint_500ms_timeout_even_under_load` | nfr_pattern | NP-06 |
+| 18 | `test_fr22_all_log_output_is_valid_json_parseable_by_jq` | nfr_pattern | NP-09 |
+| 19 | `test_fr22_ruff_check_zero_violations_ci_gate` | validation | Q2 |
+| 20 | `test_fr22_radon_cc_max_le_10_ci_gate` | validation | Q2 |
+| 21 | `test_fr22_docker_compose_up_all_healthy_within_60s_fresh_clone` | nfr_pattern | NP-07 |
+| 22 | `test_fr22_docker_compose_down_v_leaves_no_dangling_resources` | validation | Q2 |
+| 23 | `test_fr22_ip_whitelist_blocks_before_webhook_signature_verification` | nfr_pattern | NP-08 |
+| 24 | `test_fr22_schema_contract_satisfied_in_phase2_no_alter_table` | backward_compat | NP-11 |
+| 25 | `test_fr22_api_response_schema_compatible_with_phase2` | backward_compat | NP-11 |
+| 26 | `test_fr22_unified_message_format_supports_phase2_platforms` | backward_compat | NP-11 |
+| 27 | `test_fr22_starts_and_health_endpoint_returns_200` | smoke | deployment |
+| 28 | `test_fr22_docker_compose_up_all_services_healthy_within_60s` | smoke | deployment |
+| 29 | `test_fr22_curl_health_endpoint_returns_valid_json_schema` | smoke | deployment |
+| 30 | `test_fr22_docker_compose_down_v_cleans_up_all_resources` | smoke | deployment |
+| 31 | `test_fr22_postgres_pgvector_extension_available` | smoke | deployment |
+| 32 | `test_fr22_ip_whitelist_blocks_unknown_ip_403` | nfr_pattern | NP-08 |
+| 33 | `test_fr22_ip_whitelist_rejects_empty_ip_400_with_warning` | nfr_pattern | NP-08 |
+| 34 | `test_fr22_webhook_signature_replay_attack_blocked` | nfr_pattern | NP-08 |
+| 35 | `test_fr22_webhook_timing_attack_signature_enumeration_resistant` | nfr_pattern | NP-08 |
+| 36 | `test_fr22_rate_limit_burst_attack_blocked_1000_req` | nfr_pattern | NP-03 |
+| 37 | `test_fr22_pii_phone_leak_masked_in_response_and_db` | nfr_pattern | NP-08 |
+| 38 | `test_fr22_pii_email_leak_masked_in_response_and_db` | nfr_pattern | NP-08 |
+| 39 | `test_fr22_pii_address_leak_masked_in_response_and_db` | nfr_pattern | NP-08 |
+| 40 | `test_fr22_input_sanitization_null_byte_removed` | nfr_pattern | NP-04 |
+| 41 | `test_fr22_input_sanitization_unicode_confusion_normalized` | nfr_pattern | NP-04 |
+| 42 | `test_fr22_p95_latency_phase1_under_3s_k6_load_test` | nfr_pattern | NP-06 |
+| 43 | `test_fr22_fcr_phase1_target_50_percent_odd_query` | nfr_pattern | NP-06 |
 
 ### Deployment Smoke
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_app_starts_and_health_endpoint_returns_200` | smoke | deployment |
-| 2 | `test_deploy_docker_compose_up_all_services_healthy_within_60s` | smoke | deployment |
-| 3 | `test_deploy_curl_health_endpoint_returns_valid_json_schema` | smoke | deployment |
-| 4 | `test_deploy_docker_compose_down_v_cleans_up_all_resources` | smoke | deployment |
-| 5 | `test_deploy_postgres_pgvector_extension_available` | smoke | deployment |
+| 1 | `test_fr22_ip_whitelist_allowed_ip_proceeds` | happy_path | Q1 |
+| 2 | `test_fr22_ip_whitelist_unlisted_ip_returns_403` | failure | Q2 |
+| 3 | `test_fr22_ip_whitelist_empty_or_missing_ip_returns_400` | failure | Q2 |
+| 4 | `test_fr22_ip_whitelist_intercepts_before_hmac` | happy_path | Q1 |
+| 5 | `test_fr22_whitelist_falls_back_to_client_host_when_no_x_forwarded_for` | validation | Q2 |
+| 6 | `test_fr22_whitelist_invalid_ip_format_returns_false_fail_secure` | failure | Q2 |
+| 7 | `test_fr22_whitelist_invalid_cidr_in_config_raises_ip_whitelist_error_at_startup` | failure | Q2 |
+| 8 | `test_fr22_whitelist_unlisted_ip_blocks_before_hmac_computation` | nfr_pattern | Q6/NP-08 |
+| 9 | `test_fr22_whitelist_missing_ip_rejected_with_400_and_warning_log` | nfr_pattern | Q6/NP-08 |
+| 10 | `test_fr22_ip_whitelist_executes_before_fr04_fr05_signature_in_pipeline` | integration | Q7/FR-04 |
+| 11 | `test_fr22_ip_whitelist_output_determines_fr19_pipeline_continue_or_stop` | integration | Q7/FR-19 |
+| 12 | `test_fr22_p95_latency_under_3s_k6_load_test_200_vus_10min` | nfr_pattern | NP-06 |
+| 13 | `test_fr22_webhook_replay_attack_blocked` | nfr_pattern | NP-08 |
+| 14 | `test_fr22_webhook_timing_attack_signature_enumeration_resistant` | nfr_pattern | NP-08 |
+| 15 | `test_fr22_sanitizer_called_before_downstream_in_every_request` | nfr_pattern | NP-04 |
+| 16 | `test_fr22_burst_1000_requests_at_least_900_get_429` | nfr_pattern | NP-03 |
+| 17 | `test_fr22_health_endpoint_500ms_timeout_even_under_load` | nfr_pattern | NP-06 |
+| 18 | `test_fr22_all_log_output_is_valid_json_parseable_by_jq` | nfr_pattern | NP-09 |
+| 19 | `test_fr22_ruff_check_zero_violations_ci_gate` | validation | Q2 |
+| 20 | `test_fr22_radon_cc_max_le_10_ci_gate` | validation | Q2 |
+| 21 | `test_fr22_docker_compose_up_all_healthy_within_60s_fresh_clone` | nfr_pattern | NP-07 |
+| 22 | `test_fr22_docker_compose_down_v_leaves_no_dangling_resources` | validation | Q2 |
+| 23 | `test_fr22_ip_whitelist_blocks_before_webhook_signature_verification` | nfr_pattern | NP-08 |
+| 24 | `test_fr22_schema_contract_satisfied_in_phase2_no_alter_table` | backward_compat | NP-11 |
+| 25 | `test_fr22_api_response_schema_compatible_with_phase2` | backward_compat | NP-11 |
+| 26 | `test_fr22_unified_message_format_supports_phase2_platforms` | backward_compat | NP-11 |
+| 27 | `test_fr22_starts_and_health_endpoint_returns_200` | smoke | deployment |
+| 28 | `test_fr22_docker_compose_up_all_services_healthy_within_60s` | smoke | deployment |
+| 29 | `test_fr22_curl_health_endpoint_returns_valid_json_schema` | smoke | deployment |
+| 30 | `test_fr22_docker_compose_down_v_cleans_up_all_resources` | smoke | deployment |
+| 31 | `test_fr22_postgres_pgvector_extension_available` | smoke | deployment |
+| 32 | `test_fr22_ip_whitelist_blocks_unknown_ip_403` | nfr_pattern | NP-08 |
+| 33 | `test_fr22_ip_whitelist_rejects_empty_ip_400_with_warning` | nfr_pattern | NP-08 |
+| 34 | `test_fr22_webhook_signature_replay_attack_blocked` | nfr_pattern | NP-08 |
+| 35 | `test_fr22_webhook_timing_attack_signature_enumeration_resistant` | nfr_pattern | NP-08 |
+| 36 | `test_fr22_rate_limit_burst_attack_blocked_1000_req` | nfr_pattern | NP-03 |
+| 37 | `test_fr22_pii_phone_leak_masked_in_response_and_db` | nfr_pattern | NP-08 |
+| 38 | `test_fr22_pii_email_leak_masked_in_response_and_db` | nfr_pattern | NP-08 |
+| 39 | `test_fr22_pii_address_leak_masked_in_response_and_db` | nfr_pattern | NP-08 |
+| 40 | `test_fr22_input_sanitization_null_byte_removed` | nfr_pattern | NP-04 |
+| 41 | `test_fr22_input_sanitization_unicode_confusion_normalized` | nfr_pattern | NP-04 |
+| 42 | `test_fr22_p95_latency_phase1_under_3s_k6_load_test` | nfr_pattern | NP-06 |
+| 43 | `test_fr22_fcr_phase1_target_50_percent_odd_query` | nfr_pattern | NP-06 |
 
 ### Security Red Team
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_redteam_ip_whitelist_blocks_unknown_ip_403` | nfr_pattern | NP-08 |
-| 2 | `test_redteam_ip_whitelist_rejects_empty_ip_400_with_warning` | nfr_pattern | NP-08 |
-| 3 | `test_redteam_webhook_signature_replay_attack_blocked` | nfr_pattern | NP-08 |
-| 4 | `test_redteam_webhook_timing_attack_signature_enumeration_resistant` | nfr_pattern | NP-08 |
-| 5 | `test_redteam_rate_limit_burst_attack_blocked_1000_req` | nfr_pattern | NP-03 |
-| 6 | `test_redteam_pii_phone_leak_masked_in_response_and_db` | nfr_pattern | NP-08 |
-| 7 | `test_redteam_pii_email_leak_masked_in_response_and_db` | nfr_pattern | NP-08 |
-| 8 | `test_redteam_pii_address_leak_masked_in_response_and_db` | nfr_pattern | NP-08 |
-| 9 | `test_redteam_input_sanitization_null_byte_removed` | nfr_pattern | NP-04 |
-| 10 | `test_redteam_input_sanitization_unicode_confusion_normalized` | nfr_pattern | NP-04 |
+| 1 | `test_fr22_ip_whitelist_allowed_ip_proceeds` | happy_path | Q1 |
+| 2 | `test_fr22_ip_whitelist_unlisted_ip_returns_403` | failure | Q2 |
+| 3 | `test_fr22_ip_whitelist_empty_or_missing_ip_returns_400` | failure | Q2 |
+| 4 | `test_fr22_ip_whitelist_intercepts_before_hmac` | happy_path | Q1 |
+| 5 | `test_fr22_whitelist_falls_back_to_client_host_when_no_x_forwarded_for` | validation | Q2 |
+| 6 | `test_fr22_whitelist_invalid_ip_format_returns_false_fail_secure` | failure | Q2 |
+| 7 | `test_fr22_whitelist_invalid_cidr_in_config_raises_ip_whitelist_error_at_startup` | failure | Q2 |
+| 8 | `test_fr22_whitelist_unlisted_ip_blocks_before_hmac_computation` | nfr_pattern | Q6/NP-08 |
+| 9 | `test_fr22_whitelist_missing_ip_rejected_with_400_and_warning_log` | nfr_pattern | Q6/NP-08 |
+| 10 | `test_fr22_ip_whitelist_executes_before_fr04_fr05_signature_in_pipeline` | integration | Q7/FR-04 |
+| 11 | `test_fr22_ip_whitelist_output_determines_fr19_pipeline_continue_or_stop` | integration | Q7/FR-19 |
+| 12 | `test_fr22_p95_latency_under_3s_k6_load_test_200_vus_10min` | nfr_pattern | NP-06 |
+| 13 | `test_fr22_webhook_replay_attack_blocked` | nfr_pattern | NP-08 |
+| 14 | `test_fr22_webhook_timing_attack_signature_enumeration_resistant` | nfr_pattern | NP-08 |
+| 15 | `test_fr22_sanitizer_called_before_downstream_in_every_request` | nfr_pattern | NP-04 |
+| 16 | `test_fr22_burst_1000_requests_at_least_900_get_429` | nfr_pattern | NP-03 |
+| 17 | `test_fr22_health_endpoint_500ms_timeout_even_under_load` | nfr_pattern | NP-06 |
+| 18 | `test_fr22_all_log_output_is_valid_json_parseable_by_jq` | nfr_pattern | NP-09 |
+| 19 | `test_fr22_ruff_check_zero_violations_ci_gate` | validation | Q2 |
+| 20 | `test_fr22_radon_cc_max_le_10_ci_gate` | validation | Q2 |
+| 21 | `test_fr22_docker_compose_up_all_healthy_within_60s_fresh_clone` | nfr_pattern | NP-07 |
+| 22 | `test_fr22_docker_compose_down_v_leaves_no_dangling_resources` | validation | Q2 |
+| 23 | `test_fr22_ip_whitelist_blocks_before_webhook_signature_verification` | nfr_pattern | NP-08 |
+| 24 | `test_fr22_schema_contract_satisfied_in_phase2_no_alter_table` | backward_compat | NP-11 |
+| 25 | `test_fr22_api_response_schema_compatible_with_phase2` | backward_compat | NP-11 |
+| 26 | `test_fr22_unified_message_format_supports_phase2_platforms` | backward_compat | NP-11 |
+| 27 | `test_fr22_starts_and_health_endpoint_returns_200` | smoke | deployment |
+| 28 | `test_fr22_docker_compose_up_all_services_healthy_within_60s` | smoke | deployment |
+| 29 | `test_fr22_curl_health_endpoint_returns_valid_json_schema` | smoke | deployment |
+| 30 | `test_fr22_docker_compose_down_v_cleans_up_all_resources` | smoke | deployment |
+| 31 | `test_fr22_postgres_pgvector_extension_available` | smoke | deployment |
+| 32 | `test_fr22_ip_whitelist_blocks_unknown_ip_403` | nfr_pattern | NP-08 |
+| 33 | `test_fr22_ip_whitelist_rejects_empty_ip_400_with_warning` | nfr_pattern | NP-08 |
+| 34 | `test_fr22_webhook_signature_replay_attack_blocked` | nfr_pattern | NP-08 |
+| 35 | `test_fr22_webhook_timing_attack_signature_enumeration_resistant` | nfr_pattern | NP-08 |
+| 36 | `test_fr22_rate_limit_burst_attack_blocked_1000_req` | nfr_pattern | NP-03 |
+| 37 | `test_fr22_pii_phone_leak_masked_in_response_and_db` | nfr_pattern | NP-08 |
+| 38 | `test_fr22_pii_email_leak_masked_in_response_and_db` | nfr_pattern | NP-08 |
+| 39 | `test_fr22_pii_address_leak_masked_in_response_and_db` | nfr_pattern | NP-08 |
+| 40 | `test_fr22_input_sanitization_null_byte_removed` | nfr_pattern | NP-04 |
+| 41 | `test_fr22_input_sanitization_unicode_confusion_normalized` | nfr_pattern | NP-04 |
+| 42 | `test_fr22_p95_latency_phase1_under_3s_k6_load_test` | nfr_pattern | NP-06 |
+| 43 | `test_fr22_fcr_phase1_target_50_percent_odd_query` | nfr_pattern | NP-06 |
 
 ### KPI Gates
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
-| 1 | `test_kpi_p95_latency_phase1_under_3s_k6_load_test` | nfr_pattern | NP-06 |
-| 2 | `test_kpi_fcr_phase1_target_50_percent_odd_query` | nfr_pattern | NP-06 |
+| 1 | `test_fr22_ip_whitelist_allowed_ip_proceeds` | happy_path | Q1 |
+| 2 | `test_fr22_ip_whitelist_unlisted_ip_returns_403` | failure | Q2 |
+| 3 | `test_fr22_ip_whitelist_empty_or_missing_ip_returns_400` | failure | Q2 |
+| 4 | `test_fr22_ip_whitelist_intercepts_before_hmac` | happy_path | Q1 |
+| 5 | `test_fr22_whitelist_falls_back_to_client_host_when_no_x_forwarded_for` | validation | Q2 |
+| 6 | `test_fr22_whitelist_invalid_ip_format_returns_false_fail_secure` | failure | Q2 |
+| 7 | `test_fr22_whitelist_invalid_cidr_in_config_raises_ip_whitelist_error_at_startup` | failure | Q2 |
+| 8 | `test_fr22_whitelist_unlisted_ip_blocks_before_hmac_computation` | nfr_pattern | Q6/NP-08 |
+| 9 | `test_fr22_whitelist_missing_ip_rejected_with_400_and_warning_log` | nfr_pattern | Q6/NP-08 |
+| 10 | `test_fr22_ip_whitelist_executes_before_fr04_fr05_signature_in_pipeline` | integration | Q7/FR-04 |
+| 11 | `test_fr22_ip_whitelist_output_determines_fr19_pipeline_continue_or_stop` | integration | Q7/FR-19 |
+| 12 | `test_fr22_p95_latency_under_3s_k6_load_test_200_vus_10min` | nfr_pattern | NP-06 |
+| 13 | `test_fr22_webhook_replay_attack_blocked` | nfr_pattern | NP-08 |
+| 14 | `test_fr22_webhook_timing_attack_signature_enumeration_resistant` | nfr_pattern | NP-08 |
+| 15 | `test_fr22_sanitizer_called_before_downstream_in_every_request` | nfr_pattern | NP-04 |
+| 16 | `test_fr22_burst_1000_requests_at_least_900_get_429` | nfr_pattern | NP-03 |
+| 17 | `test_fr22_health_endpoint_500ms_timeout_even_under_load` | nfr_pattern | NP-06 |
+| 18 | `test_fr22_all_log_output_is_valid_json_parseable_by_jq` | nfr_pattern | NP-09 |
+| 19 | `test_fr22_ruff_check_zero_violations_ci_gate` | validation | Q2 |
+| 20 | `test_fr22_radon_cc_max_le_10_ci_gate` | validation | Q2 |
+| 21 | `test_fr22_docker_compose_up_all_healthy_within_60s_fresh_clone` | nfr_pattern | NP-07 |
+| 22 | `test_fr22_docker_compose_down_v_leaves_no_dangling_resources` | validation | Q2 |
+| 23 | `test_fr22_ip_whitelist_blocks_before_webhook_signature_verification` | nfr_pattern | NP-08 |
+| 24 | `test_fr22_schema_contract_satisfied_in_phase2_no_alter_table` | backward_compat | NP-11 |
+| 25 | `test_fr22_api_response_schema_compatible_with_phase2` | backward_compat | NP-11 |
+| 26 | `test_fr22_unified_message_format_supports_phase2_platforms` | backward_compat | NP-11 |
+| 27 | `test_fr22_starts_and_health_endpoint_returns_200` | smoke | deployment |
+| 28 | `test_fr22_docker_compose_up_all_services_healthy_within_60s` | smoke | deployment |
+| 29 | `test_fr22_curl_health_endpoint_returns_valid_json_schema` | smoke | deployment |
+| 30 | `test_fr22_docker_compose_down_v_cleans_up_all_resources` | smoke | deployment |
+| 31 | `test_fr22_postgres_pgvector_extension_available` | smoke | deployment |
+| 32 | `test_fr22_ip_whitelist_blocks_unknown_ip_403` | nfr_pattern | NP-08 |
+| 33 | `test_fr22_ip_whitelist_rejects_empty_ip_400_with_warning` | nfr_pattern | NP-08 |
+| 34 | `test_fr22_webhook_signature_replay_attack_blocked` | nfr_pattern | NP-08 |
+| 35 | `test_fr22_webhook_timing_attack_signature_enumeration_resistant` | nfr_pattern | NP-08 |
+| 36 | `test_fr22_rate_limit_burst_attack_blocked_1000_req` | nfr_pattern | NP-03 |
+| 37 | `test_fr22_pii_phone_leak_masked_in_response_and_db` | nfr_pattern | NP-08 |
+| 38 | `test_fr22_pii_email_leak_masked_in_response_and_db` | nfr_pattern | NP-08 |
+| 39 | `test_fr22_pii_address_leak_masked_in_response_and_db` | nfr_pattern | NP-08 |
+| 40 | `test_fr22_input_sanitization_null_byte_removed` | nfr_pattern | NP-04 |
+| 41 | `test_fr22_input_sanitization_unicode_confusion_normalized` | nfr_pattern | NP-04 |
+| 42 | `test_fr22_p95_latency_phase1_under_3s_k6_load_test` | nfr_pattern | NP-06 |
+| 43 | `test_fr22_fcr_phase1_target_50_percent_odd_query` | nfr_pattern | NP-06 |
 
 ---
 

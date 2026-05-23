@@ -11,14 +11,14 @@ SRS.md §FR-01:
    dst_state) are included with defaults to avoid ALTER TABLE later."
 
 TEST_SPEC.md FR-01 test case names (exact match required for HR-11 traceability):
-  1. test_models_schema_creates_all_eight_tables
-  2. test_models_schema_creates_all_eleven_indexes
-  3. test_models_schema_users_table_has_platform_uid_unique_constraint
-  4. test_models_schema_migration_idempotent_on_rerun
-  5. test_models_schema_missing_pgvector_extension_reported
-  6. test_models_schema_phase2_embeddings_column_has_null_default
-  7. test_models_schema_phase3_dst_state_column_has_null_default
-  8. test_models_schema_migration_db_unavailable_reports_error
+  1. test_fr01_schema_has_all_8_tables
+  2. test_fr01_schema_has_all_11_indexes
+  3. test_fr01_schema_users_table_platform_uid_unique_constraint
+  4. test_fr01_migration_runs_idempotent
+  5. test_fr01_schema_missing_pgvector_extension_reported
+  6. test_fr01_schema_phase2_embeddings_column_has_null_default
+  7. test_fr01_schema_phase3_dst_state_column_has_null_default
+  8. test_fr01_schema_migration_db_unavailable_reports_error
   9. test_fr01_schema_supports_fr11_knowledge_base_queries
   10. test_fr01_schema_supports_fr12_escalation_queue_writes
   11. test_fr01_schema_supports_fr19_pipeline_transactional_writes
@@ -123,7 +123,7 @@ EXPECTED_INDEXES = [
 # GREEN phase: all tests pass (schema created by implementation)
 # ---------------------------------------------------------------------------
 
-def test_models_schema_creates_all_eight_tables():
+def test_fr01_schema_has_all_8_tables():
     """All 8 core tables exist in the database."""
     url = _require_database_url()
     tables = _get_table_names(url)
@@ -131,7 +131,7 @@ def test_models_schema_creates_all_eight_tables():
         assert t in tables, f"Table {t} not found"
 
 
-def test_models_schema_creates_all_eleven_indexes():
+def test_fr01_schema_has_all_11_indexes():
     """All 11 named indexes exist in the database."""
     url = _require_database_url()
     indexes = _get_index_names(url)
@@ -139,7 +139,7 @@ def test_models_schema_creates_all_eleven_indexes():
         assert idx in indexes, f"Index {idx} not found"
 
 
-def test_models_schema_users_table_has_platform_uid_unique_constraint():
+def test_fr01_schema_users_table_platform_uid_unique_constraint():
     """users.platform_uid is UNIQUE across platforms."""
     url = _require_database_url()
     import asyncpg
@@ -158,7 +158,7 @@ def test_models_schema_users_table_has_platform_uid_unique_constraint():
     assert result is not None, "Unique constraint on users.platform_uid not found"
 
 
-def test_models_schema_migration_idempotent_on_rerun():
+def test_fr01_migration_runs_idempotent():
     """Running CREATE TABLE IF NOT EXISTS twice does not error."""
     url = _require_database_url()
     import asyncpg
@@ -174,7 +174,7 @@ def test_models_schema_migration_idempotent_on_rerun():
         pytest.fail(f"migration not idempotent: {exc}")
 
 
-def test_models_schema_missing_pgvector_extension_reported():
+def test_fr01_schema_missing_pgvector_extension_reported():
     """If pgvector extension is missing, the schema creation reports it."""
     url = _require_database_url()
     import asyncpg
@@ -191,7 +191,33 @@ def test_models_schema_missing_pgvector_extension_reported():
     assert result is not None or True, "pgvector extension check"
 
 
-def test_models_schema_phase2_embeddings_column_has_null_default():
+def test_fr01_phase2_phase3_columns_have_defaults():
+    """FR-01 (combined): Phase 2/3 columns (embeddings, embedding_model,
+    satisfaction_score, dst_state) all have NULL defaults.
+
+    This aligns with the P1 TEST_INVENTORY.yaml naming authority.
+    """
+    url = _require_database_url()
+    import asyncpg
+    import asyncio
+    async def _check():
+        conn = await asyncpg.connect(url.replace("postgresql+asyncpg://", "postgresql://"))
+        rows = await conn.fetch("""
+            SELECT table_name, column_name, is_nullable, column_default
+            FROM information_schema.columns
+            WHERE table_name IN ('knowledge_base', 'conversations', 'messages')
+              AND column_name IN ('embeddings', 'embedding_model', 'satisfaction_score', 'dst_state', 'embedding')
+        """)
+        await conn.close()
+        return rows
+    result = asyncio.run(_check())
+    assert len(result) >= 5, f"Expected >=5 phase columns, got {len(result)}"
+    for row in result:
+        assert row["is_nullable"] == "YES", f"{row['table_name']}.{row['column_name']} must be nullable"
+        assert row["column_default"] is not None, f"{row['table_name']}.{row['column_name']} must have default"
+
+
+def test_fr01_schema_phase2_embeddings_column_has_null_default():
     """knowledge_base.embeddings and embedding_model have NULL defaults (Phase 2)."""
     url = _require_database_url()
     import asyncpg
@@ -215,7 +241,7 @@ def test_models_schema_phase2_embeddings_column_has_null_default():
             assert default is None, f"{col} must have NULL default"
 
 
-def test_models_schema_phase3_dst_state_column_has_null_default():
+def test_fr01_schema_phase3_dst_state_column_has_null_default():
     """conversations.dst_state has NULL default (Phase 3)."""
     url = _require_database_url()
     import asyncpg
@@ -237,7 +263,7 @@ def test_models_schema_phase3_dst_state_column_has_null_default():
     assert default is not None, "dst_state must have a default"
 
 
-def test_models_schema_migration_db_unavailable_reports_error():
+def test_fr01_schema_migration_db_unavailable_reports_error():
     """If DB is unavailable during schema creation, an error is reported."""
     bad_url = "postgresql+asyncpg://nobody:nothing@localhost:9999/db"
     import asyncpg
