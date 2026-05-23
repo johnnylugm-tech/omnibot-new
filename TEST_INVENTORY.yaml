@@ -1,5 +1,7 @@
-# TEST_INVENTORY.yaml — P1 交付物：必需測試函式清單
-format_version: "1.0"
+# TEST_INVENTORY.yaml — P1 Naming Authority (v2.6)
+# Names here are authoritative for TEST_SPEC.md generation.
+# derive_test_cases.md preserves these exact names where specified.
+format_version: "1.1"
 
 fr_tests:
   FR-01:
