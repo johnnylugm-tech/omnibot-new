@@ -8,7 +8,7 @@
 
 OmniBot Phase 1 (MVP Foundation) establishes the core multi-platform chatbot infrastructure. It delivers rule-based knowledge matching (Layer 1), basic PII de-identification, token-bucket rate limiting, structured JSON logging, and a Docker Compose development environment. The system supports Telegram and LINE platforms with webhook signature verification, unified message/responses formats, and a PostgreSQL schema that accommodates all future-phase columns to avoid ALTER TABLE later.
 
-**Scope**: 14 dev modules + 2 cross-cutting concerns + 3 integration/operational FRs → 21 functional requirements.
+**Scope**: 17 dev modules + 2 integration/operational components + cross-cutting concerns → 22 functional requirements.
 
 ---
 

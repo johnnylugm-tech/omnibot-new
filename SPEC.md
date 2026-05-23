@@ -97,7 +97,7 @@
   |              API Gateway                                          |
   |            - Rate Limiting (Token Bucket) ← Phase 1               |
   |            - TLS 終結 ← Phase 1                                   |
-  |            - IP 白名單（Phase 3 新增）                             |
+  |            - IP 白名單 ← Phase 1                                   |
   +---------------------------------------------------------------+
                              |
   +---------------------------------------------------------------+
@@ -729,7 +729,7 @@ class RateLimiter:
         return self._buckets[key].consume()
 ```
 
-### IP 白名單（Phase 3）
+### IP 白名單（Phase 1）
 
 #### 功能定義
 API Gateway 需支援來源 IP 白名單過濾，僅允許已登記的 IP 區塊發送請求。
@@ -2587,7 +2587,7 @@ load_test:
 - [ ] i18n 擴充指引
 - [ ] Phase 3 Schema（8 張新表）
 - [ ] Phase 3 ODD SQL 查詢
-- [ ] IP 白名單
+- [x] IP 白名單（已移至 Phase 1）
 
 ---
 
@@ -2655,7 +2655,7 @@ load_test:
 | **環境分離** | - | - | Y |
 | **SLA 定義** | - | - | Y |
 | **CSAT 量化指標** | - | - | Y |
-| **IP 白名單** | - | - | Y |
+| **IP 白名單** | Y | - | - |
 
 ---
 

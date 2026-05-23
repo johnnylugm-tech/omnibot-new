@@ -3,13 +3,13 @@
 > Software Architecture Document
 > Source SRS: `01-requirements/SRS.md` v1.0 (2026-05-23)
 > Phase: 2 — Architecture Design
-> Target: 18 modules, 22 FRs traced, 6-layer architecture
+> Target: 19 modules, 22 FRs traced, 8-layer architecture
 
 ---
 
 ## 1. Architecture Overview
 
-OmniBot Phase 1 implements a **six-layer pipeline architecture** for multi-platform chatbot processing. Each inbound message flows through a fixed sequence of security checks, transformation, and knowledge resolution before a response is returned.
+OmniBot Phase 1 implements an **eight-layer pipeline architecture** for multi-platform chatbot processing. Each inbound message flows through a fixed sequence of security checks, transformation, and knowledge resolution before a response is returned.
 
 ### 1.1 Layered Architecture
 
