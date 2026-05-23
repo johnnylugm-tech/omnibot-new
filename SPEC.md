@@ -758,11 +758,12 @@ API Gateway 需支援來源 IP 白名單過濾，僅允許已登記的 IP 區塊
 #### 在攔截鏈中的順序
 
 ```
-TLS → IP Whitelist → Rate Limiting → Platform Adapter → RBAC
+TLS → IP Whitelist → Webhook Signature Validation → Platform Adapter Parse → Rate Limiting → RBAC
 ```
 
-- **Rate Limiting（Phase 1）**：在 IP 白名單檢查**之後**（IP 未通過則不消耗配額）
-- **RBAC（Phase 3）**：在 IP 白名單檢查**之後**（IP 未通過則不送至 RBAC）
+- **Webhook Signature Validation（Phase 1）**：在 IP 白名單過濾後立刻進行驗證，防止非法的偽造流量進入解析與限流邏輯。
+- **Rate Limiting（Phase 1）**：必須在 Platform Adapter 解析出 `user_id` **之後**進行（確保能針對個別使用者與平台實施 Token Bucket 算法）。
+- **RBAC（Phase 3）**：位於攔截鏈最後段。
 
 #### 實作位置
 - 模組：`app/security/ip_whitelist.py`
