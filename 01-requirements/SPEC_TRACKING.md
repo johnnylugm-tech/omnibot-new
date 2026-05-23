@@ -29,9 +29,10 @@
 | FR-16 | Provide ODD SQL scripts: FCR rate (30-day), p95 latency per platform (30-day), knowledge source hit distribution (7-day) | OBSERVABILITY | SPEC.md §ODD SQL Phase 1 (lines 2069–2103) | DRAFT | Three query files: fcr.sql, latency.sql, knowledge_hits.sql; PERCENTILE_CONT(0.95) for p95 |
 | FR-17 | Define and use standardized error codes: AUTH_INVALID_SIGNATURE (401), RATE_LIMIT_EXCEEDED (429), KNOWLEDGE_NOT_FOUND (404), VALIDATION_ERROR (422), INTERNAL_ERROR (500) | API_DESIGN | SPEC.md §API Design — Error Codes (lines 397–407, Phase 1 subset) | DRAFT | All error responses use ApiResponse format with success=False + error_code |
 | FR-18 | Follow Python naming conventions: snake_case, PascalCase, UPPER_SNAKE; docstrings on all public functions; max function length 50; CC <= 10 | CONVENTION | SPEC.md §Code Conventions, constitution/CONSTITUTION.md §1.2, §4.1 | DRAFT | Enforced by ruff + radon; zero lint violations required |
-| FR-19 | Implement core message processing pipeline: verify → rate limit → parse → sanitize → PII mask → knowledge match → escalate/construct UnifiedResponse → send reply → log | PROCESSING | SPEC.md §System Architecture (lines 87–189), Pipeline flow | DRAFT | Orchestrates all 10 stages end-to-end; errors at any stage must not crash pipeline |
+| FR-19 | Implement core message processing pipeline: IP Whitelist → verify → parse → rate limit → sanitize → PII mask → knowledge match → escalate/construct UnifiedResponse → send reply → log | PROCESSING | SPEC.md §System Architecture (lines 87–189), Pipeline flow | DRAFT | Orchestrates all 11 stages end-to-end; errors at any stage must not crash pipeline |
 | FR-20 | Define immutable UnifiedResponse dataclass with platform, user_id, content, source (KnowledgeSource enum), confidence, metadata | API_DESIGN | SPEC.md §Unified Message Format (lines 412–451), Glossary | DRAFT | Frozen dataclass; metadata defaults to empty dict; used by all platform adapters |
 | FR-21 | Load and validate configuration from env vars (bot tokens, secrets, DB/Redis URLs, rate limiter settings); fail fast on missing required keys | DEPLOYMENT | SPEC.md §Configuration (bot tokens, DB/Redis URLs, rate limiter settings) | DRAFT | Pydantic/dataclass Settings; ConfigError with missing key list on startup |
+| FR-22 | Implement IP Whitelist interception to block unofficial IPs | SECURITY | SPEC.md §Security Layer — IP Whitelist (lines 740–766) | DRAFT | Return 400 for empty/missing, 403 for unlisted IP |
 
 ### Intent Class Summary
 
@@ -39,7 +40,7 @@
 |-------------|----------|--------|
 | API_DESIGN | 5 | FR-06, FR-07, FR-14, FR-17, FR-20 |
 | PROCESSING | 2 | FR-10, FR-19 |
-| SECURITY | 4 | FR-04, FR-05, FR-08, FR-09 |
+| SECURITY | 5 | FR-04, FR-05, FR-08, FR-09, FR-22 |
 | INTEGRATION | 2 | FR-02, FR-03 |
 | DATA_MODEL | 1 | FR-01 |
 | KNOWLEDGE | 1 | FR-11 |
@@ -61,41 +62,43 @@
 | NFR-07 | Maintainability | All logs are single-line valid JSON parseable by jq; level filtering works via stdlib logging configuration | DRAFT | Required fields: timestamp, level, service, message; setLevel(WARNING) suppresses INFO |
 | NFR-08 | Maintainability | ruff check zero violations; max cyclomatic complexity <= 10; all public functions have docstrings | DRAFT | CI lint gate; radon cc check; manual docstring review for public API surface |
 | NFR-09 | Deployability | docker compose up brings all 3 services to healthy within 60s; docker compose down -v removes all volumes/networks | DRAFT | Fresh clone smoke test; no dangling resources after teardown |
+| NFR-10 | Security | IP Whitelist must block unauthorized traffic (HTTP 403/400) before reaching the webhook signature validation layer | DRAFT | Unlisted IP -> 403; empty/missing IP -> 400 |
 
 ### NFR Type Coverage
 
 | NFR Type | Count | NFR IDs |
 |----------|-------|---------|
 | Performance | 1 | NFR-01 |
-| Security | 4 | NFR-02, NFR-03, NFR-04, NFR-05 |
+| Security | 5 | NFR-02, NFR-03, NFR-04, NFR-05, NFR-10 |
 | Reliability | 1 | NFR-06 |
 | Maintainability | 2 | NFR-07, NFR-08 |
 | Deployability | 1 | NFR-09 |
 
 ### FR-to-NFR Trace Matrix
 
-| FR ID | NFR-01 (Perf) | NFR-02 (Sec) | NFR-03 (Sec) | NFR-04 (Sec) | NFR-05 (Sec) | NFR-06 (Rel) | NFR-07 (Maint) | NFR-08 (Maint) | NFR-09 (Deploy) |
-|-------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| FR-01 | | | | | | | | X | |
-| FR-02 | X | | | | | | | | |
-| FR-03 | X | | | | | | | | |
-| FR-04 | | X | | | | | | | |
-| FR-05 | | X | | | | | | | |
-| FR-06 | | | | | | | | X | |
-| FR-07 | | | | | | | | X | |
-| FR-08 | | | X | | | | | | |
-| FR-09 | | | | X | | | | | |
-| FR-10 | X | | | | X | | | | |
-| FR-11 | X | | | | | | | | |
-| FR-12 | | | | | | X | | | |
-| FR-13 | | | | | | | X | | |
-| FR-14 | | | | | | X | | | |
-| FR-15 | | | | | | | | | X |
-| FR-16 | | | | | | | | X | |
-| FR-17 | | | | | | | | X | |
-| FR-18 | | | | | | | X | | |
-| FR-19 | X | | | | | X | | | |
-| FR-20 | | | | | | | | X | |
-| FR-21 | | | | | | X | X | | |
+| FR ID | NFR-01 (Perf) | NFR-02 (Sec) | NFR-03 (Sec) | NFR-04 (Sec) | NFR-05 (Sec) | NFR-06 (Rel) | NFR-07 (Maint) | NFR-08 (Maint) | NFR-09 (Deploy) | NFR-10 (Sec) |
+|-------|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| FR-01 | | | | | | | | X | | |
+| FR-02 | X | | | | | | | | | |
+| FR-03 | X | | | | | | | | | |
+| FR-04 | | X | | | | | | | | |
+| FR-05 | | X | | | | | | | | |
+| FR-06 | | | | | | | | X | | |
+| FR-07 | | | | | | | | X | | |
+| FR-08 | | | X | | | | | | | |
+| FR-09 | | | | X | | | | | | |
+| FR-10 | X | | | | X | | | | | |
+| FR-11 | X | | | | | | | | | |
+| FR-12 | | | | | | X | | | | |
+| FR-13 | | | | | | | X | | | |
+| FR-14 | | | | | | X | | | | |
+| FR-15 | | | | | | | | | X | |
+| FR-16 | | | | | | | | X | | |
+| FR-17 | | | | | | | | X | | |
+| FR-18 | | | | | | | X | | | |
+| FR-19 | X | | | | | X | | | | |
+| FR-20 | | | | | | | | X | | |
+| FR-21 | | | | | | X | X | | | |
+| FR-22 | | | | | | | | | | X |
 
-**NFR Coverage Rate**: 24 NFR associations / 21 FRs = 114% (≥ 50% threshold met)
+**NFR Coverage Rate**: 25 NFR associations / 22 FRs = 113% (≥ 50% threshold met)

@@ -3,7 +3,7 @@
 > Source SRS: `01-requirements/SRS.md` (v1.0, 2026-05-23)
 > Source SPEC: `SPEC.md` v7.0 (2026-05-21)
 > Phase: 1 (MVP Foundation)
-> Total FRs: 21 | Total NFRs: 9
+> Total FRs: 22 | Total NFRs: 10
 
 ---
 
@@ -32,6 +32,7 @@
 | FR-19 | Core pipeline: verify → rate limit → parse → sanitize → PII mask → knowledge → escalate → respond → log | System Architecture (SPEC lines 87–189) | PROCESSING | P0 | DRAFT |
 | FR-20 | `UnifiedResponse` dataclass with platform, user_id, content, source, confidence, metadata | Unified Message Format (SPEC lines 412–451), Glossary | API_DESIGN | P0 | DRAFT |
 | FR-21 | Config loader from env vars; fail fast on missing required keys | Configuration (bot tokens, DB/Redis URLs, rate limiter) | DEPLOYMENT | P0 | DRAFT |
+| FR-22 | IP Whitelist interception to block unofficial IPs | Security Layer — IP Whitelist (SPEC lines 740–766) | SECURITY | P0 | DRAFT |
 
 ### Priority Legend
 - **P0**: Must-have for MVP — foundational infrastructure, security, core pipeline, platform I/O
@@ -64,6 +65,7 @@
 | FR-19 | `app/pipeline/orchestrator.py` | `PipelineOrchestrator.process(platform: Platform, raw_body: bytes, signature: str) -> UnifiedResponse` | ~80 | Not Started |
 | FR-20 | `app/models/unified_response.py` | `UnifiedResponse` dataclass, `KnowledgeSource` enum | ~30 | Not Started |
 | FR-21 | `app/config/settings.py` | `Settings` model, `ConfigLoader.from_env()` | ~40 | Not Started |
+| FR-22 | `app/security/ip_whitelist.py` | `IPWhitelist.is_allowed(ip: str) -> bool` | ~30 | Not Started |
 
 ---
 
@@ -94,6 +96,7 @@
 | `app/pipeline/orchestrator.py` | `tests/pipeline/test_pipeline_orchestrator.py` | Full 10-stage pipeline flow; error handling per stage; PII masked in logs | Not Started |
 | `app/models/unified_response.py` | `tests/models/test_unified_response.py` | Dataclass: serialization, immutability, metadata defaults | Not Started |
 | `app/config/settings.py` | `tests/config/test_settings.py` | Env var loading, missing key → ConfigError, optional key defaults | Not Started |
+| `app/security/ip_whitelist.py` | `tests/security/test_ip_whitelist.py` | Allowed IP proceeds, unlisted IP → 403, empty IP → 400 | Not Started |
 
 ### Cross-Cutting Test Requirements (SRS §6)
 
@@ -110,7 +113,9 @@
 | | `test_health_endpoint_all_services_up_returns_200` | FR-14 | `app/api/health.py` | Not Started |
 | | `test_health_endpoint_db_down_returns_200_degraded` | FR-14 | `app/api/health.py` | Not Started |
 | | `test_health_endpoint_redis_down_returns_200_degraded` | FR-14 | `app/api/health.py` | Not Started |
-| **Security Red Team** | `test_redteam_webhook_signature_replay_attack_blocked` | FR-04, FR-05 | `app/security/telegram_webhook_verifier.py`, `app/security/line_webhook_verifier.py` | Not Started |
+| **Security Red Team** | `test_redteam_ip_whitelist_blocks_unknown_ip` | FR-22, NFR-10 | `app/security/ip_whitelist.py` | Not Started |
+| | `test_redteam_ip_whitelist_rejects_empty_ip` | FR-22, NFR-10 | `app/security/ip_whitelist.py` | Not Started |
+| | `test_redteam_webhook_signature_replay_attack_blocked` | FR-04, FR-05 | `app/security/telegram_webhook_verifier.py`, `app/security/line_webhook_verifier.py` | Not Started |
 | | `test_redteam_webhook_timing_attack_signature_enumeration_resistant` | FR-04, FR-05 | `app/security/telegram_webhook_verifier.py`, `app/security/line_webhook_verifier.py` | Not Started |
 | | `test_redteam_rate_limit_burst_attack_blocked` | FR-10 | `app/security/rate_limiter.py` | Not Started |
 | | `test_redteam_pii_phone_leak_masked` | FR-09 | `app/security/pii_masking.py` | Not Started |
@@ -132,16 +137,16 @@
 
 | Trace Link | Actual | Target | Status |
 |-----------|--------|--------|--------|
-| FR → SRS | 21/21 = **100%** | 100% | MET |
-| SRS → Code | 21/21 = **100%** (FR-18 lint-enforced, no code file) | 100% | MET |
-| Code → Test | 21/21 = **100%** (FR-18 covered by CI lint gate) | 100% | MET |
-| NFR Association | 24 NFR associations / 21 FRs = **114%** | ≥ 50% | MET |
+| FR → SRS | 22/22 = **100%** | 100% | MET |
+| SRS → Code | 22/22 = **100%** (FR-18 lint-enforced, no code file) | 100% | MET |
+| Code → Test | 22/22 = **100%** (FR-18 covered by CI lint gate) | 100% | MET |
+| NFR Association | 25 NFR associations / 22 FRs = **113%** | ≥ 50% | MET |
 
 ### FR Status Summary
 
 | Status | Count | FR IDs |
 |--------|-------|--------|
-| DRAFT | 21 | FR-01 through FR-21 |
+| DRAFT | 22 | FR-01 through FR-22 |
 | IN_REVIEW | 0 | — |
 | APPROVED | 0 | — |
 | IMPLEMENTED | 0 | — |
@@ -150,15 +155,15 @@
 
 | NFR Type | NFR IDs | FRs Covered | Coverage % |
 |----------|---------|------------|------------|
-| Performance | NFR-01 | FR-02, FR-03, FR-10, FR-11, FR-19 | 5/21 = 24% |
-| Security | NFR-02, NFR-03, NFR-04, NFR-05 | FR-04, FR-05, FR-08, FR-09, FR-10 | 5/21 = 24% |
-| Reliability | NFR-06 | FR-12, FR-14, FR-19, FR-21 | 4/21 = 19% |
-| Maintainability | NFR-07, NFR-08 | FR-01, FR-06, FR-07, FR-13, FR-16, FR-17, FR-18, FR-20, FR-21 | 9/21 = 43% |
-| Deployability | NFR-09 | FR-15 | 1/21 = 5% |
+| Performance | NFR-01 | FR-02, FR-03, FR-10, FR-11, FR-19 | 5/22 = 22% |
+| Security | NFR-02, NFR-03, NFR-04, NFR-05, NFR-10 | FR-04, FR-05, FR-08, FR-09, FR-10, FR-22 | 6/22 = 27% |
+| Reliability | NFR-06 | FR-12, FR-14, FR-19, FR-21 | 4/22 = 18% |
+| Maintainability | NFR-07, NFR-08 | FR-01, FR-06, FR-07, FR-13, FR-16, FR-17, FR-18, FR-20, FR-21 | 9/22 = 40% |
+| Deployability | NFR-09 | FR-15 | 1/22 = 4% |
 
 ### Gap Analysis
 
-- **No FR without NFR association** — all 21 FRs have ≥ 1 NFR linked (see SRS §2 Cross-Reference table)
+- **No FR without NFR association** — all 22 FRs have ≥ 1 NFR linked (see SRS §2 Cross-Reference table)
 - **Top NFR coverage**: Maintainability (43%), Performance + Security (24% each)
 - **Lowest NFR coverage**: Deployability (5%) — expected for Phase 1 with single-node Docker Compose
 - **No coverage gaps** — all 5 NFR types from constitution quality dimensions are represented
@@ -172,7 +177,7 @@
 | Process Attribute | SWE.3.B.SP1: Develop Detailed Design | SWE.3.B.SP2: Develop and Execute Unit Tests | SWE.3.B.SP3: Ensure Consistency and Traceability |
 |------------------|--------------------------------------|---------------------------------------------|--------------------------------------------------|
 | **Requirement** | Each FR documented with implementation function, expected code file, and SRS section reference | Each FR has ≥ 1 test case defined (unit + cross-cutting); test files mapped to source files | Bidirectional traceability established: FR ↔ SRS ↔ Code ↔ Test |
-| **Phase 1 Status** | COMPLIANT — all 21 FRs have implementation functions and code files in SRS.md | COMPLIANT — all 21 FRs mapped to test files; 23 cross-cutting test cases defined in SRS §6 | COMPLIANT — TRACEABILITY_MATRIX.md provides FR→SRS→Code→Test links for all 21 FRs |
+| **Phase 1 Status** | COMPLIANT — all 22 FRs have implementation functions and code files in SRS.md | COMPLIANT — all 22 FRs mapped to test files; 24 cross-cutting test cases defined in SRS §6 | COMPLIANT — TRACEABILITY_MATRIX.md provides FR→SRS→Code→Test links for all 22 FRs |
 | **Evidence** | SRS.md §2 (Functional Requirements table, FR Cross-Reference) and §7 (FR Block JSON) | SRS.md §6 (Cross-Cutting Test Requirements); Code ↔ Test Mapping table above | This TRACEABILITY_MATRIX.md; SPEC_TRACKING.md FR-to-NFR Trace Matrix |
 | **Gap** | FR-18 is lint-enforced (no dedicated code file) — acceptable per SRS | FR-18 is CI lint gate (not unit test) — acceptable per SRS §6 intent | None — all trace paths are complete |
 
@@ -180,8 +185,8 @@
 
 | Criterion | Status | Notes |
 |-----------|--------|-------|
-| SWE.3.B.SP1 — Detailed Design | PASS | All 21 FRs have design-level documentation: function signatures, data structures, file layout |
-| SWE.3.B.SP2 — Unit Tests | PASS | Test file + coverage target defined per FR; 23 cross-cutting test cases cover API completeness, security, KPI gates, and deployment smoke |
+| SWE.3.B.SP1 — Detailed Design | PASS | All 22 FRs have design-level documentation: function signatures, data structures, file layout |
+| SWE.3.B.SP2 — Unit Tests | PASS | Test file + coverage target defined per FR; 24 cross-cutting test cases cover API completeness, security, KPI gates, and deployment smoke |
 | SWE.3.B.SP3 — Traceability | PASS | Bidirectional trace: FR ↔ SRS (this matrix §FR↔SRS), SRS ↔ Code (§SRS↔Code), Code ↔ Test (§Code↔Test), FR ↔ NFR (SPEC_TRACKING.md matrix) |
 | Overall | PASS | All three SWE.3.B process attributes are satisfied for Phase 1 requirements baseline |
 

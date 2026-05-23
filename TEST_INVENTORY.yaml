@@ -150,7 +150,7 @@ fr_tests:
   FR-19:
     unit: []
     integration:
-      - test_fr19_pipeline_valid_faq_query_flows_all_10_stages
+      - test_fr19_pipeline_valid_faq_query_flows_all_11_stages
       - test_fr19_pipeline_invalid_signature_returns_401_before_processing
       - test_fr19_pipeline_rate_limit_exceeded_returns_429
       - test_fr19_pipeline_pii_masked_in_logs
@@ -172,6 +172,13 @@ fr_tests:
       - test_fr21_config_validation_runs_at_startup_fail_fast
     integration:
       - test_fr21_application_starts_with_valid_config_and_env
+  FR-22:
+    unit:
+      - test_fr22_ip_whitelist_allowed_ip_proceeds
+      - test_fr22_ip_whitelist_unlisted_ip_returns_403
+      - test_fr22_ip_whitelist_empty_or_missing_ip_returns_400
+    integration:
+      - test_fr22_ip_whitelist_intercepts_before_hmac
 
 cross_cutting:
   api_completeness:
@@ -187,6 +194,8 @@ cross_cutting:
     - test_health_endpoint_db_down_returns_200_degraded
     - test_health_endpoint_redis_down_returns_200_degraded
   security_red_team:
+    - test_redteam_ip_whitelist_blocks_unknown_ip
+    - test_redteam_ip_whitelist_rejects_empty_ip
     - test_redteam_webhook_signature_replay_attack_blocked
     - test_redteam_webhook_timing_attack_signature_enumeration_resistant
     - test_redteam_rate_limit_burst_attack_blocked
