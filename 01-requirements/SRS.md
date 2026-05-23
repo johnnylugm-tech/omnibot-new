@@ -34,10 +34,10 @@ OmniBot Phase 1 (MVP Foundation) establishes the core multi-platform chatbot inf
 | FR-16 | Provide SQL query scripts for Phase 1 ODD metrics: (a) FCR rate calculation over 30-day window for `scope_type='in_scope'` conversations with non-null `first_contact_resolution`, (b) average and p95 response latency per platform over 30-day window, (c) knowledge source hit distribution (`rule` / `escalate`) for assistant messages over 7-day window. Per SPEC.md §ODD SQL — Phase 1. | ODD SQL script files (e.g. `queries/fcr.sql`, `queries/latency.sql`, `queries/knowledge_hits.sql`) | Manual execution: each query parses and runs without syntax error against schema; FCR query returns `fcr_rate_pct` between 0-100; latency query uses `PERCENTILE_CONT(0.95)` |
 | FR-17 | Define and use standardized error codes for Phase 1: `AUTH_INVALID_SIGNATURE` (401), `RATE_LIMIT_EXCEEDED` (429), `KNOWLEDGE_NOT_FOUND` (404), `VALIDATION_ERROR` (422), `INTERNAL_ERROR` (500). Each error response must use the `ApiResponse` format with `success=False`, `error=<human message>`, `error_code=<code>`. Per SPEC.md §API Design — Error Codes. | Error code constants module, error response helper in `ApiResponse` | Unit test: each error code maps to correct HTTP status; `ApiResponse(success=False, error="...", error_code="AUTH_INVALID_SIGNATURE")` serializes with all fields; webhook endpoints return correct error codes on failure |
 | FR-18 | All Phase 1 Python code must follow constitution §4 naming conventions: `snake_case` for variables/functions, `PascalCase` for classes, `UPPER_SNAKE` for constants; all public functions must have docstrings; function length ≤ 50 lines; cyclomatic complexity ≤ 10. Per SPEC.md §Code Conventions and constitution/CONSTITUTION.md §1.2, §4.1. | n/a (code convention, enforced by linter) | `ruff check` passes with zero violations; `radon cc -a` reports max CC ≤ 10; manual review: all `def` in `__init__.py` / public modules have docstrings |
-| FR-19 | Implement the core message processing pipeline that orchestrates each inbound request end-to-end: (1) IP Whitelist interception → (2) webhook signature verification → (3) platform adapter parse → (4) rate limiter check → (5) input sanitization L2 → (6) PII masking L4 → (7) knowledge matching Layer 1 → (8) if no match, basic escalation → (9) construct `UnifiedResponse` → (10) send reply via platform adapter → (11) log completion via structured logger. Must handle errors at each stage without crashing the pipeline. | `PipelineOrchestrator.process(platform: Platform, raw_body: bytes, signature: str) -> UnifiedResponse` | Integration test: valid FAQ query flows through all 11 stages → correct UnifiedResponse returned; PII in request is masked in logs; invalid signature → 401 before any processing; rate limit exceeded → 429; no-rule-match → escalation created |
+| FR-19 | Implement the core message processing pipeline that orchestrates each inbound request end-to-end: (1) IP Whitelist interception → (2) webhook signature verification → (3) platform adapter parse → (4) rate limiter check → (5) input sanitization L2 → (6) PII masking L4 → (7) knowledge matching Layer 1 → (8) if no match, basic escalation → (9) construct `UnifiedResponse` → (10) send reply via platform adapter → (11) log completion via structured logger. Must handle errors at each stage without crashing the pipeline. | `PipelineOrchestrator.process(platform: Platform, raw_body: bytes, signature: str) -> UnifiedResponse` | Integration test: valid query flows through 11 stages with assertions: Stage 1 allows IP, Stage 2 matches HMAC, Stage 3 outputs UnifiedMessage, Stage 4 consumes TokenBucket, Stage 5 returns NFKC text, Stage 6 returns PIIMaskResult, Stage 7 outputs KnowledgeResult, Stage 8 (if no match) creates escalation row, Stage 9 outputs UnifiedResponse, Stage 10 adapter sends 200 OK, Stage 11 logger receives dict with `timestamp` |
 | FR-20 | Define the immutable `UnifiedResponse` dataclass representing the system reply with fields: `platform`, `user_id`, `content` (the text to send back), `source` (KnowledgeSource enum: `rule`/`escalate`), `confidence` (float 0-1), `metadata` (dict for backend-specific fields e.g. Telegram `parse_mode`). Per SPEC.md §Unified Message Format and Glossary. | `UnifiedResponse` dataclass, `KnowledgeSource` enum | Unit test: `UnifiedResponse(source=KnowledgeSource.RULE, confidence=0.95, content="answer")` serializes correctly; immutable (FrozenInstanceError on mutation); `metadata` defaults to empty dict |
 | FR-21 | Load and manage configuration from environment variables and/or a `config.yaml` file: bot tokens (`TELEGRAM_BOT_TOKEN`, `LINE_CHANNEL_ACCESS_TOKEN`), channel secrets (`TELEGRAM_WEBHOOK_SECRET`, `LINE_CHANNEL_SECRET`), database connection (`DATABASE_URL`), Redis connection (`REDIS_URL`), rate limiter settings (`RATE_LIMIT_CAPACITY`, `RATE_LIMIT_REFILL_RATE`), and service name (`SERVICE_NAME`). Validate required config at startup; fail fast with a clear error message listing missing keys. | `Settings` pydantic model or dataclass with `ConfigLoader.from_env()` | Unit test: all env vars set → Settings created with correct values; missing `DATABASE_URL` → raises `ConfigError("Missing required config keys: DATABASE_URL")`; optional keys use defaults; config validation runs at import time |
-| FR-22 | Implement IP Whitelist interception to filter out requests from unofficial IPs before computing HMAC signature. Unofficial IPs must be rejected with HTTP 403. | `IPWhitelist.is_allowed(ip: str) -> bool` | Unit test: allowed IP → proceeds; unlisted IP → 403 Forbidden; empty IP → 403 |
+| FR-22 | Implement IP Whitelist interception to filter out requests from unofficial IPs before computing HMAC signature. Unofficial IPs must be rejected with HTTP 403. Missing or empty IPs must be rejected with HTTP 400 Bad Request and log a warning. | `IPWhitelist.is_allowed(ip: str) -> bool` | Unit test: allowed IP → proceeds; unlisted IP → 403 Forbidden; empty/missing IP → 400 Bad Request with warning log |
 
 ### FR Cross-Reference to SPEC.md
 
@@ -80,7 +80,7 @@ OmniBot Phase 1 (MVP Foundation) establishes the core multi-platform chatbot inf
 | NFR-07 | Maintainability | All log output must be valid single-line JSON objects parseable by `jq` and log aggregation tools. Log level filtering must work via standard Python logging configuration. | Log inspection test: capture stdout → each line is valid JSON with required fields; `logging.getLogger("omnibot").setLevel(WARNING)` suppresses INFO lines |
 | NFR-08 | Maintainability | All Phase 1 Python source files must pass `ruff check` with zero violations, function cyclomatic complexity ≤ 10 (`radon cc`), and all public functions/classes must have docstrings. | CI lint gate: `ruff check .` → exit 0; `radon cc -a app/` → max ≤ 10 |
 | NFR-09 | Deployability | `docker compose up -d` must bring all 3 services (api, postgres, redis) to `healthy` state within 60 seconds on a clean checkout. `docker compose down -v` must remove all volumes and networks. | Deployment smoke test: fresh clone → `docker compose up -d` → `docker compose ps` shows healthy within 60s → `curl /api/v1/health` returns 200 → `docker compose down -v` leaves no dangling resources |
-| NFR-10 | Security | IP Whitelist must block unauthorized traffic (HTTP 403) before reaching the webhook signature validation layer to prevent DDoS via expensive HMAC calculations. | Red team test: Unlisted IP -> 403; Listed IP -> 401 (if signature missing/wrong) or 200 |
+| NFR-10 | Security | IP Whitelist must block unauthorized traffic (HTTP 403) before reaching the webhook signature validation layer to prevent DDoS via expensive HMAC calculations. | Red team test: Unlisted IP -> 403; empty/missing IP -> 400 |
 
 ---
 
@@ -142,6 +142,7 @@ Each webhook endpoint must have these four test categories:
 ### Security Red Team
 
 - [ ] `test_redteam_ip_whitelist_blocks_unknown_ip` — request from non-whitelisted IP → 403 Forbidden before signature check
+- [ ] `test_redteam_ip_whitelist_rejects_empty_ip` — request with missing/empty IP → 400 Bad Request with warning log
 - [ ] `test_redteam_webhook_signature_replay_attack_blocked` — replayed valid signature with modified body → 401
 - [ ] `test_redteam_webhook_timing_attack_signature_enumeration_resistant` — timing difference between valid/invalid signature < 5ms (hmac.compare_digest)
 - [ ] `test_redteam_rate_limit_burst_attack_blocked` — 1000 requests in 1s → at least 900 get 429
@@ -286,7 +287,7 @@ Each webhook endpoint must have these four test categories:
       "id": "FR-19",
       "description": "Implement core message processing pipeline orchestrating IP Whitelist → webhook verify → parse → rate limit → sanitize → PII mask → knowledge match → escalate → respond → log",
       "implementation_functions": ["PipelineOrchestrator.process"],
-      "verification_method": "Integration test: full pipeline flow; PII masked in logs; invalid signature -> 401"
+      "verification_method": "Integration test: asserts outputs at each of the 11 stages (e.g., Stage 3 outputs UnifiedMessage, Stage 9 outputs UnifiedResponse)"
     },
     {
       "id": "FR-20",
@@ -302,9 +303,9 @@ Each webhook endpoint must have these four test categories:
     },
     {
       "id": "FR-22",
-      "description": "Implement IP Whitelist interception to filter out requests from unofficial IPs before computing HMAC signature. Unofficial IPs must be rejected with HTTP 403.",
+      "description": "Implement IP Whitelist interception to filter out requests from unofficial IPs before computing HMAC signature. Unofficial IPs rejected with 403, empty IPs rejected with 400 and warning.",
       "implementation_functions": ["IPWhitelist.is_allowed"],
-      "verification_method": "Unit test: allowed IP -> proceeds; unlisted IP -> 403 Forbidden; empty IP -> 403"
+      "verification_method": "Unit test: allowed IP -> proceeds; unlisted IP -> 403 Forbidden; empty IP -> 400 with warning"
     }
   ],
   "non_functional_requirements": [
@@ -366,7 +367,7 @@ Each webhook endpoint must have these four test categories:
       "id": "NFR-10",
       "type": "security",
       "description": "IP Whitelist must block unauthorized traffic (HTTP 403) before reaching the webhook signature validation layer to prevent DDoS via expensive HMAC calculations",
-      "test_method": "Red team test: Unlisted IP -> 403; Listed IP -> 401 (if signature missing/wrong) or 200"
+      "test_method": "Red team test: Unlisted IP -> 403; empty/missing IP -> 400"
     }
   ]
 }
