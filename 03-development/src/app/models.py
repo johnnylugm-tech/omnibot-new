@@ -10,8 +10,9 @@ from typing import TYPE_CHECKING
 
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 
+
 if TYPE_CHECKING:
-    from omnibot.config import get_database_url
+    pass
 
 
 # ---------------------------------------------------------------------------
@@ -29,12 +30,12 @@ _engine: AsyncEngine | None = None
 def _get_engine() -> AsyncEngine:
     global _engine
     if _engine is None:
-        from omnibot.config import get_database_url
+        from app.infrastructure.config import get_database_url
         _engine = _build_engine(get_database_url())
     return _engine
 
 
-def AsyncEngine(database_url: str) -> AsyncEngine:
+def build_async_engine(database_url: str) -> AsyncEngine:
     """Build an async engine from a database URL."""
     return _build_engine(database_url)
 
@@ -217,7 +218,7 @@ def _ddl_indexes() -> str:
         CREATE INDEX IF NOT EXISTS idx_kb_keywords
             ON knowledge_base USING GIN (keywords);
         CREATE INDEX IF NOT EXISTS idx_kb_embeddings
-            ON knowledge_base USING GIN (embeddings);
+            ON knowledge_base USING GIN (embeddings gin_trgm_ops);
 
         CREATE INDEX IF NOT EXISTS idx_escalation_pending
             ON escalation_queue (queued_at)
@@ -232,6 +233,28 @@ def _ddl_indexes() -> str:
 # Schema creation
 # ---------------------------------------------------------------------------
 
+def _split_ddl(ddl: str) -> list[str]:
+    """Split a multi-statement DDL string into individual SQL statements.
+
+    Each chunk may contain leading comment lines (e.g. \"-- Core tables\");
+    only skip chunks that are *pure* comments with no SQL content.
+    """
+    chunks = ddl.split(";")
+    out: list[str] = []
+    for chunk in chunks:
+        stripped = chunk.strip()
+        if not stripped:
+            continue
+        # Remove leading comment lines to test whether any SQL follows them
+        sql_only = "\n".join(
+            line for line in stripped.split("\n")
+            if not line.strip().startswith("--")
+        ).strip()
+        if sql_only:
+            out.append(stripped)
+    return out
+
+
 async def create_schema() -> None:
     """Create the complete Phase 1 PostgreSQL schema.
 
@@ -244,12 +267,14 @@ async def create_schema() -> None:
       - SPEC.md lines 1772-1913 (tables and indexes)
       - SRS.md §FR-01 (requirement description)
     """
-    from omnibot.config import get_database_url
+    from app.infrastructure.config import get_database_url
     from sqlalchemy import text
 
     engine = _build_engine(get_database_url())
     async with engine.begin() as conn:
-        await conn.execute(text(_ddl(f"""
+        # DDL split into individual statements — asyncpg forbids multiple
+        # commands in a prepared statement.
+        ddl = _ddl(f"""
             CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
             -- Core tables
@@ -257,4 +282,6 @@ async def create_schema() -> None:
 
             -- Indexes
             {_ddl_indexes()}
-        """)))
+        """)
+        for statement in _split_ddl(ddl):
+            await conn.execute(text(statement))

@@ -41,8 +41,7 @@ def _ensure_schema():
     import sys
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "03-development", "src"))
 
-    from omnibot.db import create_schema
-    from omnibot.config import get_database_url
+    from app.models import create_schema
 
     # Suppress ConfigError if DATABASE_URL is missing from env
     # by providing a dummy value so the import succeeds.
@@ -51,8 +50,7 @@ def _ensure_schema():
         os.environ["DATABASE_URL"] = url
 
     try:
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(create_schema())
+        asyncio.run(create_schema())
     finally:
         if original_env is None:
             os.environ.pop("DATABASE_URL", None)
