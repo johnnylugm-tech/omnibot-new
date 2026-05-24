@@ -1,12 +1,12 @@
 {
   "summary": {
-    "total": 1017,
+    "total": 1018,
     "missing": 0,
     "incomplete": 0,
-    "orphaned": 1017,
+    "orphaned": 1018,
     "critical": 0,
     "major": 0,
-    "minor": 1017
+    "minor": 1018
   },
   "gaps": [
     {
@@ -5318,6 +5318,12 @@
       "severity": "minor",
       "reason": "'parse_config_records' has no corresponding specification in SPEC.md",
       "action": "Add spec for parse_config_records or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'parse_srs_fr_nfr_xref' has no corresponding specification in SPEC.md",
+      "action": "Add spec for parse_srs_fr_nfr_xref or remove if unnecessary"
     },
     {
       "type": "ORPHANED",
