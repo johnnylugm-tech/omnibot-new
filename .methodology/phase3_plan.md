@@ -2,7 +2,7 @@
 
 > **Version**: v2.4.0 (project plan)
 > **Project**: 
-> **Date**: 2026-05-24
+> **Date**: 2026-05-25
 > **Framework**: harness-methodology v2.4.0
 > **Phase**: 3 - Implementation
 > **Status**: Full version (including Phase 3 detailed tasks)
@@ -1312,15 +1312,15 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 | NFR | Type | FRs Implementing |
 |-----|------|-----------------|
-| NFR-01 | Performance | (see SRS.md §3) |
-| NFR-02 | Security | (see SRS.md §3) |
-| NFR-03 | Security | (see SRS.md §3) |
-| NFR-04 | Security | (see SRS.md §3) |
-| NFR-05 | Security | (see SRS.md §3) |
-| NFR-06 | Reliability | (see SRS.md §3) |
-| NFR-07 | Maintainability | (see SRS.md §3) |
-| NFR-08 | Maintainability | (see SRS.md §3) |
-| NFR-09 | Deployability | (see SRS.md §3) |
+| NFR-01 | Performance | FR-02, FR-03, FR-10, FR-11, FR-19 |
+| NFR-02 | Security | FR-04, FR-05 |
+| NFR-03 | Security | FR-08 |
+| NFR-04 | Security | FR-09 |
+| NFR-05 | Security | FR-10 |
+| NFR-06 | Reliability | FR-12, FR-14, FR-19, FR-21 |
+| NFR-07 | Maintainability | FR-13, FR-18, FR-21 |
+| NFR-08 | Maintainability | FR-01, FR-06, FR-07, FR-16, FR-17, FR-20 |
+| NFR-09 | Deployability | FR-15 |
 | NFR-10 | Security | (see SRS.md §3) |
 
 **Gate 2 NFR dimensions** (tool-scored, see Gate 2 config):
