@@ -1,7 +1,7 @@
-# Phase 3 Full Execution Plan -- 
+# Phase 3 Full Execution Plan -- omnibot-new
 
 > **Version**: v2.4.0 (project plan)
-> **Project**: 
+> **Project**: omnibot-new
 > **Date**: 2026-05-25
 > **Framework**: harness-methodology v2.4.0
 > **Phase**: 3 - Implementation
@@ -1321,7 +1321,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 | NFR-07 | Maintainability | FR-13, FR-18, FR-21 |
 | NFR-08 | Maintainability | FR-01, FR-06, FR-07, FR-16, FR-17, FR-20 |
 | NFR-09 | Deployability | FR-15 |
-| NFR-10 | Security | (see SRS.md §3) |
+| NFR-10 | Security | FR-22 |
 
 **Gate 2 NFR dimensions** (tool-scored, see Gate 2 config):
 - `security` (bandit), `secrets_scanning` (gitleaks), `mutation_testing` (mutmut)
