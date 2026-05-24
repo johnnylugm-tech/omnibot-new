@@ -25,7 +25,18 @@
     "FR-21",
     "FR-22"
   ],
-  "nfr_dimension_mapping": {},
+  "nfr_dimension_mapping": {
+    "NFR-01": "performance",
+    "NFR-02": "security",
+    "NFR-03": "security",
+    "NFR-04": "security",
+    "NFR-05": "security",
+    "NFR-06": "reliability",
+    "NFR-07": "maintainability",
+    "NFR-08": "maintainability",
+    "NFR-09": "deployability",
+    "NFR-10": "security"
+  },
   "architecture_constraints": [],
   "high_risk_modules": [],
   "gate_score_overrides": {},
@@ -77,5 +88,101 @@
     "gate2": null,
     "gate3": null,
     "gate4": null
+  },
+  "nfr_fr_mapping": {
+    "NFR-08": [
+      "FR-01",
+      "FR-06",
+      "FR-07",
+      "FR-16",
+      "FR-17",
+      "FR-20"
+    ],
+    "NFR-01": [
+      "FR-02",
+      "FR-03",
+      "FR-10",
+      "FR-11",
+      "FR-19"
+    ],
+    "NFR-02": [
+      "FR-04",
+      "FR-05"
+    ],
+    "NFR-03": [
+      "FR-08"
+    ],
+    "NFR-04": [
+      "FR-09"
+    ],
+    "NFR-05": [
+      "FR-10"
+    ],
+    "NFR-06": [
+      "FR-12",
+      "FR-14",
+      "FR-19",
+      "FR-21"
+    ],
+    "NFR-07": [
+      "FR-13",
+      "FR-18",
+      "FR-21"
+    ],
+    "NFR-09": [
+      "FR-15"
+    ]
+  },
+  "nfr_traceability": {
+    "NFR-01": {
+      "type": "performance",
+      "target": "p95 < 3.0s",
+      "module": "app.processing.pipeline"
+    },
+    "NFR-02": {
+      "type": "security",
+      "target": "webhook rejection before business logic",
+      "module": "app.security.signature"
+    },
+    "NFR-03": {
+      "type": "security",
+      "target": "sanitization on every inbound message",
+      "module": "app.processing.sanitizer"
+    },
+    "NFR-04": {
+      "type": "security",
+      "target": "PII recall >= 95%, precision >= 99%",
+      "module": "app.processing.pii_masker"
+    },
+    "NFR-05": {
+      "type": "security",
+      "target": "rate limiter independent per-user buckets",
+      "module": "app.security.rate_limiter"
+    },
+    "NFR-06": {
+      "type": "reliability",
+      "target": "health check < 500ms, 200 even when degraded",
+      "module": "app.infrastructure.health"
+    },
+    "NFR-07": {
+      "type": "maintainability",
+      "target": "single-line JSON logs, level filtering",
+      "module": "app.infrastructure.logger"
+    },
+    "NFR-08": {
+      "type": "maintainability",
+      "target": "ruff zero violations, CC <= 10",
+      "module": "cross-cutting"
+    },
+    "NFR-09": {
+      "type": "deployability",
+      "target": "docker compose healthy within 60s",
+      "module": "docker-compose.yml"
+    },
+    "NFR-10": {
+      "type": "security",
+      "target": "IP whitelist blocks before HMAC",
+      "module": "app.security.ip_whitelist"
+    }
   }
 }
