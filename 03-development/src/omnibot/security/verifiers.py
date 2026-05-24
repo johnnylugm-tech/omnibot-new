@@ -22,6 +22,8 @@ class TelegramWebhookVerifier(WebhookVerifier):
 
     def verify(self, body: bytes, signature: str) -> bool:
         """Return True if the request signature matches the body."""
+        if signature is None:
+            return False
         expected = hmac.new(self.secret_key, body, hashlib.sha256).hexdigest()
         return hmac.compare_digest(expected, signature)
 
