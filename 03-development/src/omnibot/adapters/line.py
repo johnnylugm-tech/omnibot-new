@@ -1,6 +1,4 @@
 """FR-03: LINE webhook adapter."""
-from __future__ import annotations
-
 from omnibot.errors import ValidationError
 from omnibot.models import MessageType, Platform, UnifiedMessage
 
