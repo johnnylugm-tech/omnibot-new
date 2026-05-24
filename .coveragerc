@@ -1,0 +1,10 @@
+[run]
+source = 03-development/src
+omit =
+    */__init__.py
+    */conftest.py
+    tests/*
+
+[report]
+show_missing = true
+skip_covered = false

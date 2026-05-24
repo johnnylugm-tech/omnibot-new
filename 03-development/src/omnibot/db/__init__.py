@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, create_async_engine
 
 if TYPE_CHECKING:
-    from omnibot.config import get_database_url
+    from collections.abc import AsyncIterator
 
 
 # ---------------------------------------------------------------------------
@@ -34,12 +34,12 @@ def _get_engine() -> AsyncEngine:
     return _engine
 
 
-def AsyncEngine(database_url: str) -> AsyncEngine:
+def build_async_engine(database_url: str) -> AsyncEngine:
     """Build an async engine from a database URL."""
     return _build_engine(database_url)
 
 
-async def async_session(engine: AsyncEngine) -> AsyncSession:
+async def async_session(engine: AsyncEngine) -> AsyncIterator[AsyncSession]:
     """Create an async session context manager."""
     async with AsyncSession(engine) as session:
         yield session

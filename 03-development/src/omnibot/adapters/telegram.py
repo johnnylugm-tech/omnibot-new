@@ -1,4 +1,13 @@
-"""FR-02: Telegram webhook adapter."""
+"""[FR-02] Telegram webhook adapter.
+
+Accepts Telegram Bot API webhook POST payloads and parses them into an
+immutable UnifiedMessage.
+
+Citations:
+  - SRS.md FR-02: Accept Telegram webhook POST, parse into UnifiedMessage
+  - SPEC.md lines 104-108 (Platform Adapter Layer architecture)
+  - SPEC.md lines 412-451 (UnifiedMessage dataclass format)
+"""
 from __future__ import annotations
 
 from omnibot.errors import ValidationError
@@ -10,9 +19,18 @@ UNPROCESSABLE_ENTITY = 422
 class TelegramAdapter:
     @staticmethod
     def parse_message(payload: dict) -> UnifiedMessage:
-        """Parse a Telegram update payload into UnifiedMessage.
+        """[FR-02] Parse a Telegram Bot API update payload into UnifiedMessage.
 
-        Raises ValidationError (HTTP 422) when required fields are missing.
+        Supports both 'message' and 'edited_message' event types.
+        Returns an immutable UnifiedMessage frozen dataclass.
+
+        Raises:
+            ValidationError (HTTP 422): When required fields (message,
+                message.from.id, message.text) are missing or invalid.
+
+        Citations:
+          - SRS.md FR-02 verification: valid Telegram JSON -> UnifiedMessage
+          - SPEC.md lines 412-451 (UnifiedMessage frozen dataclass fields)
         """
         telegram_msg = payload.get("message") or payload.get("edited_message")
         if telegram_msg is None:
