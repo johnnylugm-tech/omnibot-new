@@ -5,6 +5,8 @@ import time
 
 
 class TokenBucket:
+    """Token bucket algorithm for rate limiting."""
+
     def __init__(self, capacity: int = 100, refill_rate: float = 100.0):
         self.capacity = capacity
         self.refill_rate = refill_rate
@@ -24,6 +26,8 @@ class TokenBucket:
 
 
 class RateLimiter:
+    """Per-platform per-user rate limiter with token bucket algorithm."""
+
     def __init__(self):
         self._buckets: dict[str, TokenBucket] = {}
 
@@ -37,5 +41,5 @@ class RateLimiter:
                 bucket = TokenBucket()
                 self._buckets[key] = bucket
             return bucket.consume()
-        except Exception:
+        except (TypeError, AttributeError):
             return True

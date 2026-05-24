@@ -34,7 +34,7 @@ LINE_VALID_PAYLOAD = {
 # Test 1 — valid LINE payload -> UnifiedMessage
 # ---------------------------------------------------------------------------
 
-def test_fr03_line_valid_payload_returns_unified_message():
+def test_fr03_line_valid_payload_returns_unified_message_with_reply_token():
     """FR-03 happy path."""
     from omnibot.adapters.line import LineAdapter
     from omnibot.models import Platform, UnifiedMessage

@@ -8,6 +8,8 @@ UNPROCESSABLE_ENTITY = 422
 
 
 class LineAdapter:
+    """Parse LINE Messaging API webhook payloads into UnifiedMessage."""
+
     @staticmethod
     def parse_message(payload: dict) -> UnifiedMessage:
         """Parse a LINE Messaging API webhook payload into UnifiedMessage.

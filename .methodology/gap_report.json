@@ -1,12 +1,12 @@
 {
   "summary": {
-    "total": 1008,
+    "total": 1017,
     "missing": 0,
     "incomplete": 0,
-    "orphaned": 1008,
+    "orphaned": 1017,
     "critical": 0,
     "major": 0,
-    "minor": 1008
+    "minor": 1017
   },
   "gaps": [
     {
@@ -1346,6 +1346,24 @@
       "severity": "minor",
       "reason": "'add_gate1_pass' has no corresponding specification in SPEC.md",
       "action": "Add spec for add_gate1_pass or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'check_env_vars' has no corresponding specification in SPEC.md",
+      "action": "Add spec for check_env_vars or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'check_cli_tools' has no corresponding specification in SPEC.md",
+      "action": "Add spec for check_cli_tools or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'check_database_connectivity' has no corresponding specification in SPEC.md",
+      "action": "Add spec for check_database_connectivity or remove if unnecessary"
     },
     {
       "type": "ORPHANED",
@@ -3762,8 +3780,32 @@
     {
       "type": "ORPHANED",
       "severity": "minor",
+      "reason": "'EnvCheckContext' has no corresponding specification in SPEC.md",
+      "action": "Add spec for EnvCheckContext or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'evaluation_prompt' has no corresponding specification in SPEC.md",
+      "action": "Add spec for evaluation_prompt or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
       "reason": "'HarnessBridge' has no corresponding specification in SPEC.md",
       "action": "Add spec for HarnessBridge or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'prepare_env_check' has no corresponding specification in SPEC.md",
+      "action": "Add spec for prepare_env_check or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'finalize_env_check' has no corresponding specification in SPEC.md",
+      "action": "Add spec for finalize_env_check or remove if unnecessary"
     },
     {
       "type": "ORPHANED",
@@ -4430,6 +4472,18 @@
       "severity": "minor",
       "reason": "'cmd_run_gate' has no corresponding specification in SPEC.md",
       "action": "Add spec for cmd_run_gate or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'cmd_run_env_check' has no corresponding specification in SPEC.md",
+      "action": "Add spec for cmd_run_env_check or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'cmd_finalize_env_check' has no corresponding specification in SPEC.md",
+      "action": "Add spec for cmd_finalize_env_check or remove if unnecessary"
     },
     {
       "type": "ORPHANED",
