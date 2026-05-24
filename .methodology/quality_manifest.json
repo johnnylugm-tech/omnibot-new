@@ -131,6 +131,9 @@
     ],
     "NFR-09": [
       "FR-15"
+    ],
+    "NFR-10": [
+      "FR-22"
     ]
   },
   "nfr_traceability": {

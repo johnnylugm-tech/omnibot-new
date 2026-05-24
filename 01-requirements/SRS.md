@@ -64,6 +64,7 @@ OmniBot Phase 1 (MVP Foundation) establishes the core multi-platform chatbot inf
 | FR-19 | System Architecture (lines 87–189), Pipeline flow | NFR-01 (Performance), NFR-06 (Reliability) |
 | FR-20 | Unified Message Format (lines 412–451), Glossary | NFR-08 (Maintainability) |
 | FR-21 | SPEC.md §Configuration (various: bot tokens, DB/Redis URLs, rate limiter settings) | NFR-07 (Maintainability), NFR-06 (Reliability) |
+| FR-22 | SPEC.md §Security Layer (IP Whitelist interceptor) | NFR-10 (Security) |
 
 ---
 
