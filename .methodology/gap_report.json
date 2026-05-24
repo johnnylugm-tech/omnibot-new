@@ -1,12 +1,12 @@
 {
   "summary": {
-    "total": 1018,
+    "total": 1023,
     "missing": 0,
     "incomplete": 0,
-    "orphaned": 1018,
+    "orphaned": 1023,
     "critical": 0,
     "major": 0,
-    "minor": 1018
+    "minor": 1023
   },
   "gaps": [
     {
@@ -138,6 +138,12 @@
     {
       "type": "ORPHANED",
       "severity": "minor",
+      "reason": "'health_check' has no corresponding specification in SPEC.md",
+      "action": "Add spec for health_check or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
       "reason": "'KnowledgeMatcher' has no corresponding specification in SPEC.md",
       "action": "Add spec for KnowledgeMatcher or remove if unnecessary"
     },
@@ -218,6 +224,30 @@
       "severity": "minor",
       "reason": "'mask' has no corresponding specification in SPEC.md",
       "action": "Add spec for mask or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'Platform' has no corresponding specification in SPEC.md",
+      "action": "Add spec for Platform or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'UnifiedResponse' has no corresponding specification in SPEC.md",
+      "action": "Add spec for UnifiedResponse or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'PipelineOrchestrator' has no corresponding specification in SPEC.md",
+      "action": "Add spec for PipelineOrchestrator or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'process' has no corresponding specification in SPEC.md",
+      "action": "Add spec for process or remove if unnecessary"
     },
     {
       "type": "ORPHANED",

@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Generic, Optional, TypeVar
+from typing import Generic, List, Optional, TypeVar
 
 T = TypeVar("T")
 
@@ -57,9 +57,9 @@ class ApiResponse(Generic[T]):
 
 
 @dataclass
-class PaginatedResponse(ApiResponse[T]):
+class PaginatedResponse(ApiResponse[List[T]], Generic[T]):
     """Paginated API response."""
     total: int = 0
     page: int = 1
-    limit: int = 50
+    limit: int = 20
     has_next: bool = False
