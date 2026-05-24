@@ -1,6 +1,7 @@
 """adapters — Platform adapter layer."""
 from __future__ import annotations
 
+from omnibot.adapters.line import LineAdapter
 from omnibot.adapters.telegram import TelegramAdapter
 
-__all__ = ["TelegramAdapter"]
+__all__ = ["LineAdapter", "TelegramAdapter"]
