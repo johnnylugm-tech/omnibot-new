@@ -4,7 +4,9 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Optional
+from typing import Generic, Optional, TypeVar
+
+T = TypeVar("T")
 
 
 class Platform(Enum):
@@ -43,3 +45,21 @@ class UnifiedResponse:
     confidence: float
     knowledge_id: Optional[int] = None
     emotion_adjustment: Optional[str] = None
+
+
+@dataclass
+class ApiResponse(Generic[T]):
+    """Generic API response wrapper."""
+    success: bool
+    data: Optional[T] = None
+    error: Optional[str] = None
+    error_code: Optional[str] = None
+
+
+@dataclass
+class PaginatedResponse(ApiResponse[T]):
+    """Paginated API response."""
+    total: int = 0
+    page: int = 1
+    limit: int = 50
+    has_next: bool = False
