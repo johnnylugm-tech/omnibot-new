@@ -234,6 +234,30 @@
     {
       "type": "ORPHANED",
       "severity": "minor",
+      "reason": "'TokenBucket' has no corresponding specification in SPEC.md",
+      "action": "Add spec for TokenBucket or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'consume' has no corresponding specification in SPEC.md",
+      "action": "Add spec for consume or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'RateLimiter' has no corresponding specification in SPEC.md",
+      "action": "Add spec for RateLimiter or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'check' has no corresponding specification in SPEC.md",
+      "action": "Add spec for check or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
       "reason": "'WebhookVerifier' has no corresponding specification in SPEC.md",
       "action": "Add spec for WebhookVerifier or remove if unnecessary"
     },
@@ -266,30 +290,6 @@
       "severity": "minor",
       "reason": "'verify' has no corresponding specification in SPEC.md",
       "action": "Add spec for verify or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'TokenBucket' has no corresponding specification in SPEC.md",
-      "action": "Add spec for TokenBucket or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'consume' has no corresponding specification in SPEC.md",
-      "action": "Add spec for consume or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'RateLimiter' has no corresponding specification in SPEC.md",
-      "action": "Add spec for RateLimiter or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'check' has no corresponding specification in SPEC.md",
-      "action": "Add spec for check or remove if unnecessary"
     },
     {
       "type": "ORPHANED",

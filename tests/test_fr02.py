@@ -9,7 +9,7 @@ Verification method (SRS):
   Unit test: valid Telegram JSON payload -> correct UnifiedMessage;
              invalid -> raises descriptive error
 
-TEST_SPEC.md §FR-02 test cases (9 total):
+TEST_SPEC.md §FR-02 test cases (10 total):
   1. test_fr02_telegram_valid_payload_returns_unified_message
   2. test_fr02_telegram_missing_fields_raises_descriptive_error
   3. test_fr02_telegram_adapter_in_pipeline
@@ -19,6 +19,7 @@ TEST_SPEC.md §FR-02 test cases (9 total):
   7. test_fr02_adapter_parse_invalid_message_type_returns_422
   8. test_fr02_adapter_parse_malformed_unicode_no_crash
   9. test_fr02_parse_output_feeds_fr19_pipeline_as_unified_message
+  10. test_fr02_missing_from_id_raises_descriptive_error
 """
 
 from __future__ import annotations
@@ -223,3 +224,29 @@ def test_fr02_parse_output_feeds_fr19_pipeline_as_unified_message():
     # Immutable — verify mutation raises
     with pytest.raises(Exception):
         result.platform_user_id = "mutated"
+
+
+# ---------------------------------------------------------------------------
+# Test 10 — missing from.id raises descriptive error
+# ---------------------------------------------------------------------------
+
+def test_fr02_missing_from_id_raises_descriptive_error():
+    """FR-02: message with no 'from' field raises ValidationError mentioning from.id."""
+    from omnibot.adapters.telegram import TelegramAdapter
+    from omnibot.errors import ValidationError
+
+    payload = {
+        "update_id": 111111111,
+        "message": {
+            "message_id": 1,
+            "chat": {"id": 999999999, "type": "private"},
+            "date": 1700000000,
+            "text": "Hello",
+        },
+    }
+
+    with pytest.raises(ValidationError) as exc_info:
+        TelegramAdapter.parse_message(payload)
+
+    assert "from.id" in str(exc_info.value).lower()
+    assert exc_info.value.status_code == 422

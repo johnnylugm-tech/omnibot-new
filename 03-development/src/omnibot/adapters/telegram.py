@@ -8,8 +8,6 @@ Citations:
   - SPEC.md lines 104-108 (Platform Adapter Layer architecture)
   - SPEC.md lines 412-451 (UnifiedMessage dataclass format)
 """
-from __future__ import annotations
-
 from omnibot.errors import ValidationError
 from omnibot.models import MessageType, Platform, UnifiedMessage
 
