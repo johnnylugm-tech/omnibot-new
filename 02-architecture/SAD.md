@@ -621,49 +621,69 @@ All inserts happen in a single transaction for atomicity. On any DB error → L2
     {
       "name": "transport",
       "description": "HTTP webhook endpoints and health check",
-      "modules": ["app.api.webhooks", "app.infrastructure.health"],
+      "modules": [
+        "03-development/src/app/api/webhooks.py",
+        "03-development/src/omnibot/infrastructure/health.py"
+      ],
       "fr_coverage": ["FR-02", "FR-03", "FR-07", "FR-14"],
       "allowed_dependencies": ["security", "processing", "adapters"]
     },
     {
       "name": "security",
       "description": "Security interceptor chain: IP whitelist, webhook signature verification, rate limiting",
-      "modules": ["app.security.ip_whitelist", "app.security.signature", "app.security.rate_limiter"],
+      "modules": ["03-development/src/omnibot/security/"],
       "fr_coverage": ["FR-04", "FR-05", "FR-10", "FR-22"],
       "allowed_dependencies": ["infrastructure"]
     },
     {
       "name": "adapters",
       "description": "Platform-specific message parsing and unified message types",
-      "modules": ["app.adapters.telegram_adapter", "app.adapters.line_adapter", "app.adapters.unified"],
+      "modules": [
+        "03-development/src/omnibot/adapters/",
+        "03-development/src/omnibot/models/"
+      ],
       "fr_coverage": ["FR-02", "FR-03", "FR-06", "FR-20"],
       "allowed_dependencies": []
     },
     {
       "name": "processing",
       "description": "Message processing pipeline: sanitization, PII masking, pipeline orchestration",
-      "modules": ["app.processing.sanitizer", "app.processing.pii_masker", "app.processing.pipeline"],
+      "modules": ["03-development/src/omnibot/processing/"],
       "fr_coverage": ["FR-08", "FR-09", "FR-19"],
       "allowed_dependencies": ["adapters", "knowledge", "security", "infrastructure"]
     },
     {
       "name": "knowledge",
       "description": "Rule-based knowledge matching and basic escalation",
-      "modules": ["app.knowledge.matcher", "app.knowledge.escalation"],
+      "modules": [
+        "03-development/src/omnibot/knowledge/",
+        "03-development/src/omnibot/escalation/"
+      ],
       "fr_coverage": ["FR-11", "FR-12"],
       "allowed_dependencies": ["adapters", "data"]
     },
     {
       "name": "data",
       "description": "PostgreSQL schema, ORM models, migration scripts",
-      "modules": ["app.models"],
+      "modules": [
+        "03-development/src/app/models.py",
+        "03-development/src/omnibot/db/"
+      ],
       "fr_coverage": ["FR-01"],
       "allowed_dependencies": []
     },
     {
       "name": "infrastructure",
       "description": "Configuration, structured logging, error codes, deployment",
-      "modules": ["app.infrastructure.config", "app.infrastructure.logger", "app.infrastructure.errors"],
+      "modules": [
+        "03-development/src/app/infrastructure/",
+        "03-development/src/omnibot/logging/",
+        "03-development/src/omnibot/errors/",
+        "03-development/src/omnibot/config.py",
+        "03-development/src/omnibot/__init__.py",
+        "03-development/src/omnibot/infrastructure/__init__.py",
+        "03-development/src/app/__init__.py"
+      ],
       "fr_coverage": ["FR-13", "FR-17", "FR-21"],
       "allowed_dependencies": []
     },

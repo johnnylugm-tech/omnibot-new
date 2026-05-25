@@ -7,59 +7,59 @@
     {
       "name": "transport",
       "modules": [
-        "app.api.webhooks",
-        "app.infrastructure.health"
+        "03-development/src/app/api/webhooks.py",
+        "03-development/src/omnibot/infrastructure/health.py"
       ],
       "allowed_dependencies": []
     },
     {
       "name": "security",
       "modules": [
-        "app.security.ip_whitelist",
-        "app.security.signature",
-        "app.security.rate_limiter"
+        "03-development/src/omnibot/security/"
       ],
       "allowed_dependencies": []
     },
     {
       "name": "adapters",
       "modules": [
-        "app.adapters.telegram_adapter",
-        "app.adapters.line_adapter",
-        "app.adapters.unified"
+        "03-development/src/omnibot/adapters/",
+        "03-development/src/omnibot/models/"
       ],
       "allowed_dependencies": []
     },
     {
       "name": "processing",
       "modules": [
-        "app.processing.sanitizer",
-        "app.processing.pii_masker",
-        "app.processing.pipeline"
+        "03-development/src/omnibot/processing/"
       ],
       "allowed_dependencies": []
     },
     {
       "name": "knowledge",
       "modules": [
-        "app.knowledge.matcher",
-        "app.knowledge.escalation"
+        "03-development/src/omnibot/knowledge/",
+        "03-development/src/omnibot/escalation/"
       ],
       "allowed_dependencies": []
     },
     {
       "name": "data",
       "modules": [
-        "app.models"
+        "03-development/src/app/models.py",
+        "03-development/src/omnibot/db/"
       ],
       "allowed_dependencies": []
     },
     {
       "name": "infrastructure",
       "modules": [
-        "app.infrastructure.config",
-        "app.infrastructure.logger",
-        "app.infrastructure.errors"
+        "03-development/src/app/infrastructure/",
+        "03-development/src/omnibot/logging/",
+        "03-development/src/omnibot/errors/",
+        "03-development/src/omnibot/config.py",
+        "03-development/src/omnibot/__init__.py",
+        "03-development/src/omnibot/infrastructure/__init__.py",
+        "03-development/src/app/__init__.py"
       ],
       "allowed_dependencies": []
     },
@@ -148,6 +148,30 @@
       "target": "IP whitelist blocks before HMAC",
       "module": "app.security.ip_whitelist"
     }
+  },
+  "fr_module_traceability": {
+    "FR-01": "app.models",
+    "FR-02": "app.api.webhooks + app.adapters.telegram_adapter",
+    "FR-03": "app.api.webhooks + app.adapters.line_adapter",
+    "FR-04": "app.security.signature",
+    "FR-05": "app.security.signature",
+    "FR-06": "app.adapters.unified",
+    "FR-07": "app.adapters.unified",
+    "FR-08": "app.processing.sanitizer",
+    "FR-09": "app.processing.pii_masker",
+    "FR-10": "app.security.rate_limiter",
+    "FR-11": "app.knowledge.matcher",
+    "FR-12": "app.knowledge.escalation",
+    "FR-13": "app.infrastructure.logger",
+    "FR-14": "app.infrastructure.health",
+    "FR-15": "docker-compose.yml",
+    "FR-16": "queries/",
+    "FR-17": "app.infrastructure.errors",
+    "FR-18": "cross-cutting (ruff + radon enforcement)",
+    "FR-19": "app.processing.pipeline",
+    "FR-20": "app.adapters.unified",
+    "FR-21": "app.infrastructure.config",
+    "FR-22": "app.security.ip_whitelist"
   },
   "architecture_constraints": [],
   "high_risk_modules": []
