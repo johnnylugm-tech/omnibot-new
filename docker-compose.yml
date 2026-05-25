@@ -1,0 +1,65 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: omnibot
+      POSTGRES_USER: omnibot
+      POSTGRES_PASSWORD: omnibot
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - omnibot-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U omnibot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: on-failure
+
+  redis:
+    image: redis:7-alpine
+    networks:
+      - omnibot-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: on-failure
+
+  omnibot-api:
+    build:
+      context: 03-development
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://omnibot:omnibot@postgres:5432/omnibot
+      REDIS_URL: redis://redis:6379/0
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      LINE_CHANNEL_ACCESS_TOKEN: ${LINE_CHANNEL_ACCESS_TOKEN}
+      TELEGRAM_WEBHOOK_SECRET: ${TELEGRAM_WEBHOOK_SECRET}
+      LINE_CHANNEL_SECRET: ${LINE_CHANNEL_SECRET}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - omnibot-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/api/v1/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: on-failure
+
+networks:
+  omnibot-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
