@@ -9,17 +9,7 @@ import os
 from dataclasses import dataclass, field
 from typing import cast
 
-
-# ---------------------------------------------------------------------------
-# Exception
-# ---------------------------------------------------------------------------
-
-
-class ConfigError(ValueError):
-    """Raised when required configuration keys are missing."""
-
-    def __init__(self, message: str) -> None:
-        super().__init__(message)
+from omnibot.errors import ConfigError
 
 
 # ---------------------------------------------------------------------------

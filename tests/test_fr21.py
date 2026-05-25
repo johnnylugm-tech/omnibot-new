@@ -294,7 +294,7 @@ def test_fr21_config_provides_database_url_to_fr01_models():
     with patch.dict(os.environ, env, clear=False):
         settings = ConfigLoader.from_env()
 
-    # FR-01 models use get_database_url() to access the DB connection string
-    db_url = get_database_url()
-    assert db_url == "fake-database_url"
-    assert settings.database_url == "fake-database_url"
+        # FR-01 models use get_database_url() to access the DB connection string
+        db_url = get_database_url()
+        assert db_url == "fake-database_url"
+        assert settings.database_url == "fake-database_url"
