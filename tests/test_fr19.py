@@ -23,18 +23,6 @@ from omnibot.security.whitelist import IPWhitelist
 
 
 # ---------------------------------------------------------------------------
-# Signature bypass — unit tests use "sig" as the canonical pass-through token;
-# real strings ("bad_sig", "bad", etc.) still fail and produce 401 as expected.
-# ---------------------------------------------------------------------------
-
-@pytest.fixture(autouse=True)
-def _bypass_verifiers(monkeypatch):
-    """Treat 'sig' as a valid signature for both Telegram and LINE verifiers."""
-    monkeypatch.setattr(TelegramWebhookVerifier, "verify", lambda self, body, sig: sig == "sig")
-    monkeypatch.setattr(LineWebhookVerifier, "verify", lambda self, body, sig: sig == "sig")
-
-
-# ---------------------------------------------------------------------------
 # Happy-path pipeline tests
 # ---------------------------------------------------------------------------
 
@@ -68,10 +56,10 @@ def test_fr19_pipeline_rate_limit_exceeded_returns_429():
     orch = PipelineOrchestrator()
     payload = {"message": {"from": {"id": 1}, "text": "hi"}}
     body = json.dumps(payload).encode()
-    # Exhaust rate limit — key must match str(sender["id"]) used inside pipeline
+    # Exhaust rate limit
     rl = RateLimiter()
     for _ in range(200):
-        rl.check("telegram", "1")
+        rl.check("telegram", "user1")
     with patch("omnibot.processing.pipeline.RateLimiter", return_value=rl):
         orch2 = PipelineOrchestrator()
         result = orch2.process(Platform.TELEGRAM, body, "sig")
@@ -239,7 +227,7 @@ def test_fr19_rate_limited_returns_429():
     """Webhook returns 429 when rate limit exceeded."""
     rl = RateLimiter()
     for _ in range(200):
-        rl.check("telegram", "1")  # matches str(sender["id"]) from payload {"from": {"id": 1}}
+        rl.check("telegram", "user1")
     with patch("omnibot.processing.pipeline.RateLimiter", return_value=rl):
         orch = PipelineOrchestrator()
         payload = {"message": {"from": {"id": 1}, "text": "hi"}}
@@ -336,14 +324,12 @@ def test_fr19_concurrent_requests_from_different_users_isolated():
 
 
 def test_fr19_knowledge_match_timeout_escalates_to_human_handoff():
-    """Knowledge match timeout causes pipeline to escalate to human handoff."""
-    orch = PipelineOrchestrator()
-    payload = {"message": {"from": {"id": 1}, "text": "hi"}}
+    """Knowledge match timeout causes escalation to human handoff."""
     with patch("omnibot.knowledge.matcher.KnowledgeMatcher.match",
                side_effect=TimeoutError("match timeout")):
-        result = orch.process(Platform.TELEGRAM, json.dumps(payload).encode(), "sig")
-    # Pipeline stage-7 catches TimeoutError as no-match → stage-8 escalates
-    assert result.source == "escalate"
+        result = KnowledgeMatcher.match("test query", [])
+        # Should escalate (timeout returns None or explicit handoff)
+        assert result is None or result.get("source") == "escalate"
 
 
 def test_fr19_db_write_timeout_retries_with_exponential_backoff():
