@@ -23,4 +23,14 @@ class StructuredLogger:
     def _log(self, level: str, message: str, **kwargs) -> None:
         record = {"timestamp": time.time(), "level": level,
                   "service": self._service_name, "message": message, **kwargs}
-        self._logger.log(getattr(logging, level), json.dumps(record))
+        try:
+            self._logger.log(getattr(logging, level), json.dumps(record))
+        except TypeError:
+            serializable = {}
+            for k, v in record.items():
+                try:
+                    json.dumps(v)
+                    serializable[k] = v
+                except TypeError:
+                    serializable[k] = repr(v)
+            self._logger.log(getattr(logging, level), json.dumps(serializable))
