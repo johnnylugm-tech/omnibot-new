@@ -276,7 +276,7 @@ except Exception:
     # P1/P2 approval checks are already covered by p1p2-enforcement above.
     name: Agent B Approval Verification (P1/P2 only)
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.phase.outputs.PHASE <= '2'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && fromJSON(steps.phase.outputs.PHASE) <= 2
     steps:
       - uses: actions/checkout@v4
         with:
@@ -305,7 +305,7 @@ except Exception:
       - name: Verify Agent B approvals (P1/P2)
         # P3+ uses Gate 1 (local) instead of per-FR approval JSON.
         # Gate-pass-check (separate job) covers gate PASS records for P4+.
-        if: steps.phase.outputs.PHASE <= '2'
+        if: fromJSON(steps.phase.outputs.PHASE) <= 2
         run: |
           python harness/harness_cli.py verify-agent-b-approvals \
             --phase ${{ steps.phase.outputs.PHASE }} \
@@ -463,7 +463,7 @@ except Exception as e:
           echo "PHASE=$PHASE" >> $GITHUB_OUTPUT
 
       - name: Validate SAB.json (P3+)
-        if: steps.phase.outputs.PHASE >= 3
+        if: fromJSON(steps.phase.outputs.PHASE) >= 3
         run: |
           python3 - <<'EOF'
           import json, sys
@@ -509,7 +509,7 @@ except Exception as e:
       - name: Check previous phase audit for CRITICAL gaps (P4+)
         # Phase End Audit is P3+ only. We check phase N-1's audit when in phase N (N>=4).
         # audit_gaps_N.md marks unchecked CRITICAL items as "- [ ]" under "## CRITICAL Gaps".
-        if: steps.phase.outputs.PHASE >= 4
+        if: fromJSON(steps.phase.outputs.PHASE) >= 4
         env:
           PHASE: ${{ steps.phase.outputs.PHASE }}
         run: |
@@ -627,7 +627,7 @@ except Exception as e:
           echo "PHASE=$PHASE" >> $GITHUB_OUTPUT
 
       - name: Run ASPICE trace-check (P4+)
-        if: steps.phase.outputs.PHASE >= 4
+        if: fromJSON(steps.phase.outputs.PHASE) >= 4
         run: python harness/harness_cli.py trace-check --project .
 
   gate4-tag-check:
@@ -654,7 +654,7 @@ except Exception as e:
           echo "PHASE=$PHASE" >> $GITHUB_OUTPUT
 
       - name: Verify harness-v4-* tag exists (P7+)
-        if: steps.phase.outputs.PHASE >= 7
+        if: fromJSON(steps.phase.outputs.PHASE) >= 7
         run: |
           if git tag | grep -q "^harness-v4-"; then
             echo "OK: harness-v4-* tag found."
