@@ -8,9 +8,10 @@ os.environ['PYTHONPATH'] = os.path.join(os.path.dirname(__file__), '03-developme
 
 # Run pytest
 result = subprocess.run(
-    [sys.executable, '-m', 'pytest', 'tests/test_fr11.py', '-v', '--tb=short'],
+    [sys.executable, '-m', 'pytest', 'tests/test_fr19.py', '-q'],
     capture_output=True,
     text=True,
+    timeout=120,
     env={**os.environ, 'PYTHONPATH': os.path.join(os.path.dirname(__file__), '03-development', 'src')}
 )
 

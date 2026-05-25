@@ -37,14 +37,22 @@ class UnifiedMessage:
     reply_token: Optional[str] = None
 
 
+class KnowledgeSource(Enum):
+    RULE = "rule"
+    ESCALATE = "escalate"
+
+
 @dataclass(frozen=True)
 class UnifiedResponse:
-    """Cross-platform normalized outbound reply."""
+    """Cross-platform normalized outbound reply (immutable)."""
     content: str
     source: str
     confidence: float
+    status_code: int = 200
+    platform: Platform = Platform.TELEGRAM
     knowledge_id: Optional[int] = None
     emotion_adjustment: Optional[str] = None
+    metadata: dict = field(default_factory=dict)
 
 
 @dataclass

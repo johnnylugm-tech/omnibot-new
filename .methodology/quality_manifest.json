@@ -162,6 +162,27 @@
         "rounds_used": 1,
         "open_critical": 0,
         "open_high": 0
+      },
+      "FR-18": {
+        "score": 33.33,
+        "quality_complete": false,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-20": {
+        "score": 89.85,
+        "quality_complete": false,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-19": {
+        "score": 93.54,
+        "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
       }
     },
     "gate2": null,

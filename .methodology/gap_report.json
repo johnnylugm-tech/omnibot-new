@@ -1,12 +1,12 @@
 {
   "summary": {
-    "total": 1059,
+    "total": 1073,
     "missing": 0,
     "incomplete": 0,
-    "orphaned": 1059,
+    "orphaned": 1073,
     "critical": 0,
     "major": 0,
-    "minor": 1059
+    "minor": 1073
   },
   "gaps": [
     {
@@ -96,6 +96,30 @@
     {
       "type": "ORPHANED",
       "severity": "minor",
+      "reason": "'ConfigError' has no corresponding specification in SPEC.md",
+      "action": "Add spec for ConfigError or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'Settings' has no corresponding specification in SPEC.md",
+      "action": "Add spec for Settings or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'ConfigLoader' has no corresponding specification in SPEC.md",
+      "action": "Add spec for ConfigLoader or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'from_env' has no corresponding specification in SPEC.md",
+      "action": "Add spec for from_env or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
       "reason": "'get_database_url' has no corresponding specification in SPEC.md",
       "action": "Add spec for get_database_url or remove if unnecessary"
     },
@@ -120,8 +144,20 @@
     {
       "type": "ORPHANED",
       "severity": "minor",
+      "reason": "'ConfigError' has no corresponding specification in SPEC.md",
+      "action": "Add spec for ConfigError or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
       "reason": "'ValidationError' has no corresponding specification in SPEC.md",
       "action": "Add spec for ValidationError or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'IPWhitelistError' has no corresponding specification in SPEC.md",
+      "action": "Add spec for IPWhitelistError or remove if unnecessary"
     },
     {
       "type": "ORPHANED",
@@ -194,6 +230,12 @@
       "severity": "minor",
       "reason": "'UnifiedMessage' has no corresponding specification in SPEC.md",
       "action": "Add spec for UnifiedMessage or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'KnowledgeSource' has no corresponding specification in SPEC.md",
+      "action": "Add spec for KnowledgeSource or remove if unnecessary"
     },
     {
       "type": "ORPHANED",
@@ -1152,6 +1194,18 @@
     {
       "type": "ORPHANED",
       "severity": "minor",
+      "reason": "'pytest_exception_interact' has no corresponding specification in SPEC.md",
+      "action": "Add spec for pytest_exception_interact or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'extract_minimal_viable_context' has no corresponding specification in SPEC.md",
+      "action": "Add spec for extract_minimal_viable_context or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
       "reason": "'fix_missing_artifact' has no corresponding specification in SPEC.md",
       "action": "Add spec for fix_missing_artifact or remove if unnecessary"
     },
@@ -1412,6 +1466,36 @@
       "severity": "minor",
       "reason": "'get_definitions' has no corresponding specification in SPEC.md",
       "action": "Add spec for get_definitions or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'JsonFileSpanExporter' has no corresponding specification in SPEC.md",
+      "action": "Add spec for JsonFileSpanExporter or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'export' has no corresponding specification in SPEC.md",
+      "action": "Add spec for export or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'shutdown' has no corresponding specification in SPEC.md",
+      "action": "Add spec for shutdown or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'init_tracer' has no corresponding specification in SPEC.md",
+      "action": "Add spec for init_tracer or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'get_tracer' has no corresponding specification in SPEC.md",
+      "action": "Add spec for get_tracer or remove if unnecessary"
     },
     {
       "type": "ORPHANED",

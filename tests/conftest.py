@@ -7,6 +7,10 @@ from __future__ import annotations
 
 import asyncio
 import os
+import sys
+
+# Ensure 03-development/src is on the path so `from omnibot.*` imports resolve
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "03-development", "src"))
 
 import pytest
 
@@ -26,7 +30,7 @@ def _require_database_url() -> str:
 # Schema creation fixture (autouse for DB-dependent tests)
 # ---------------------------------------------------------------------------
 
-@pytest.fixture(scope="function", autouse=True)
+@pytest.fixture(scope="function")
 def _ensure_schema():
     """Create the complete Phase 1 schema once per test that needs it.
 
@@ -34,23 +38,12 @@ def _ensure_schema():
     before any test runs. This fixture is function-scoped so each test gets
     a clean slate via CREATE TABLE IF NOT EXISTS idempotency.
     """
-    url = _require_database_url()
-    if not url:
-        return  # skipped — no DB available
-
-    import sys
-    sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "03-development", "src"))
-
-    from app.models import create_schema
-
-    # Suppress ConfigError if DATABASE_URL is missing from env
-    # by providing a dummy value so the import succeeds.
-    original_env = os.environ.get("DATABASE_URL")
-    if not original_env:
-        os.environ["DATABASE_URL"] = url
-
-    try:
-        asyncio.run(create_schema())
-    finally:
-        if original_env is None:
-            os.environ.pop("DATABASE_URL", None)
+    url = os.environ.get("DATABASE_URL")
+    if url:
+        from app.models import create_schema
+        try:
+            asyncio.run(create_schema())
+        finally:
+            pass  # leave DATABASE_URL as-is; do not modify env
+    else:
+        pass  # no DATABASE_URL available — skip schema creation
