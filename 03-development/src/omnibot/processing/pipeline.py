@@ -78,11 +78,11 @@ class PipelineOrchestrator:
             # ── Stage 3: Platform adapter parse ───────────────────────────────
             payload = json.loads(raw_body)
             if platform == Platform.TELEGRAM:
-                msg: UnifiedMessage = TelegramAdapter.parse_message(payload)
+                msg = TelegramAdapter.parse_message(payload)
             elif platform == Platform.LINE:
                 msg = LineAdapter.parse_message(payload)
             else:
-                msg = None
+                msg = None  # type: ignore[assignment]
 
             platform_user_id = msg.platform_user_id if msg else "unknown"
 
