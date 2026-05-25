@@ -124,13 +124,9 @@ def test_fr10_limiter_concurrent_requests_from_same_user_isolated():
 def test_fr10_limiter_redis_unavailable_fail_open_allows_request():
     """Fail-open: returns True when Redis is unavailable (any exception during check)."""
     from unittest.mock import patch
-    from omnibot.security.rate_limiter import RateLimiter
+    from omnibot.security.rate_limiter import RateLimiter, TokenBucket
 
-    def fail_open_check(self, platform, user_id):
-        # Simulate Redis connection failure - any exception causes fail-open
-        raise ConnectionError("Redis connection refused")
-
-    with patch.object(RateLimiter, 'check', fail_open_check):
+    with patch.object(TokenBucket, 'consume', side_effect=ConnectionError("Redis connection refused")):
         rl = RateLimiter()
         result = rl.check("telegram", "user1")
         assert result is True

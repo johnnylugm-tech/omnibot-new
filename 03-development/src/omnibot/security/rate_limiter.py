@@ -43,5 +43,5 @@ class RateLimiter:
                 bucket = TokenBucket()
                 self._buckets[key] = bucket
             return bucket.consume()
-        except (TypeError, AttributeError):
+        except Exception:
             return True
