@@ -1,12 +1,12 @@
 {
   "summary": {
-    "total": 1053,
+    "total": 1059,
     "missing": 0,
     "incomplete": 0,
-    "orphaned": 1053,
+    "orphaned": 1059,
     "critical": 0,
     "major": 0,
-    "minor": 1053
+    "minor": 1059
   },
   "gaps": [
     {
@@ -1136,6 +1136,18 @@
       "severity": "minor",
       "reason": "'rollback_if_unsafe' has no corresponding specification in SPEC.md",
       "action": "Add spec for rollback_if_unsafe or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'ast_mutation_guard' has no corresponding specification in SPEC.md",
+      "action": "Add spec for ast_mutation_guard or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'get_invariants' has no corresponding specification in SPEC.md",
+      "action": "Add spec for get_invariants or remove if unnecessary"
     },
     {
       "type": "ORPHANED",
@@ -2816,6 +2828,24 @@
       "severity": "minor",
       "reason": "'verify_no_cross_fr_access' has no corresponding specification in SPEC.md",
       "action": "Add spec for verify_no_cross_fr_access or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'ASTDependencyScanner' has no corresponding specification in SPEC.md",
+      "action": "Add spec for ASTDependencyScanner or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'visit_Import' has no corresponding specification in SPEC.md",
+      "action": "Add spec for visit_Import or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'visit_ImportFrom' has no corresponding specification in SPEC.md",
+      "action": "Add spec for visit_ImportFrom or remove if unnecessary"
     },
     {
       "type": "ORPHANED",
@@ -6290,6 +6320,12 @@
       "severity": "minor",
       "reason": "'score' has no corresponding specification in SPEC.md",
       "action": "Add spec for score or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'score_with_critic_debate' has no corresponding specification in SPEC.md",
+      "action": "Add spec for score_with_critic_debate or remove if unnecessary"
     },
     {
       "type": "ORPHANED",

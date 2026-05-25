@@ -18,51 +18,8 @@ TEST_SPEC.md FR-16 test case names (exact match required for HR-11 traceability)
 from __future__ import annotations
 
 import re
-import sys
-from pathlib import Path
 
-import pytest
-
-# ---------------------------------------------------------------------------
-# ODD SQL queries (from SPEC.md lines 2072-2106)
-# ---------------------------------------------------------------------------
-
-ODD_QUERIES = {
-    "fcr": """
-        SELECT
-            COUNT(*) AS total,
-            SUM(CASE WHEN first_contact_resolution THEN 1 ELSE 0 END) AS fcr,
-            ROUND(
-                SUM(CASE WHEN first_contact_resolution THEN 1 ELSE 0 END) * 100.0
-                / NULLIF(COUNT(*), 0), 2
-            ) AS fcr_rate_pct
-        FROM conversations
-        WHERE started_at > NOW() - INTERVAL '30 days'
-          AND scope_type = 'in_scope'
-          AND first_contact_resolution IS NOT NULL
-    """,
-    "latency": """
-        SELECT
-            platform,
-            AVG(response_time_ms) AS avg_latency_ms,
-            PERCENTILE_CONT(0.95) WITHIN GROUP (ORDER BY response_time_ms) AS p95_latency_ms
-        FROM conversations
-        WHERE started_at > NOW() - INTERVAL '30 days'
-          AND response_time_ms IS NOT NULL
-        GROUP BY platform
-    """,
-    "knowledge_hits": """
-        SELECT
-            knowledge_source,
-            COUNT(*) AS total,
-            AVG(confidence_score) AS avg_confidence
-        FROM messages
-        WHERE role = 'assistant'
-          AND created_at > NOW() - INTERVAL '7 days'
-          AND knowledge_source IS NOT NULL
-        GROUP BY knowledge_source
-    """,
-}
+from omnibot.queries import ODD_QUERIES, odd_queries
 
 
 # ---------------------------------------------------------------------------
@@ -113,7 +70,7 @@ def test_fr16_fcr_query_parses_without_syntax_error():
     )
     # Check it contains the expected clauses
     assert "SELECT" in parsed.upper()
-    assert "FROM conversations" in parsed.upper()
+    assert "FROM CONVERSATIONS" in parsed.upper()
     assert "first_contact_resolution" in parsed.lower()
     assert "COUNT" in parsed.upper()
     assert "SUM" in parsed.upper()
@@ -147,8 +104,8 @@ def test_fr16_knowledge_hits_query_parses_without_syntax_error():
         f"open={open_parens}, close={close_parens}"
     )
     assert "SELECT" in parsed.upper()
-    assert "FROM messages" in parsed.upper()
-    assert "GROUP BY knowledge_source" in parsed.lower()
+    assert "FROM MESSAGES" in parsed.upper()
+    assert "group by knowledge_source" in parsed.lower()
 
 
 # ---------------------------------------------------------------------------
@@ -179,10 +136,10 @@ def test_fr16_fcr_query_returns_percentage_between_0_and_100():
 def test_fr16_latency_query_returns_avg_and_p95_per_platform():
     """FR-16: latency query groups by platform and returns both avg and p95 per group."""
     sql = _parse_sql_syntax(ODD_QUERIES["latency"])
-    assert "GROUP BY platform" in sql.lower(), (
+    assert "group by platform" in sql.lower(), (
         "latency query must GROUP BY platform to return per-platform metrics"
     )
-    assert "AVG(response_time_ms)" in sql.lower(), (
+    assert "avg(response_time_ms)" in sql.lower(), (
         "latency query must include AVG(response_time_ms)"
     )
     assert "PERCENTILE_CONT" in sql.upper(), (
