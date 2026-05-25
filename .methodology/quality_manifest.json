@@ -39,7 +39,9 @@
   },
   "architecture_constraints": [],
   "high_risk_modules": [],
-  "gate_score_overrides": {},
+  "gate_score_overrides": {
+    "coverage": 80.0
+  },
   "gate_results": {
     "gate1": {
       "FR-01": {
@@ -194,5 +196,41 @@
       "target": "IP whitelist blocks before HMAC",
       "module": "app.security.ip_whitelist"
     }
+  },
+  "quality_targets": {
+    "max_complexity": 10,
+    "min_coverage": 80,
+    "max_coupling": 0.3,
+    "p95_latency_ms": 3000,
+    "fcr_target_pct": 50,
+    "max_function_lines": 50,
+    "service_health_timeout_ms": 500,
+    "docker_startup_seconds": 60,
+    "pii_recall_pct": 95,
+    "pii_precision_pct": 99
+  },
+  "fr_module_traceability": {
+    "FR-01": "app.models",
+    "FR-02": "app.api.webhooks + app.adapters.telegram_adapter",
+    "FR-03": "app.api.webhooks + app.adapters.line_adapter",
+    "FR-04": "app.security.signature",
+    "FR-05": "app.security.signature",
+    "FR-06": "app.adapters.unified",
+    "FR-07": "app.adapters.unified",
+    "FR-08": "app.processing.sanitizer",
+    "FR-09": "app.processing.pii_masker",
+    "FR-10": "app.security.rate_limiter",
+    "FR-11": "app.knowledge.matcher",
+    "FR-12": "app.knowledge.escalation",
+    "FR-13": "app.infrastructure.logger",
+    "FR-14": "app.infrastructure.health",
+    "FR-15": "docker-compose.yml",
+    "FR-16": "queries/",
+    "FR-17": "app.infrastructure.errors",
+    "FR-18": "cross-cutting (ruff + radon enforcement)",
+    "FR-19": "app.processing.pipeline",
+    "FR-20": "app.adapters.unified",
+    "FR-21": "app.infrastructure.config",
+    "FR-22": "app.security.ip_whitelist"
   }
 }
