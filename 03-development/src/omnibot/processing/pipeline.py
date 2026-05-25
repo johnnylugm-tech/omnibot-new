@@ -1,28 +1,33 @@
-"""
-FR-19: Core message processing pipeline stub.
+"""FR-19: Core message processing pipeline."""
 
-PipelineOrchestrator.process() orchestrates the 11-stage inbound message flow.
-This stub exists to allow benchmark tests to import and run (TDD-RED).
-Full implementation is produced during FR-19 TDD-GREEN phase.
-
-NFR-01: p95 latency < 3.0s for the full pipeline.
-"""
 from __future__ import annotations
 
-from dataclasses import dataclass
-from enum import Enum
+import json
+import os
+
+from omnibot.adapters.line import LineAdapter
+from omnibot.adapters.telegram import TelegramAdapter
+from omnibot.errors import ValidationError
+from omnibot.escalation.queue import EscalationQueue
+from omnibot.knowledge.matcher import KnowledgeMatcher
+from omnibot.logging.logger import StructuredLogger
+from omnibot.models import Platform, UnifiedMessage, UnifiedResponse
+from omnibot.processing.pii import PIIMasker
+from omnibot.processing.sanitizer import InputSanitizer
+from omnibot.security.rate_limiter import RateLimiter
+from omnibot.security.verifiers import LineWebhookVerifier, TelegramWebhookVerifier
+
+_logger = StructuredLogger(__name__)
 
 
-class Platform(str, Enum):
-    TELEGRAM = "telegram"
-    LINE = "line"
+def _telegram_verifier():
+    token = os.environ.get("TELEGRAM_BOT_TOKEN", "test_token")
+    return TelegramWebhookVerifier(bot_token=token)
 
 
-@dataclass
-class UnifiedResponse:
-    platform: Platform
-    status_code: int
-    body: bytes
+def _line_verifier():
+    secret = os.environ.get("LINE_CHANNEL_SECRET", "test_secret")
+    return LineWebhookVerifier(channel_secret=secret)
 
 
 class PipelineOrchestrator:
@@ -30,8 +35,8 @@ class PipelineOrchestrator:
     Orchestrates the 11-stage inbound message pipeline (FR-19).
 
     Stage order:
-      1. IP Whitelist interception
-      2. Webhook signature verification
+      1. IP Whitelist interception (placeholder — always allow)
+      2. Webhook signature verification (bypassable for tests via _skip_signature_check)
       3. Platform adapter parse
       4. Rate limiter check
       5. Input sanitization L2
@@ -39,25 +44,104 @@ class PipelineOrchestrator:
       7. Knowledge matching Layer 1
       8. Basic escalation (if no knowledge match)
       9. Construct UnifiedResponse
-      10. Send reply via platform adapter
-      11. Log completion via structured logger
+     10. Send reply via platform adapter (placeholder)
+     11. Log completion via structured logger
     """
 
+    def __init__(self):
+        self._rate_limiter = RateLimiter()
+        self._logger = _logger
+        self._skip_signature_check = False  # True in tests that test other stages
+
     def process(self, platform: Platform, raw_body: bytes, signature: str):
-        """Process one inbound webhook request end-to-end (minimal stub for testing)."""
-        import json
-        from omnibot.models import UnifiedResponse as ModelResponse
-        from omnibot.models import Platform as ModelPlatform
+        """Process one inbound webhook request through the 11-stage pipeline."""
         try:
+            # ── Stage 2: HMAC signature verification ──────────────────────────
+            # Tests that patch adapter/rate-limiter skip signature check entirely.
+            # In production, this runs before any business logic (Security Constraint).
+            if not self._skip_signature_check:
+                if platform == Platform.TELEGRAM:
+                    verifier = _telegram_verifier()
+                    if not verifier.verify(raw_body, signature):
+                        return UnifiedResponse(
+                            content="", source="signature", confidence=0.0,
+                            status_code=401, platform=platform,
+                        )
+                elif platform == Platform.LINE:
+                    verifier = _line_verifier()
+                    if not verifier.verify(raw_body, signature):
+                        return UnifiedResponse(
+                            content="", source="signature", confidence=0.0,
+                            status_code=401, platform=platform,
+                        )
+
+            # ── Stage 3: Platform adapter parse ───────────────────────────────
             payload = json.loads(raw_body)
+            if platform == Platform.TELEGRAM:
+                msg: UnifiedMessage = TelegramAdapter.parse_message(payload)
+            elif platform == Platform.LINE:
+                msg = LineAdapter.parse_message(payload)
+            else:
+                msg = None
+
+            platform_user_id = msg.platform_user_id if msg else "unknown"
+
+            # ── Stage 4: Rate limiter check ──────────────────────────────────
+            if not self._rate_limiter.check(platform.value, platform_user_id):
+                return UnifiedResponse(
+                    content="rate limited", source="rate_limit", confidence=0.0,
+                    status_code=429, platform=platform,
+                )
+
+            # ── Stages 5-7: Sanitize, mask PII, knowledge match ─────────────
+            if msg is None:
+                text = ""
+            else:
+                text = msg.content
+                text = InputSanitizer.sanitize(text)
+                text = PIIMasker.mask(text)
+
+            rules = []  # empty rules → no match → escalate
+            match_result = KnowledgeMatcher.match(text, rules)
+            if match_result is None:
+                source = "escalate"
+                confidence = 0.0
+                content = ""
+            else:
+                source = match_result["source"]
+                confidence = match_result["confidence"]
+                content = match_result.get("answer", "")
+
+            # ── Stage 8: Escalation queue ─────────────────────────────────────
+            if source == "escalate":
+                EscalationQueue.enqueue("out_of_scope", {"content": text})
+
+            # ── Stage 9-11: Response + logging ────────────────────────────────
+            resp = UnifiedResponse(
+                content=content,
+                source=source,
+                confidence=confidence,
+                status_code=200,
+                platform=platform,
+            )
+            self._logger.info("pipeline_done", platform=platform.value, source=source)
+            return resp
+
         except (json.JSONDecodeError, UnicodeDecodeError):
-            return ModelResponse(content="", source="escalate", confidence=0.0)
-        text = payload.get("message", {}).get("text", "")
-        plat_val = platform.value if hasattr(platform, "value") else platform
-        mp = ModelPlatform.TELEGRAM if plat_val in ("telegram", Platform.TELEGRAM.value) else ModelPlatform.LINE
-        if "odd" in text.lower() or "xyzzy" in text.lower():
-            return ModelResponse(content="", source="escalate", confidence=0.0, platform=mp)
-        return ModelResponse(content="ok", source="rule", confidence=0.5, platform=mp)
+            return UnifiedResponse(
+                content="", source="escalate", confidence=0.0,
+                status_code=200, platform=platform,
+            )
+        except ValidationError:
+            return UnifiedResponse(
+                content="", source="escalate", confidence=0.0,
+                status_code=200, platform=platform,
+            )
+        except Exception:
+            return UnifiedResponse(
+                content="", source="escalate", confidence=0.0,
+                status_code=500, platform=platform,
+            )
 
     def _db_execute(self, data: dict):
         """Execute a DB operation (stub for testing)."""
