@@ -108,9 +108,9 @@
         "open_high": 0
       },
       "FR-10": {
-        "score": 0.0,
+        "score": 71.44,
         "quality_complete": false,
-        "rounds_used": 0,
+        "rounds_used": 1,
         "open_critical": 0,
         "open_high": 0
       },
@@ -164,8 +164,8 @@
         "open_high": 0
       },
       "FR-18": {
-        "score": 33.33,
-        "quality_complete": false,
+        "score": 98.98,
+        "quality_complete": true,
         "rounds_used": 1,
         "open_critical": 0,
         "open_high": 0
@@ -187,6 +187,13 @@
       "FR-21": {
         "score": 97.96,
         "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-22": {
+        "score": 71.44,
+        "quality_complete": false,
         "rounds_used": 1,
         "open_critical": 0,
         "open_high": 0

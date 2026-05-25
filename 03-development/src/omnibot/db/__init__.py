@@ -91,8 +91,7 @@ def _ddl(sql: str) -> str:
     return textwrap.dedent(sql).strip()
 
 
-def _ddl_tables() -> str:
-    return _ddl("""
+_DDL_TABLES_SQL = """
         CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
             unified_user_id UUID UNIQUE NOT NULL DEFAULT gen_random_uuid(),
@@ -192,7 +191,11 @@ def _ddl_tables() -> str:
             platform VARCHAR(20),
             created_at TIMESTAMPTZ DEFAULT NOW()
         );
-    """)
+    """
+
+
+def _ddl_tables() -> str:
+    return _ddl(_DDL_TABLES_SQL)
 
 
 def _ddl_indexes() -> str:

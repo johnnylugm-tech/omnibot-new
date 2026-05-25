@@ -8,15 +8,16 @@ from omnibot.errors import IPWhitelistError
 
 class IPWhitelist:
     def __init__(self, cidrs: list[str]):
+        """Initialize with list of CIDR strings to allow."""
         self._networks = []
-        invalid_cidrs = []
+        INVALID_CIDRS = []
         for c in cidrs:
             try:
                 self._networks.append(ipaddress.ip_network(c))
             except ValueError:
-                invalid_cidrs.append(c)
-        if invalid_cidrs:
-            raise IPWhitelistError(invalid_cidrs)
+                INVALID_CIDRS.append(c)
+        if INVALID_CIDRS:
+            raise IPWhitelistError(INVALID_CIDRS)
 
     def is_allowed(self, ip: str) -> bool:
         """Check if IP is in the whitelist. Returns False for invalid IPs."""

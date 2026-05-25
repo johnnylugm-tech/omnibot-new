@@ -8,6 +8,7 @@ class TokenBucket:
     """Token bucket algorithm for rate limiting."""
 
     def __init__(self, capacity: int = 100, refill_rate: float = 100.0):
+        """Initialize token bucket with capacity and refill rate."""
         self.capacity = capacity
         self.refill_rate = refill_rate
         self._tokens = float(capacity)
@@ -29,6 +30,7 @@ class RateLimiter:
     """Per-platform per-user rate limiter with token bucket algorithm."""
 
     def __init__(self):
+        """Initialize rate limiter with empty bucket map."""
         self._buckets: dict[str, TokenBucket] = {}
 
     def check(self, platform: str, user_id: str) -> bool:

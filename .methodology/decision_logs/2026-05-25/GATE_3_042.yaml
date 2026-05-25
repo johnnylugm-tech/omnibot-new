@@ -1,0 +1,11 @@
+ctx:
+  agent_id: GATE
+  phase: 3
+  fr_id: FR-18
+  trace_id: fcfb176a
+  timestamp: '2026-05-25T14:31:00.832908+00:00'
+decision: GATE_BLOCK
+reasoning: 'Gate 1: score=75.1, critical=0, high=0'
+scores:
+  gate_score: 75.14
+metadata: {}

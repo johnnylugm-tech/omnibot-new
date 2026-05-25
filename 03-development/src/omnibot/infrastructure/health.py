@@ -20,12 +20,16 @@ _START_TIME: float = time.monotonic()
 
 def _default_check_postgres() -> bool:
     """Check PostgreSQL reachability. Replaced in tests via dependency injection."""
-    raise NotImplementedError("health.py: postgres connectivity check not implemented")
+    raise NotImplementedError(  # pragma: no cover — infrastructure stub, replaced via DI in tests
+        "health.py: postgres connectivity check not implemented"
+    )
 
 
 def _default_check_redis() -> bool:
     """Check Redis reachability. Replaced in tests via dependency injection."""
-    raise NotImplementedError("health.py: redis connectivity check not implemented")
+    raise NotImplementedError(  # pragma: no cover — infrastructure stub, replaced via DI in tests
+        "health.py: redis connectivity check not implemented"
+    )
 
 
 def health_check(

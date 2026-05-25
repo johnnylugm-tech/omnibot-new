@@ -1,12 +1,12 @@
 {
   "summary": {
-    "total": 1073,
+    "total": 1070,
     "missing": 0,
     "incomplete": 0,
-    "orphaned": 1073,
+    "orphaned": 1070,
     "critical": 0,
     "major": 0,
-    "minor": 1073
+    "minor": 1070
   },
   "gaps": [
     {
@@ -92,12 +92,6 @@
       "severity": "minor",
       "reason": "'parse_message' has no corresponding specification in SPEC.md",
       "action": "Add spec for parse_message or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'ConfigError' has no corresponding specification in SPEC.md",
-      "action": "Add spec for ConfigError or remove if unnecessary"
     },
     {
       "type": "ORPHANED",
@@ -278,18 +272,6 @@
       "severity": "minor",
       "reason": "'should_escalate' has no corresponding specification in SPEC.md",
       "action": "Add spec for should_escalate or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'Platform' has no corresponding specification in SPEC.md",
-      "action": "Add spec for Platform or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'UnifiedResponse' has no corresponding specification in SPEC.md",
-      "action": "Add spec for UnifiedResponse or remove if unnecessary"
     },
     {
       "type": "ORPHANED",

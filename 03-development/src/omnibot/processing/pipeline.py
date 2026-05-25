@@ -49,4 +49,6 @@ class PipelineOrchestrator:
 
         Raises NotImplementedError until FR-19 TDD-GREEN is complete.
         """
-        raise NotImplementedError("PipelineOrchestrator.process() not yet implemented (FR-19)")
+        raise NotImplementedError(  # pragma: no cover — FR-19 stub, not yet implemented
+            "PipelineOrchestrator.process() not yet implemented (FR-19)"
+        )

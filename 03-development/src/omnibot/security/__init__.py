@@ -1,6 +1,6 @@
 """Security package — webhook verification, rate limiting, IP whitelist."""
-# pylint: disable=missing-class-docstring,missing-function-docstring,too-few-public-methods
-from omnibot.security.verifiers import (
+
+from omnibot.security.verifiers import (  # noqa: F401
     LineWebhookVerifier,
     TelegramWebhookVerifier,
     WebhookVerifier,

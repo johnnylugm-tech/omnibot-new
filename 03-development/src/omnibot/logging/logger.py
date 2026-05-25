@@ -8,16 +8,20 @@ import time
 
 class StructuredLogger:
     def __init__(self, service_name: str = "omnibot"):
+        """Initialize structured logger with optional service name."""
         self._logger = logging.getLogger(service_name)
         self._service_name = service_name
 
     def info(self, message: str, **kwargs) -> None:
+        """Log an INFO-level structured JSON record."""
         self._log("INFO", message, **kwargs)
 
     def warning(self, message: str, **kwargs) -> None:
+        """Log a WARNING-level structured JSON record."""
         self._log("WARNING", message, **kwargs)
 
     def error(self, message: str, **kwargs) -> None:
+        """Log an ERROR-level structured JSON record."""
         self._log("ERROR", message, **kwargs)
 
     def _log(self, level: str, message: str, **kwargs) -> None:
