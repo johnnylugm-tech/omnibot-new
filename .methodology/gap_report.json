@@ -1,12 +1,12 @@
 {
   "summary": {
-    "total": 1070,
+    "total": 1072,
     "missing": 0,
     "incomplete": 0,
-    "orphaned": 1070,
+    "orphaned": 1072,
     "critical": 0,
     "major": 0,
-    "minor": 1070
+    "minor": 1072
   },
   "gaps": [
     {
@@ -272,6 +272,18 @@
       "severity": "minor",
       "reason": "'should_escalate' has no corresponding specification in SPEC.md",
       "action": "Add spec for should_escalate or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'Platform' has no corresponding specification in SPEC.md",
+      "action": "Add spec for Platform or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'UnifiedResponse' has no corresponding specification in SPEC.md",
+      "action": "Add spec for UnifiedResponse or remove if unnecessary"
     },
     {
       "type": "ORPHANED",
