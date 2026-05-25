@@ -345,6 +345,20 @@ def test_fr22_rate_limit_burst_attack_blocked_1000_req():
     assert blocked >= 90, f"Expected ≥90 blocked in burst, got {blocked}"
 
 
+def test_fr22_burst_1000_requests_at_least_900_get_429():
+    """FR-22 burst 1000 requests at least 900 get 429 (NP-03)."""
+    from omnibot.security.rate_limiter import RateLimiter
+    rl = RateLimiter()
+    user_id = "burst_1000_attacker"
+    for _ in range(100):
+        rl.check("telegram", user_id)
+    blocked = 0
+    for _ in range(1000):
+        if not rl.check("telegram", user_id):
+            blocked += 1
+    assert blocked >= 900, f"Expected ≥900 blocked, got {blocked}"
+
+
 # ---------------------------------------------------------------------------
 # NFR-pattern tests — NP-06 health endpoint timeout (test 17)
 # ---------------------------------------------------------------------------
@@ -426,6 +440,35 @@ def test_fr22_radon_cc_max_le_10_ci_gate():
         complexity = block.get("complexity", 0)
         assert complexity <= 10, (
             f"Function {block.get('name','?')} has CC={complexity} > 10"
+        )
+
+
+def test_fr22_cc_max_le_10_ast_approx():
+    """FR-22 CC ≤ 10 verified via AST (parallel mock — no radon dependency).
+
+    This is the parallel for test_fr22_radon_cc_max_le_10_ci_gate when radon
+    CLI is unavailable. Uses Python ast to approximate McCabe CC from decision
+    points. The original radon test remains for integration CI runs.
+    """
+    import ast
+    import pathlib
+
+    src_path = pathlib.Path("03-development/src/omnibot/security/whitelist.py")
+    tree = ast.parse(src_path.read_text())
+
+    for node in ast.walk(tree):
+        if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            continue
+        decisions = 0
+        for child in ast.walk(node):
+            if isinstance(child, (ast.If, ast.For, ast.While,
+                                  ast.ExceptHandler, ast.IfExp)):
+                decisions += 1
+            elif isinstance(child, ast.BoolOp):
+                decisions += len(child.values) - 1
+        cc = decisions + 1
+        assert cc <= 10, (
+            f"Function {node.name} has AST-approx CC={cc} > 10"
         )
 
 

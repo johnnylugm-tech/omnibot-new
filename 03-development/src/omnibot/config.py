@@ -114,10 +114,10 @@ def get_database_url() -> str:
 
 def _parse_int_or_raise(value: str, *, default: int) -> int:
     """Parse an integer from a string, falling back to default if empty."""
-    if not value:
+    if not value.strip():
         return default
     try:
-        return int(value)
+        return int(value.strip())
     except ValueError:
         raise ConfigError(
             f"Invalid integer value for environment variable: {value!r}"
