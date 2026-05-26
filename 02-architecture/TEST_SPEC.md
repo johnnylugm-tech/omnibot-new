@@ -488,6 +488,7 @@
 | 43 | `test_fr22_fcr_phase1_target_50_percent_odd_query` | nfr_pattern | NP-06 |
 
 ---
+### FR-22-END
 
 
 ## Cross-Cutting Integration Tests
@@ -496,21 +497,48 @@
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
+| 1 | `test_webhook_telegram_valid_payload_returns_200` | integration | NFR-01 |
+| 2 | `test_webhook_telegram_invalid_signature_returns_401` | integration | NP-01 |
+| 3 | `test_webhook_telegram_rate_limit_exceeded_returns_429` | integration | NP-03 |
+| 4 | `test_webhook_telegram_malformed_body_returns_422` | integration | NP-04 |
+| 5 | `test_webhook_line_valid_payload_returns_200` | integration | NFR-01 |
+| 6 | `test_webhook_line_invalid_signature_returns_401` | integration | NP-01 |
+| 7 | `test_webhook_line_rate_limit_exceeded_returns_429` | integration | NP-03 |
+| 8 | `test_webhook_line_malformed_body_returns_422` | integration | NP-04 |
+| 9 | `test_health_endpoint_all_services_up_returns_200` | integration | NFR-06 |
+| 10 | `test_health_endpoint_db_down_returns_200_degraded` | integration | NFR-06 |
+| 11 | `test_health_endpoint_redis_down_returns_200_degraded` | integration | NFR-06 |
+| 12 | `test_deploy_health_endpoint_returns_200_after_startup` | smoke | NP-07 |
 
 ### Security Red Team
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
+| 13 | `test_redteam_ip_whitelist_blocks_unknown_ip` | fault_injection | NP-08 |
+| 14 | `test_redteam_ip_whitelist_rejects_empty_ip` | fault_injection | NP-08 |
+| 15 | `test_redteam_webhook_signature_replay_attack_blocked` | fault_injection | NP-08 |
+| 16 | `test_redteam_webhook_timing_attack_signature_enumeration_resistant` | fault_injection | NP-08 |
+| 17 | `test_redteam_rate_limit_burst_attack_blocked` | fault_injection | NP-03, NP-13 |
+| 18 | `test_redteam_pii_phone_leak_masked` | fault_injection | NP-08 |
+| 19 | `test_redteam_pii_email_leak_masked` | fault_injection | NP-08 |
+| 20 | `test_redteam_pii_address_leak_masked` | fault_injection | NP-08 |
+| 21 | `test_redteam_input_sanitization_null_byte_removed` | fault_injection | NP-04 |
+| 22 | `test_redteam_input_sanitization_unicode_confusion_normalized` | fault_injection | NP-04 |
 
 ### KPI Gates
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
+| 23 | `test_kpi_p95_latency_phase1_under_3s` | nfr_pattern | NP-06 |
+| 24 | `test_kpi_fcr_phase1_target_50_percent` | nfr_pattern | NP-07 |
 
 ### Deployment Smoke
 
 | # | Test Function | Type | Derivation |
 |---|---|---|---|
+| 25 | `test_deploy_docker_compose_all_services_healthy` | smoke | NP-07 |
+| 26 | `test_deploy_health_endpoint_all_services_up_returns_200` | smoke | NP-07 |
+| 27 | `test_deploy_docker_compose_down_cleans_up` | smoke | NP-11 |
 
 ---
 
