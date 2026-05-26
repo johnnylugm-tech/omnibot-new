@@ -1,8 +1,8 @@
 # Harness Methodology — Session Handover
 
-**Checkpoint**: `P4-gate3-20260526`  
-**Phase**: P4 — Testing  
-**Generated**: 2026-05-26T07:14:20Z
+**Checkpoint**: `P5-entry-20260526`  
+**Phase**: P5 — Review Baseline  
+**Generated**: 2026-05-26T10:27:38Z
 
 > ⚠️  **開始下一個工作階段前，請先執行 `/compact` 壓縮上下文**，再從「接下來的工作」繼續。
 
@@ -16,9 +16,9 @@ git clone --recurse-submodules https://github.com/johnnylugm-tech/omnibot-new &&
 
 # 2. Set env vars (all optional)
 
-# 3. Read plan and start Phase 5
+# 3. Read plan and continue Phase 5
 cat .methodology/phase5_plan.md
-# Follow SKILL.md §0.1 Phase 5 entry check, then execute
+# Follow the active plan and continue from where you left off
 ```
 
 ---
@@ -33,7 +33,7 @@ git clone --recurse-submodules https://github.com/johnnylugm-tech/omnibot-new /t
 git log --oneline -3
 
 # Confirm FSM state
-cat .methodology/state.json   # expected: phase=4 state=RUNNING last_gate=3
+cat .methodology/state.json   # expected: phase=5 state=RUNNING last_gate=3 last_fr=FR-22
 
 # Read active plan
 cat .methodology/phase5_plan.md
@@ -43,35 +43,29 @@ cat .methodology/phase5_plan.md
 |------|----|
 | Remote | `https://github.com/johnnylugm-tech/omnibot-new` |
 | Branch | `main` |
-| State | `phase=4 state=RUNNING last_gate=3` |
+| State | `phase=5 state=RUNNING last_gate=3 last_fr=FR-22` |
 | Plan | `.methodology/phase5_plan.md` |
 
 ---
 
 ## 任務背景
 
-Gate 3 PASS — quality cycle complete.
+Phase 4 complete (22/22 FRs Gate 1 PASS). Gate 3 (score=100.0). Advancing to Phase 5.
 
 ## 目前執行狀況
 
-Gate 3 PASS: score=100.0. — full test suite
+Phase 4: 22/22 FRs Gate 1 PASS. Gate 3 (score=100.0) — quality_complete. Ready to begin Phase 5.
 
 ## 接下來的工作
 
-1. Proceed to P5: Review Baseline
-2. Generate BASELINE.md
-3. On BASELINE.md ready → call commit_and_push_p5_baseline()
+1. Follow SKILL.md §0.1 Phase 5 entry checklist
+2. Read the Phase 5 plan and execute
 
 ## 注意事項
 
 - 100% follow SKILL.md
 - Do NOT commit `.sessi-work/` or `.methodology/` runtime artifacts
 - Git failures are warnings — they never block the pipeline
-
-## 附加資訊
-
-- **gate**: 3
-- **score**: 100.0
 
 ---
 *由 `HandoverGenerator` 自動生成。下次 push 時此檔案將被覆寫。*
