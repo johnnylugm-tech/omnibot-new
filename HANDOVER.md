@@ -1,8 +1,8 @@
 # Harness Methodology — Session Handover
 
-**Checkpoint**: `P4-pre-gate3-20260526`  
-**Phase**: P4 — Testing  
-**Generated**: 2026-05-26T15:05:49Z
+**Checkpoint**: `P5-entry-20260526`  
+**Phase**: P5 — Review Baseline  
+**Generated**: 2026-05-26T15:07:00Z
 
 > ⚠️  **開始下一個工作階段前，請先執行 `/compact` 壓縮上下文**，再從「接下來的工作」繼續。
 
@@ -16,8 +16,8 @@ git clone --recurse-submodules https://github.com/johnnylugm-tech/omnibot-new &&
 
 # 2. Set env vars (all optional)
 
-# 3. Read plan and continue Phase 4
-cat .methodology/phase4_plan.md
+# 3. Read plan and continue Phase 5
+cat .methodology/phase5_plan.md
 # Follow the active plan and continue from where you left off
 ```
 
@@ -33,109 +33,39 @@ git clone --recurse-submodules https://github.com/johnnylugm-tech/omnibot-new /t
 git log --oneline -3
 
 # Confirm FSM state
-cat .methodology/state.json   # expected: phase=4 state=RUNNING last_gate=1 last_fr=FR-22
+cat .methodology/state.json   # expected: phase=5 state=RUNNING last_gate=3 last_fr=FR-22
 
 # Read active plan
-cat .methodology/phase4_plan.md
+cat .methodology/phase5_plan.md
 ```
 
 | 欄位 | 值 |
 |------|----|
 | Remote | `https://github.com/johnnylugm-tech/omnibot-new` |
 | Branch | `main` |
-| State | `phase=4 state=RUNNING last_gate=1 last_fr=FR-22` |
-| Plan | `.methodology/phase4_plan.md` |
+| State | `phase=5 state=RUNNING last_gate=3 last_fr=FR-22` |
+| Plan | `.methodology/phase5_plan.md` |
 
 ---
 
 ## 任務背景
 
-P4 Testing complete. Gate 3 not yet executed.
+Phase 4 complete (22/22 FRs Gate 1 PASS). Gate 3 (score=100.0). Advancing to Phase 5.
 
 ## 目前執行狀況
 
-All 22 FR(s) Gate 1 re-eval PASS [FR-01,FR-02,FR-03,FR-04,FR-05,…+17]. Gate 3 (14 dims) not yet started.
-
-**A/B Session Results:**
-  - P1 / REQUIREMENTS_ENGINEER: **complete**
-  - P1 / BUSINESS_ANALYST: **complete**
-  - P1 / BUSINESS_ANALYST r2: **APPROVE**
-  - P1 / BUSINESS_ANALYST r3: **APPROVE**
-  - TEST / BUSINESS_ANALYST: **complete**
-  - P1_SPEC_TRACKING / BUSINESS_ANALYST: **APPROVE**
-  - P1_SPEC_TRACKING / BUSINESS_ANALYST r2: **APPROVE**
-  - P1_TRACE_MATRIX / BUSINESS_ANALYST: **APPROVE**
-  - P1_TEST_INVENTORY / BUSINESS_ANALYST: **APPROVE**
-  - P1_HOLISTIC / BUSINESS_ANALYST: **APPROVE**
-  - P1 / architect: **complete**
-  - P1 / reviewer: **APPROVE**
-  - SAD.md / ARCHITECT: **complete**
-  - SAD.md / TECH_LEAD: **complete**
-  - ADR.md / ARCHITECT: **complete**
-  - TEST_SPEC.md / ARCHITECT: **complete**
-  - FR-02 / developer: **complete**
-  - FR-01 / developer: **complete**
-  - FR-03 / developer: **complete**
-  - FR-04 / developer: **complete**
-  - FR-05 / developer: **complete**
-  - FR-06 / developer: **complete**
-  - FR-07 / developer: **complete**
-  - FR-08 / developer: **complete**
-  - FR-09 / developer: **complete**
-  - FR-10 / developer: **complete**
-  - FR-11 / developer: **complete**
-  - FR-12 / developer: **complete**
-  - FR-13 / developer: **complete**
-  - FR-14 / developer: **complete**
-  - FR-15 / developer: **complete**
-  - FR-16 / developer: **complete**
-  - FR-17 / developer: **complete**
-  - FR-18 / developer: **complete**
-  - FR-19 / developer: **complete**
-  - FR-20 / developer: **complete**
-  - FR-21 / developer: **complete**
-  - FR-22 / developer: **complete**
-  - P4_TEST_PLAN / qa: **complete**
-  - P4_TEST_PLAN / reviewer: **APPROVE**
-
-**Recently Committed Files:**
-  - `.coverage`
-  - `.harness/traces/agent_trajectory.jsonl`
-  - `.methodology/decision_logs/2026-05-26/GATE_4_056.yaml`
-  - `.methodology/decision_logs/2026-05-26/GATE_4_057.yaml`
-  - `.methodology/decision_logs/2026-05-26/GATE_4_058.yaml`
-  - `.methodology/decision_logs/2026-05-26/GATE_4_059.yaml`
-  - `.methodology/decision_logs/2026-05-26/GATE_4_060.yaml`
-  - `.methodology/decision_logs/2026-05-26/GATE_4_061.yaml`
-  - `.methodology/decision_logs/2026-05-26/GATE_4_062.yaml`
-  - `.methodology/decision_logs/2026-05-26/GATE_4_063.yaml`
-  - `.methodology/decision_logs/2026-05-26/GATE_4_064.yaml`
-  - `.methodology/decision_logs/2026-05-26/GATE_4_065.yaml`
-  - `.methodology/effort_metrics.db`
-  - `.methodology/fr_progress.json`
-  - `.methodology/gate_timestamps.jsonl`
-  - `.methodology/state.json`
-  - `00-summary/Phase4_STAGE_PASS.md`
-  - `02-architecture/TEST_SPEC.md`
-  - `pytest.ini.bak`
-  - `HANDOVER.md`
+Phase 4: 22/22 FRs Gate 1 PASS. Gate 3 (score=100.0) — quality_complete. Ready to begin Phase 5.
 
 ## 接下來的工作
 
-1. Run Gate 3 evaluation (14 dims, target score ≥ 80)
-2. Fix any failures during evaluation
-3. On Gate 3 PASS → `finalize-gate --gate 3` handles push + HANDOVER
+1. Follow SKILL.md §0.1 Phase 5 entry checklist
+2. Read the Phase 5 plan and execute
 
 ## 注意事項
 
 - 100% follow SKILL.md
 - Do NOT commit `.sessi-work/` or `.methodology/` runtime artifacts
 - Git failures are warnings — they never block the pipeline
-
-## 附加資訊
-
-- **fr_count**: 22
-- **HERMES_REVIEWER_TARGET**: ❌ not set (required before P6)
 
 ---
 *由 `HandoverGenerator` 自動生成。下次 push 時此檔案將被覆寫。*
