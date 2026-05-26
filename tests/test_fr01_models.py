@@ -123,3 +123,91 @@ def test_build_async_engine_returns_engine():
     # AsyncEngine is lazy — verify it returns without error and has correct driver
     assert engine is not None
     assert engine.url.drivername == "postgresql+asyncpg"
+
+
+# ---------------------------------------------------------------------------
+# Coverage gap tests — models.py L31-34, L44-45, L269-286
+# ---------------------------------------------------------------------------
+
+
+def test_get_engine_initializes_when_engine_is_none():
+    """_get_engine initializes the singleton on first call when _engine is None.
+
+    Covers models.py L31-34: the `if _engine is None:` branch that imports
+    get_database_url and calls _build_engine.  The singleton is reset before
+    the call and restored to its original value afterwards.
+    """
+    import app.models as _models
+    from unittest.mock import MagicMock, patch
+
+    original = _models._engine
+    _models._engine = None
+    try:
+        mock_engine = MagicMock()
+        with patch("app.models._build_engine", return_value=mock_engine):
+            with patch("app.infrastructure.config.get_database_url",
+                       return_value="postgresql+asyncpg://u:p@localhost/db"):
+                result = _models._get_engine()
+        assert result is mock_engine
+        assert _models._engine is mock_engine
+    finally:
+        _models._engine = original
+
+
+def test_async_session_yields_session():
+    """async_session yields an AsyncSession without a real DB connection.
+
+    Covers models.py L44-45: `async with AsyncSession(engine) as session:` and
+    `yield session`.  AsyncSession is patched to return a mock context manager.
+    """
+    import asyncio
+    from unittest.mock import AsyncMock, MagicMock, patch
+    from app.models import async_session
+
+    async def run():
+        mock_session = AsyncMock()
+        mock_cm = MagicMock()
+        mock_cm.__aenter__ = AsyncMock(return_value=mock_session)
+        mock_cm.__aexit__ = AsyncMock(return_value=False)
+
+        with patch("app.models.AsyncSession", return_value=mock_cm):
+            engine = MagicMock()
+            yielded = []
+            async for session in async_session(engine):
+                yielded.append(session)
+
+        assert len(yielded) == 1
+        assert yielded[0] is mock_session
+
+    asyncio.run(run())
+
+
+def test_create_schema_executes_ddl_statements():
+    """create_schema() opens an engine transaction and executes DDL statements.
+
+    Covers models.py L269-286: the async function body that calls
+    _build_engine, engine.begin(), and conn.execute() for each DDL statement.
+    Both _build_engine and get_database_url are patched to avoid DB access.
+    """
+    import asyncio
+    from unittest.mock import AsyncMock, MagicMock, patch
+    from app.models import create_schema
+
+    async def run():
+        mock_conn = AsyncMock()
+        mock_tx = MagicMock()
+        mock_tx.__aenter__ = AsyncMock(return_value=mock_conn)
+        mock_tx.__aexit__ = AsyncMock(return_value=False)
+
+        mock_engine = MagicMock()
+        mock_engine.begin.return_value = mock_tx
+
+        with patch("app.models._build_engine", return_value=mock_engine):
+            with patch("app.infrastructure.config.get_database_url",
+                       return_value="postgresql+asyncpg://u:p@localhost/db"):
+                await create_schema()
+
+        # At least one DDL statement must have been executed
+        assert mock_conn.execute.call_count > 0
+
+    asyncio.run(run())
