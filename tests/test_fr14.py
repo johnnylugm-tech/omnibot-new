@@ -1,4 +1,4 @@
-"""FR-14: Health endpoint."""
+"""[FR-14]  Health endpoint."""
 from __future__ import annotations
 
 import time

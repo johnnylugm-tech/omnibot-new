@@ -1,4 +1,4 @@
-"""FR-16: Phase 1 ODD SQL queries — FCR rate, p95 latency per platform, knowledge source distribution.
+"""[FR-16]  Phase 1 ODD SQL queries — FCR rate, p95 latency per platform, knowledge source distribution.
 
 SRS.md §FR-16:
   "Provide Phase 1 ODD SQL queries: FCR rate, p95 latency per platform,

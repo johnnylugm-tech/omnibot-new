@@ -1,4 +1,4 @@
-"""FR-02: Accept Telegram Bot API webhook POST, parse into immutable UnifiedMessage.
+"""[FR-02]  Accept Telegram Bot API webhook POST, parse into immutable UnifiedMessage.
 
 SRS.md §FR-02:
   "Accept Telegram webhook POST, parse into UnifiedMessage."

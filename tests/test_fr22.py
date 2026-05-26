@@ -1,4 +1,4 @@
-"""FR-22: IP Whitelist — all required test functions per TEST_SPEC.md."""
+"""[FR-22]  IP Whitelist — all required test functions per TEST_SPEC.md."""
 from __future__ import annotations
 
 import json

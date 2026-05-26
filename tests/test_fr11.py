@@ -1,4 +1,4 @@
-"""FR-11: Layer 1 knowledge matching."""
+"""[FR-11]  Layer 1 knowledge matching."""
 from __future__ import annotations
 
 import time

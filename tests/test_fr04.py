@@ -1,4 +1,4 @@
-"""FR-04: Verify Telegram webhook signature via HMAC-SHA256.
+"""[FR-04]  Verify Telegram webhook signature via HMAC-SHA256.
 
 SRS.md §FR-04:
   "Verify Telegram webhook signature via HMAC-SHA256; reject invalid with 401"

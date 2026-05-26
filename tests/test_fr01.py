@@ -1,4 +1,4 @@
-"""FR-01: Create complete PostgreSQL schema with all core tables and indexes.
+"""[FR-01]  Create complete PostgreSQL schema with all core tables and indexes.
 
 SRS.md §FR-01:
   "Create complete PostgreSQL schema with all core tables (users, conversations,

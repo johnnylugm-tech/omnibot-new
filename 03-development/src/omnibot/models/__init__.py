@@ -1,4 +1,4 @@
-"""FR-06: UnifiedMessage, Platform, and MessageType definitions."""
+"""[FR-06] UnifiedMessage, Platform, and MessageType definitions."""
 from __future__ import annotations
 
 from dataclasses import dataclass, field

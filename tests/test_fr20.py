@@ -1,4 +1,4 @@
-"""FR-20: UnifiedResponse dataclass — 6 tests."""
+"""[FR-20]  UnifiedResponse dataclass — 6 tests."""
 from __future__ import annotations
 
 import json

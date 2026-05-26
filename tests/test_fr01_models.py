@@ -1,4 +1,4 @@
-"""Unit tests for app/models.py — non-DB helper functions and constants.
+"""[FR-01] Unit tests for app/models.py — non-DB helper functions and constants.
 
 These tests verify the module-level constants and pure functions without
 requiring a live database connection (FR-01 schema-creation tests are

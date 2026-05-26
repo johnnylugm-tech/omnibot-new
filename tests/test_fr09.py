@@ -1,4 +1,4 @@
-"""FR-09: PII masking L4."""
+"""[FR-09]  PII masking L4."""
 from __future__ import annotations
 
 from io import StringIO

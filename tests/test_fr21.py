@@ -1,4 +1,4 @@
-"""FR-21: Load and validate configuration from env vars; fail fast on missing keys.
+"""[FR-21]  Load and validate configuration from env vars; fail fast on missing keys.
 
 SRS.md §FR-21:
   "Load and validate configuration from env vars: bot tokens, channel secrets,

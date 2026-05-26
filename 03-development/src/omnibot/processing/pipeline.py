@@ -1,4 +1,4 @@
-"""FR-19: Core message processing pipeline."""
+"""[FR-19] Core message processing pipeline."""
 
 from __future__ import annotations
 

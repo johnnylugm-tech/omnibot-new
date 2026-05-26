@@ -1,4 +1,4 @@
-"""FR-08: Input Sanitizer L2 — Unicode NFKC normalization."""
+"""[FR-08] Input Sanitizer L2 — Unicode NFKC normalization."""
 from __future__ import annotations
 
 import unicodedata

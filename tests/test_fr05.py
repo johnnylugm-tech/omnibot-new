@@ -1,4 +1,4 @@
-"""FR-05: Verify LINE webhook signature via HMAC-SHA256 with Base64 digest.
+"""[FR-05]  Verify LINE webhook signature via HMAC-SHA256 with Base64 digest.
 
 SRS.md §FR-05:
   "Verify LINE webhook signature via HMAC-SHA256 with Base64 digest;

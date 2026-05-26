@@ -1,4 +1,4 @@
-"""FR-15: Docker Compose stack with omnibot-api, postgres (pgvector), redis; all with healthchecks.
+"""[FR-15]  Docker Compose stack with omnibot-api, postgres (pgvector), redis; all with healthchecks.
 
 SRS.md FR-15:
   "Provide docker-compose.yml with omnibot-api, postgres (pgvector), redis; all with healthchecks"

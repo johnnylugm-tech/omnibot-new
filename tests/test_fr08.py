@@ -1,4 +1,4 @@
-"""FR-08: Input Sanitizer L2 — NFKC normalization, strip control chars.
+"""[FR-08]  Input Sanitizer L2 — NFKC normalization, strip control chars.
 
 SRS.md §FR-08:
   "Normalize all inbound message text using Unicode NFKC normalization"

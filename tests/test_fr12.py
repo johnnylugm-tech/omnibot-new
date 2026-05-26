@@ -1,4 +1,4 @@
-"""FR-12: Basic escalation queue."""
+"""[FR-12]  Basic escalation queue."""
 from __future__ import annotations
 
 from unittest.mock import patch

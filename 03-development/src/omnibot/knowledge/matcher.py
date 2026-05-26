@@ -1,4 +1,4 @@
-"""FR-11: Layer 1 rule-based knowledge matcher."""
+"""[FR-11] Layer 1 rule-based knowledge matcher."""
 from __future__ import annotations
 
 import re

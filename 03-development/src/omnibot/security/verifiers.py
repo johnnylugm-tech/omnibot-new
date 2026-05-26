@@ -1,4 +1,4 @@
-"""Webhook signature verification — FR-04 (Telegram) + FR-05 (LINE)."""
+"""[FR-04] [FR-05] Webhook signature verification."""
 
 import base64
 import hashlib

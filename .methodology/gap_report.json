@@ -1,50 +1,14 @@
 {
   "summary": {
-    "total": 2233,
+    "total": 2230,
     "missing": 0,
     "incomplete": 0,
-    "orphaned": 2233,
+    "orphaned": 2230,
     "critical": 0,
     "major": 0,
-    "minor": 2233
+    "minor": 2230
   },
   "gaps": [
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'AsyncEngine' has no corresponding specification in SPEC.md",
-      "action": "Add spec for AsyncEngine or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'async_session' has no corresponding specification in SPEC.md",
-      "action": "Add spec for async_session or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'create_schema' has no corresponding specification in SPEC.md",
-      "action": "Add spec for create_schema or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'build_async_engine' has no corresponding specification in SPEC.md",
-      "action": "Add spec for build_async_engine or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'async_session' has no corresponding specification in SPEC.md",
-      "action": "Add spec for async_session or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'create_schema' has no corresponding specification in SPEC.md",
-      "action": "Add spec for create_schema or remove if unnecessary"
-    },
     {
       "type": "ORPHANED",
       "severity": "minor",
@@ -3518,6 +3482,24 @@
       "severity": "minor",
       "reason": "'is_allowed' has no corresponding specification in SPEC.md",
       "action": "Add spec for is_allowed or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'webhook_telegram' has no corresponding specification in SPEC.md",
+      "action": "Add spec for webhook_telegram or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'webhook_line' has no corresponding specification in SPEC.md",
+      "action": "Add spec for webhook_line or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'health' has no corresponding specification in SPEC.md",
+      "action": "Add spec for health or remove if unnecessary"
     },
     {
       "type": "ORPHANED",

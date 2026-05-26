@@ -1,4 +1,4 @@
-"""FR-17: Standardized error codes."""
+"""[FR-17] Standardized error codes."""
 from __future__ import annotations
 
 AUTH_INVALID_SIGNATURE = "AUTH_INVALID_SIGNATURE"

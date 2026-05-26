@@ -1,4 +1,4 @@
-"""FR-22: IP Whitelist."""
+"""[FR-22] IP Whitelist."""
 from __future__ import annotations
 
 import ipaddress

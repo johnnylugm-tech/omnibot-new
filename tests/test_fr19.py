@@ -1,3 +1,4 @@
+"""[FR-19] Unit and integration tests."""
 import hashlib
 import hmac
 import json

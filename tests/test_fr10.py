@@ -1,4 +1,4 @@
-"""FR-10: Token Bucket rate limiter."""
+"""[FR-10]  Token Bucket rate limiter."""
 from __future__ import annotations
 
 import threading

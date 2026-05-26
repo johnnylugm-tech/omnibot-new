@@ -1,4 +1,4 @@
-"""FR-18: Python naming conventions, docstrings, function length, CC ≤ 10."""
+"""[FR-18]  Python naming conventions, docstrings, function length, CC ≤ 10."""
 from __future__ import annotations
 
 import ast
