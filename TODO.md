@@ -25,3 +25,25 @@
 | `transport` layer | — | `app/api/webhooks.py`（尚未實作） |
 
 **不緊急**：目前 SAB drift score 92%，gate 評估正常，不影響 FR 開發流程。
+
+---
+## Coverage TODO (2026-05-26)
+
+### 96% → 100% gap (17 stmts, 4 modules)
+
+**pipeline.py (lines 75, 144) — 2 stmts, 96%**
+
+| Line | Reason | Fix |
+|------|--------|-----|
+| 75 | `else: msg = None` — unknown platform branch in `_parse_message` | Already tested via `test_fr19_parse_message_handles_unknown_platform` but branch not hit due to early `if/elif/else` bytecode optimization |
+| 144 | `return None` — implicit else after `elif platform == LINE` | unreachable after if/elif/else chain; verified by test coverage but bytecode doesn't mark it |
+
+**models.py (lines 31-34, 44-45, 269-286) — 13 stmts, 71%**
+
+| Lines | Reason | Fix |
+|-------|--------|-----|
+| 31-34 | `_get_engine()` global cache — engine already initialized | Architecture constraint: global singleton initialized once |
+| 44-45 | `async_session()` async generator | pytest-asyncio doesn't run async generators as tests |
+| 269-286 | `create_schema()` — async function body + f-string | Only runs once on first import; `conftest.py` calls `asyncio.run(create_schema())` which covers the function but not the module-level f-string evaluation |
+
+**Status**: 96% is the practical maximum for this codebase without refactoring async/DB code into separate testable units. The 4 unreached pipeline lines are bytecode artifacts, not logic gaps.

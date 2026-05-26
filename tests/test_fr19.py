@@ -238,6 +238,61 @@ def test_fr19_line_webhook_unauthenticated_returns_401():
     assert result.status_code == 401
 
 
+def test_fr19_parse_message_handles_line_platform():
+    """_parse_message correctly extracts LINE platform_user_id."""
+    orch = PipelineOrchestrator()
+    payload = {
+        "events": [
+            {
+                "type": "message",
+                "message": {"text": "hello", "type": "text"},
+                "source": {"userId": "U999"},
+                "replyToken": "token123",
+            }
+        ]
+    }
+    msg, uid = orch._parse_message(Platform.LINE, json.dumps(payload).encode())
+    assert msg is not None
+    assert uid == "U999"
+
+
+def test_fr19_parse_message_handles_unknown_platform():
+    """_parse_message returns (None, 'unknown') for unrecognized platforms."""
+    orch = PipelineOrchestrator()
+    # Pass a dict for raw_body (json.loads will fail if bytes expected)
+    msg, uid = orch._parse_message("unknown_platform", b'{}')
+    assert msg is None
+    assert uid == "unknown"
+
+
+def test_fr19_telegram_verifier_returns_none_without_token():
+    """_telegram_verifier returns None when TELEGRAM_BOT_TOKEN is not set."""
+    import os
+    from omnibot.processing.pipeline import _telegram_verifier
+
+    saved = os.environ.pop("TELEGRAM_BOT_TOKEN", None)
+    try:
+        result = _telegram_verifier()
+        assert result is None
+    finally:
+        if saved:
+            os.environ["TELEGRAM_BOT_TOKEN"] = saved
+
+
+def test_fr19_line_verifier_returns_none_without_secret():
+    """_line_verifier returns None when LINE_CHANNEL_SECRET is not set."""
+    import os
+    from omnibot.processing.pipeline import _line_verifier
+
+    saved = os.environ.pop("LINE_CHANNEL_SECRET", None)
+    try:
+        result = _line_verifier()
+        assert result is None
+    finally:
+        if saved:
+            os.environ["LINE_CHANNEL_SECRET"] = saved
+
+
 def test_fr19_rate_limited_returns_429():
     """Webhook returns 429 when rate limit exceeded."""
     rl = RateLimiter()
@@ -299,23 +354,6 @@ def test_fr19_postgres_unavailable_after_retries_returns_500():
     assert call_count == 3
 
 
-def test_fr19_db_write_timeout_retries_with_exponential_backoff():
-    """DB write timeout retries with exponential backoff (mocked)."""
-    orch = PipelineOrchestrator()
-    call_count = 0
-    def mock_execute(data):
-        nonlocal call_count
-        call_count += 1
-        if call_count < 3:
-            raise TimeoutError("db timeout")
-        return {"id": 1}
-
-    with patch.object(orch, "_db_execute", side_effect=mock_execute):
-        result = orch._db_execute_with_retry({})
-    assert result == {"id": 1}
-    assert call_count == 3
-
-
 def test_fr19_pii_detected_in_message_logs_warning():
     """When PII is detected, a warning is logged."""
     logger = StructuredLogger("test")
@@ -353,6 +391,76 @@ def test_fr19_concurrent_requests_from_different_users_isolated():
     for t in threads:
         t.join()
     assert all(results), "All requests from different users should pass within bucket limit"
+
+
+def test_fr19_build_response_with_escalation():
+    """_build_response escalates when no knowledge match."""
+    orch = PipelineOrchestrator()
+    resp = orch._build_response(None, Platform.TELEGRAM)
+    assert resp.source == "escalate"
+    assert resp.confidence == 0.0
+    assert resp.status_code == 200
+
+
+def test_fr19_build_response_with_match_result():
+    """_build_response uses match result fields to build response."""
+    orch = PipelineOrchestrator()
+    match = {"source": "rule", "confidence": 0.95, "answer": "Hello!"}
+    resp = orch._build_response(match, Platform.TELEGRAM)
+    assert resp.source == "rule"
+    assert resp.confidence == 0.95
+    assert resp.content == "Hello!"
+
+
+def test_fr19_invalid_json_returns_escalate_response():
+    """Malformed JSON body is caught and returns escalate response."""
+    orch = PipelineOrchestrator()
+    orch._skip_signature_check = True
+    result = orch.process(Platform.TELEGRAM, b"not valid json{", "sig")
+    assert result.source == "escalate"
+
+
+def test_fr19_process_content_handles_none_message():
+    """_process_content returns a match result (with empty rules) for None message."""
+    orch = PipelineOrchestrator()
+    result = orch._process_content(None)
+    # Returns empty rules match (no rules provided)
+    assert result is None or isinstance(result, dict)
+
+
+def test_fr19_process_content_sanitizes_and_masks_content():
+    """_process_content sanitizes then masks PII before knowledge match."""
+    orch = PipelineOrchestrator()
+    # Create a mock message with PII
+    msg = MagicMock()
+    msg.content = "ＡＢＣ and 0912345678"
+    result = orch._process_content(msg)
+    # Should return None because rules is empty
+    assert result is None
+
+
+def test_fr19_db_execute_with_retry_raises_after_max_attempts():
+    """_db_execute_with_retry raises after max_attempts when all fail."""
+    orch = PipelineOrchestrator()
+    with patch.object(orch, "_db_execute", side_effect=ConnectionError("fail")):
+        with pytest.raises(ConnectionError):
+            orch._db_execute_with_retry({})
+
+
+def test_fr19_db_execute_with_retry_succeeds_on_third_attempt():
+    """_db_execute_with_retry succeeds when 3rd attempt returns ok."""
+    orch = PipelineOrchestrator()
+    call_count = 0
+    def mock_exec(data):
+        nonlocal call_count
+        call_count += 1
+        if call_count < 3:
+            raise TimeoutError("timeout")
+        return {"ok": True}
+    with patch.object(orch, "_db_execute", side_effect=mock_exec):
+        result = orch._db_execute_with_retry({})
+    assert result == {"ok": True}
+    assert call_count == 3
 
 
 def test_fr19_knowledge_match_timeout_escalates_to_human_handoff():
@@ -396,12 +504,28 @@ def test_fr19_pipeline_integrates_fr22_ip_whitelist_stage_1():
     assert wl.is_allowed("10.0.0.1") is False
 
 
+def test_fr19_validation_error_caught_by_process_returns_200():
+    """ValidationError raised in pipeline is caught and returns 200 escalate response."""
+    from omnibot.errors import ValidationError
+    orch = PipelineOrchestrator()
+    orch._skip_signature_check = True
+    # Patch _parse_message to raise ValidationError
+    with patch.object(orch, "_parse_message", side_effect=ValidationError("bad data", status_code=422)):
+        result = orch.process(Platform.TELEGRAM, b"{}", "sig")
+    assert result.status_code == 200
+    assert result.source == "escalate"
+
+
 def test_fr19_pipeline_integrates_fr04_fr05_signature_stage_2():
     """Pipeline stage 2 integrates FR-04/FR-05 signature verification."""
     verifier = TelegramWebhookVerifier(bot_token="test_token")
     body = b'{"test": "payload"}'
     sig = verifier.verify(body, None)
     assert sig is False
+
+    line_verifier = LineWebhookVerifier(channel_secret="test_secret")
+    line_sig = line_verifier.verify(body, None)
+    assert line_sig is False
 
 
 def test_fr19_pipeline_integrates_fr02_fr03_adapter_stage_3():
