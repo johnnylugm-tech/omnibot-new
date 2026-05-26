@@ -645,22 +645,22 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
   python3 scripts/generate_sab.py --project .
   ```
 
-- [ ] Integration tests pass
-- [ ] Performance tests meet targets
-- [ ] Security scan passes
-- [ ] Baseline established
+- [x] Integration tests pass
+- [x] Performance tests meet targets
+- [x] Security scan passes
+- [x] Baseline established
 
 ### P5 Milestone Push (10-Push Strategy ⑦)
 
-- [ ] **PUSH ⑦ — P5-baseline** (after BASELINE.md is generated):
+- [x] **PUSH ⑦ — P5-baseline** (after BASELINE.md is generated):
   ```bash
   python3 harness_cli.py push-milestone --type p5-baseline --project .
   ```
   > Writes HANDOVER.md + commits + pushes.
 
 ### Phase 5 Deliverables
-- [ ] `BASELINE.md` - System baseline
-- [ ] `VERIFICATION_REPORT.md` - Verification report
+- [x] `BASELINE.md` - System baseline
+- [x] `VERIFICATION_REPORT.md` - Verification report
 - [x] `.methodology/sessions_spawn.log` — auto-populated by AgentSpawner
 - [ ] Gate 1 PASS for every FR
 
@@ -673,7 +673,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 ### Phase 5 → Phase 6: Quality Assurance
 
 - [ ] Confirm ALL checkpoints in this plan are ✓  (no skips — HR-03)
-- [ ] Generate Phase 6 plan:
+- [x] Generate Phase 6 plan:
   ```bash
   python3 harness_cli.py plan-phase --phase 6 --project . \
     --output .methodology/phase6_plan.md
