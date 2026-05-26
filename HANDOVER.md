@@ -1,8 +1,8 @@
 # Harness Methodology — Session Handover
 
-**Checkpoint**: `P3-gate2-20260526`  
-**Phase**: P3 — Implementation  
-**Generated**: 2026-05-26T04:22:41Z
+**Checkpoint**: `P4-entry-20260526`  
+**Phase**: P4 — Testing  
+**Generated**: 2026-05-26T06:46:26Z
 
 > ⚠️  **開始下一個工作階段前，請先執行 `/compact` 壓縮上下文**，再從「接下來的工作」繼續。
 
@@ -16,9 +16,9 @@ git clone --recurse-submodules https://github.com/johnnylugm-tech/omnibot-new &&
 
 # 2. Set env vars (all optional)
 
-# 3. Read plan and start Phase 4
+# 3. Read plan and continue Phase 4
 cat .methodology/phase4_plan.md
-# Follow SKILL.md §0.1 Phase 4 entry check, then execute
+# Follow the active plan and continue from where you left off
 ```
 
 ---
@@ -33,7 +33,7 @@ git clone --recurse-submodules https://github.com/johnnylugm-tech/omnibot-new /t
 git log --oneline -3
 
 # Confirm FSM state
-cat .methodology/state.json   # expected: phase=3 state=RUNNING last_gate=2
+cat .methodology/state.json   # expected: phase=4 state=RUNNING last_gate=2 last_fr=FR-22
 
 # Read active plan
 cat .methodology/phase4_plan.md
@@ -43,35 +43,29 @@ cat .methodology/phase4_plan.md
 |------|----|
 | Remote | `https://github.com/johnnylugm-tech/omnibot-new` |
 | Branch | `main` |
-| State | `phase=3 state=RUNNING last_gate=2` |
+| State | `phase=4 state=RUNNING last_gate=2 last_fr=FR-22` |
 | Plan | `.methodology/phase4_plan.md` |
 
 ---
 
 ## 任務背景
 
-Gate 2 PASS — quality cycle complete.
+Phase 3 complete (22/22 FRs Gate 1 PASS). Gate 2 (score=91.3). Advancing to Phase 4.
 
 ## 目前執行狀況
 
-Gate 2 PASS: score=91.3.
+Phase 3: 22/22 FRs Gate 1 PASS. Gate 2 (score=91.3) — quality_complete. Ready to begin Phase 4.
 
 ## 接下來的工作
 
-1. Proceed to P4: Testing
-2. Build full test suite (Gate 3 target ≥ 80)
-3. On Gate 3 PASS → call commit_and_push_gate(gate_num=3, ...)
+1. Follow SKILL.md §0.1 Phase 4 entry checklist
+2. Read the Phase 4 plan and execute
 
 ## 注意事項
 
 - 100% follow SKILL.md
 - Do NOT commit `.sessi-work/` or `.methodology/` runtime artifacts
 - Git failures are warnings — they never block the pipeline
-
-## 附加資訊
-
-- **gate**: 2
-- **score**: 91.3
 
 ---
 *由 `HandoverGenerator` 自動生成。下次 push 時此檔案將被覆寫。*
