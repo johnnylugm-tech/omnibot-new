@@ -4,6 +4,13 @@ from __future__ import annotations
 import re
 
 
+def _compute_confidence(kw_lower: str, text_lower: str, words: set) -> float:
+    """Compute confidence tier for a keyword match."""
+    word_match = kw_lower in words
+    boundary_match = re.search(r'\b' + re.escape(kw_lower) + r'\b', text_lower) is not None
+    return 0.95 if (word_match or boundary_match) else 0.70
+
+
 class KnowledgeMatcher:
     @staticmethod
     def match(text: str, rules: list[dict]) -> dict | None:
@@ -19,26 +26,22 @@ class KnowledgeMatcher:
         if not text:
             return None
 
-        text_lower = text.lower()
-        words = set(re.findall(r'\b\w+\b', text_lower))
-
-        # Filter out inactive rules
-        active_rules = [r for r in rules if r.get("active", True)]
-
-        for rule in sorted(active_rules, key=lambda r: r.get("version", 0), reverse=True)[:5]:
-            for keyword in rule.get("keywords", []):
-                kw_lower = keyword.lower()
-                if kw_lower in text_lower:
-                    # Determine confidence tier
-                    if kw_lower in words or re.search(r'\b' + re.escape(kw_lower) + r'\b', text_lower):
-                        confidence = 0.95
-                    else:
-                        confidence = 0.70
-                    return {
-                        "question": rule.get("question", ""),
-                        "answer": rule.get("answer", ""),
-                        "category": rule.get("category", "general"),
-                        "confidence": confidence,
-                        "source": "rule",
-                    }
+        try:
+            text_lower = text.lower()
+            words = set(re.findall(r'\b\w+\b', text_lower))
+            active_rules = [r for r in rules if r.get("active", True)]
+            for rule in sorted(active_rules, key=lambda r: r.get("version", 0), reverse=True)[:5]:
+                for keyword in rule.get("keywords", []):
+                    kw_lower = keyword.lower()
+                    if kw_lower in text_lower:
+                        confidence = _compute_confidence(kw_lower, text_lower, words)
+                        return {
+                            "question": rule.get("question", ""),
+                            "answer": rule.get("answer", ""),
+                            "category": rule.get("category", "general"),
+                            "confidence": confidence,
+                            "source": "rule",
+                        }
+        except Exception:
+            pass
         return None

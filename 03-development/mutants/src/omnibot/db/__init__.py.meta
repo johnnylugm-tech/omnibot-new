@@ -1,0 +1,23 @@
+{
+    "exit_code_by_key": {
+        "omnibot.db.x__build_engine__mutmut_1": 33,
+        "omnibot.db.x__build_engine__mutmut_2": 33,
+        "omnibot.db.x__build_engine__mutmut_3": 33,
+        "omnibot.db.x__build_engine__mutmut_4": 33,
+        "omnibot.db.x__build_engine__mutmut_5": 33,
+        "omnibot.db.x__get_engine__mutmut_1": 33,
+        "omnibot.db.x__get_engine__mutmut_2": 33,
+        "omnibot.db.x__get_engine__mutmut_3": 33,
+        "omnibot.db.x_build_async_engine__mutmut_1": 33,
+        "omnibot.db.x_async_session__mutmut_1": 33,
+        "omnibot.db.x__ddl__mutmut_1": 33,
+        "omnibot.db.x__ddl_tables__mutmut_1": 33,
+        "omnibot.db.x__ddl_indexes__mutmut_1": 33,
+        "omnibot.db.x_create_schema__mutmut_1": 33,
+        "omnibot.db.x_create_schema__mutmut_2": 33,
+        "omnibot.db.x_create_schema__mutmut_3": 33,
+        "omnibot.db.x_create_schema__mutmut_4": 33,
+        "omnibot.db.x_create_schema__mutmut_5": 33
+    },
+    "hash_by_function_name": {}
+}

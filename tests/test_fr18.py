@@ -547,10 +547,10 @@ def test_fr18_pipeline_platform_enum():
 
 def test_fr18_pipeline_unified_response_dataclass():
     from omnibot.processing.pipeline import UnifiedResponse, Platform
-    r = UnifiedResponse(platform=Platform.TELEGRAM, status_code=200, body=b"ok")
+    r = UnifiedResponse(content="ok", source="rule", confidence=0.95, platform=Platform.TELEGRAM, status_code=200)
     assert r.platform == Platform.TELEGRAM
     assert r.status_code == 200
-    assert r.body == b"ok"
+    assert r.content == "ok"
 
 
 def test_fr18_pipeline_orchestrator_raises_not_implemented():
@@ -757,7 +757,8 @@ def test_fr18_knowledge_matcher_partial_match_confidence():
     rules = [{"keywords": ["ello"], "answer": "partial", "version": 1}]
     result = KnowledgeMatcher.match("hello", rules)
     assert result is not None
-    assert result["confidence"] == 0.95
+    # "ello" is a substring but not a word boundary match → 0.70
+    assert result["confidence"] == 0.70
 
 
 def test_fr18_knowledge_matcher_exact_wildcard_match():

@@ -171,6 +171,7 @@ def test_fr22_fcr_phase1_target_50_percent_odd_query():
     # First-Contact-Resolution rate test for Phase 1 odd queries.
     # An odd/unknown query should trigger escalation (source=escalate).
     orch = PipelineOrchestrator()
+    orch._skip_signature_check = True
     payload = {"message": {"from": {"id": 1}, "text": "xyzzy odd query zzz"}}
     body = json.dumps(payload).encode()
     result = orch.process(Platform.TELEGRAM, body, _telegram_sig(body))

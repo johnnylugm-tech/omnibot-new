@@ -1,215 +1,221 @@
-# TEST_INVENTORY.yaml — P1 Naming Authority (v2.6)
-# Names here are authoritative for TEST_SPEC.md generation.
-# derive_test_cases.md preserves these exact names where specified.
-format_version: "1.1"
-
+format_version: '1.1'
 fr_tests:
   FR-01:
     unit:
-      - test_fr01_schema_has_all_8_tables
-      - test_fr01_schema_has_all_11_indexes
-      - test_fr01_phase2_phase3_columns_have_defaults
+    - test_fr01_schema_has_all_8_tables
+    - test_fr01_schema_has_all_11_indexes
+    - test_fr01_phase2_phase3_columns_have_defaults
     integration:
-      - test_fr01_migration_runs_idempotent
+    - test_fr01_migration_runs_idempotent
   FR-02:
     unit:
-      - test_fr02_telegram_valid_payload_returns_unified_message
-      - test_fr02_telegram_missing_fields_raises_descriptive_error
+    - test_fr02_telegram_valid_payload_returns_unified_message
+    - test_fr02_telegram_missing_fields_raises_descriptive_error
     integration:
-      - test_fr02_telegram_adapter_in_pipeline
+    - test_fr02_telegram_adapter_in_pipeline
   FR-03:
     unit:
-      - test_fr03_line_valid_payload_returns_unified_message_with_reply_token
-      - test_fr03_line_empty_events_handled_gracefully
+    - test_fr03_line_valid_payload_returns_unified_message_with_reply_token
+    - test_fr03_line_empty_events_handled_gracefully
     integration:
-      - test_fr03_line_adapter_in_pipeline
+    - test_fr03_line_adapter_in_pipeline
   FR-04:
     unit:
-      - test_fr04_telegram_valid_signature_returns_true
-      - test_fr04_telegram_tampered_body_returns_false
-      - test_fr04_telegram_missing_signature_header_returns_false
-      - test_fr04_telegram_uses_compare_digest_timing_safe
+    - test_fr04_telegram_valid_signature_returns_true
+    - test_fr04_telegram_tampered_body_returns_false
+    - test_fr04_telegram_missing_signature_header_returns_false
+    - test_fr04_telegram_uses_compare_digest_timing_safe
     integration:
-      - test_fr04_telegram_webhook_invalid_signature_returns_401
+    - test_fr04_telegram_webhook_invalid_signature_returns_401
   FR-05:
     unit:
-      - test_fr05_line_valid_signature_returns_true
-      - test_fr05_line_wrong_secret_returns_false
-      - test_fr05_line_uses_compare_digest_timing_safe
+    - test_fr05_line_valid_signature_returns_true
+    - test_fr05_line_wrong_secret_returns_false
+    - test_fr05_line_uses_compare_digest_timing_safe
     integration:
-      - test_fr05_line_webhook_invalid_signature_returns_401
+    - test_fr05_line_webhook_invalid_signature_returns_401
   FR-06:
     unit:
-      - test_fr06_unified_message_instantiation_valid
-      - test_fr06_unified_message_mutation_raises_frozen_instance_error
-      - test_fr06_unified_message_received_at_defaults_to_utc
-      - test_fr06_all_platform_enum_members_present
-      - test_fr06_all_message_type_enum_members_present
-    integration:
-      []
+    - test_fr06_unified_message_instantiation_valid
+    - test_fr06_unified_message_mutation_raises_frozen_instance_error
+    - test_fr06_unified_message_received_at_defaults_to_utc
+    - test_fr06_all_platform_enum_members_present
+    - test_fr06_all_message_type_enum_members_present
+    integration: []
   FR-07:
     unit:
-      - test_fr07_api_response_success_serializes_correctly
-      - test_fr07_api_response_error_serializes_with_error_code
-      - test_fr07_paginated_response_includes_total_page_limit_has_next
-      - test_fr07_paginated_response_json_roundtrip_preserves_has_next
-    integration:
-      []
+    - test_fr07_api_response_success_serializes_correctly
+    - test_fr07_api_response_error_serializes_with_error_code
+    - test_fr07_paginated_response_includes_total_page_limit_has_next
+    - test_fr07_paginated_response_json_roundtrip_preserves_has_next
+    integration: []
   FR-08:
     unit:
-      - test_fr08_sanitize_fullwidth_to_ascii_via_nfkc
-      - test_fr08_sanitize_control_chars_removed
-      - test_fr08_sanitize_newlines_and_tabs_preserved
-      - test_fr08_sanitize_empty_string_returns_empty_string
-      - test_fr08_sanitize_no_regex_pattern_matching_in_implementation
+    - test_fr08_sanitize_fullwidth_to_ascii_via_nfkc
+    - test_fr08_sanitize_control_chars_removed
+    - test_fr08_sanitize_newlines_and_tabs_preserved
+    - test_fr08_sanitize_empty_string_returns_empty_string
+    - test_fr08_sanitize_no_regex_pattern_matching_in_implementation
     integration:
-      - test_fr08_sanitizer_called_in_pipeline_before_knowledge_match
+    - test_fr08_sanitizer_called_in_pipeline_before_knowledge_match
   FR-09:
     unit:
-      - test_fr09_mask_taiwan_phone_dashed_format
-      - test_fr09_mask_taiwan_phone_continuous_digits
-      - test_fr09_mask_email_address
-      - test_fr09_mask_taiwan_address_city_road
-      - test_fr09_clean_text_returns_mask_count_zero
-      - test_fr09_pii_corpus_recall_above_95_percent
-      - test_fr09_pii_corpus_precision_above_99_percent
+    - test_fr09_mask_taiwan_phone_dashed_format
+    - test_fr09_mask_taiwan_phone_continuous_digits
+    - test_fr09_mask_email_address
+    - test_fr09_mask_taiwan_address_city_road
+    - test_fr09_clean_text_returns_mask_count_zero
+    - test_fr09_pii_corpus_recall_above_95_percent
+    - test_fr09_pii_corpus_precision_above_99_percent
     integration:
-      - test_fr09_pii_masked_in_logs_during_pipeline
+    - test_fr09_pii_masked_in_logs_during_pipeline
   FR-10:
     unit:
-      - test_fr10_token_bucket_consumes_within_capacity
-      - test_fr10_token_bucket_exceeded_returns_false
-      - test_fr10_token_bucket_refills_over_time
-      - test_fr10_rate_limiter_separate_user_buckets_independent
-      - test_fr10_rate_limiter_separate_platform_buckets_independent
+    - test_fr10_token_bucket_consumes_within_capacity
+    - test_fr10_token_bucket_exceeded_returns_false
+    - test_fr10_token_bucket_refills_over_time
+    - test_fr10_rate_limiter_separate_user_buckets_independent
+    - test_fr10_rate_limiter_separate_platform_buckets_independent
     integration:
-      - test_fr10_webhook_rate_limit_exceeded_returns_429
+    - test_fr10_webhook_rate_limit_exceeded_returns_429
   FR-11:
     unit:
-      - test_fr11_rule_match_exact_keyword_returns_confidence_0_95
-      - test_fr11_rule_match_ilike_returns_confidence_0_7
-      - test_fr11_rule_match_inactive_entry_excluded
-      - test_fr11_rule_match_no_match_returns_none
-      - test_fr11_rule_match_list_ordered_by_version_desc
-      - test_fr11_rule_match_list_limits_top_5
+    - test_fr11_rule_match_exact_keyword_returns_confidence_0_95
+    - test_fr11_rule_match_ilike_returns_confidence_0_7
+    - test_fr11_rule_match_inactive_entry_excluded
+    - test_fr11_rule_match_no_match_returns_none
+    - test_fr11_rule_match_list_ordered_by_version_desc
+    - test_fr11_rule_match_list_limits_top_5
     integration:
-      - test_fr11_knowledge_match_in_pipeline_returns_rule_source
+    - test_fr11_knowledge_match_in_pipeline_returns_rule_source
   FR-12:
     unit:
-      - test_fr12_escalation_creates_db_row_with_priority_zero
-      - test_fr12_escalation_sla_deadline_is_null
-      - test_fr12_escalation_returns_knowledge_result_id_neg_one_source_escalate
-      - test_fr12_escalation_updates_conversation_scope_type_out_of_scope
+    - test_fr12_escalation_creates_db_row_with_priority_zero
+    - test_fr12_escalation_sla_deadline_is_null
+    - test_fr12_escalation_returns_knowledge_result_id_neg_one_source_escalate
+    - test_fr12_escalation_updates_conversation_scope_type_out_of_scope
     integration:
-      - test_fr12_pipeline_no_rule_match_triggers_escalation
+    - test_fr12_pipeline_no_rule_match_triggers_escalation
   FR-13:
     unit:
-      - test_fr13_log_output_is_valid_single_line_json
-      - test_fr13_log_contains_required_fields_timestamp_level_service_message
-      - test_fr13_log_extra_kwargs_appear_as_top_level_keys
-      - test_fr13_log_level_mapping_info_20_error_40
+    - test_fr13_log_output_is_valid_single_line_json
+    - test_fr13_log_contains_required_fields_timestamp_level_service_message
+    - test_fr13_log_extra_kwargs_appear_as_top_level_keys
+    - test_fr13_log_level_mapping_info_20_error_40
     integration:
-      - test_fr13_pipeline_completion_logged_as_json
+    - test_fr13_pipeline_completion_logged_as_json
   FR-14:
     unit: []
     integration:
-      - test_fr14_health_all_services_up_returns_healthy
-      - test_fr14_health_db_down_returns_degraded
-      - test_fr14_health_redis_down_returns_degraded
-      - test_fr14_health_both_down_returns_unhealthy
-      - test_fr14_health_uptime_increases_between_calls
-      - test_fr14_health_returns_200_even_when_degraded
+    - test_fr14_health_all_services_up_returns_healthy
+    - test_fr14_health_db_down_returns_degraded
+    - test_fr14_health_redis_down_returns_degraded
+    - test_fr14_health_both_down_returns_unhealthy
+    - test_fr14_health_uptime_increases_between_calls
+    - test_fr14_health_returns_200_even_when_degraded
   FR-15:
     unit: []
     integration:
-      - test_fr15_docker_compose_up_all_3_services_healthy_within_60s
-      - test_fr15_api_health_endpoint_returns_200_after_startup
+    - test_fr15_docker_compose_up_all_3_services_healthy_within_60s
+    - test_fr15_api_health_endpoint_returns_200_after_startup
   FR-16:
     unit:
-      - test_fr16_fcr_query_parses_without_syntax_error
-      - test_fr16_latency_query_uses_percentile_cont_0_95
-      - test_fr16_knowledge_hits_query_parses_without_syntax_error
+    - test_fr16_fcr_query_parses_without_syntax_error
+    - test_fr16_latency_query_uses_percentile_cont_0_95
+    - test_fr16_knowledge_hits_query_parses_without_syntax_error
     integration:
-      - test_fr16_fcr_query_returns_percentage_between_0_and_100
-      - test_fr16_latency_query_returns_avg_and_p95_per_platform
+    - test_fr16_fcr_query_returns_percentage_between_0_and_100
+    - test_fr16_latency_query_returns_avg_and_p95_per_platform
   FR-17:
     unit:
-      - test_fr17_auth_invalid_signature_maps_to_401
-      - test_fr17_rate_limit_exceeded_maps_to_429
-      - test_fr17_knowledge_not_found_maps_to_404
-      - test_fr17_validation_error_maps_to_422
-      - test_fr17_internal_error_maps_to_500
-      - test_fr17_api_response_error_serialization_with_success_false
+    - test_fr17_auth_invalid_signature_maps_to_401
+    - test_fr17_rate_limit_exceeded_maps_to_429
+    - test_fr17_knowledge_not_found_maps_to_404
+    - test_fr17_validation_error_maps_to_422
+    - test_fr17_internal_error_maps_to_500
+    - test_fr17_api_response_error_serialization_with_success_false
     integration:
-      - test_fr17_webhook_endpoints_return_correct_api_response_error_format
+    - test_fr17_webhook_endpoints_return_correct_api_response_error_format
   FR-18:
     unit:
-      - test_fr18_ruff_check_zero_violations
-      - test_fr18_radon_cc_max_less_than_or_equal_10
+    - test_fr18_ruff_check_zero_violations
+    - test_fr18_radon_cc_max_less_than_or_equal_10
     integration:
-      - test_fr18_all_public_functions_have_docstrings
-      - test_fr18_function_length_less_than_or_equal_50_lines
+    - test_fr18_all_public_functions_have_docstrings
+    - test_fr18_function_length_less_than_or_equal_50_lines
   FR-19:
     unit: []
     integration:
-      - test_fr19_pipeline_valid_faq_query_flows_all_11_stages
-      - test_fr19_pipeline_invalid_signature_returns_401_before_processing
-      - test_fr19_pipeline_rate_limit_exceeded_returns_429
-      - test_fr19_pipeline_pii_masked_in_logs
-      - test_fr19_pipeline_no_rule_match_creates_escalation
-      - test_fr19_pipeline_error_at_any_stage_does_not_crash
+    - test_fr19_pipeline_valid_faq_query_flows_all_11_stages
+    - test_fr19_pipeline_invalid_signature_returns_401_before_processing
+    - test_fr19_pipeline_rate_limit_exceeded_returns_429
+    - test_fr19_pipeline_pii_masked_in_logs
+    - test_fr19_pipeline_no_rule_match_creates_escalation
+    - test_fr19_pipeline_error_at_any_stage_does_not_crash
+    - test_fr19_redis_unavailable_fail_open_continues_processing
+    - test_fr19_stage_5_input_sanitization_applied_before_knowledge_matching
+    - test_fr19_stage_6_pii_masking_applied_before_knowledge_matching
+    - test_fr19_stage_7_knowledge_match_result_correct_source_and_confidence
+    - test_fr19_stage_8_escalation_creates_db_record
+    - test_fr19_stage_9_constructs_unified_response_with_correct_source
+    - test_fr19_stage_10_sends_reply_via_platform_adapter
+    - test_fr19_stage_11_logs_completion_with_timestamp
+    - test_fr19_each_stage_isolated_failure_in_stage_n_does_not_crash_pipeline
+    - test_fr19_db_transaction_atomic_all_inserts_in_single_transaction
+    - test_fr19_telegram_webhook_unauthenticated_returns_401
+    - test_fr19_line_webhook_unauthenticated_returns_401
+    - test_fr19_rate_limited_returns_429
+    - test_fr19_invalid_input_sanitizer_normalizes_before_downstream
+    - test_fr19_end_to_end_p95_latency_under_3s_for_rule_matched_query
+    - test_fr19_postgres_unavailable_after_retries_returns_500
+    - test_fr19_db_write_timeout_retries_with_exponential_backoff
+    - test_fr19_pii_detected_in_message_logs_warning
+    - test_fr19_security_audit_log_written_on_each_request
+    - test_fr19_concurrent_requests_from_different_users_isolated
+    - test_fr19_knowledge_match_timeout_escalates_to_human_handoff
   FR-20:
     unit:
-      - test_fr20_unified_response_serializes_correctly
-      - test_fr20_unified_response_mutation_raises_frozen_instance_error
-      - test_fr20_unified_response_metadata_defaults_to_empty_dict
-      - test_fr20_knowledge_source_enum_has_rule_and_escalate
+    - test_fr20_unified_response_serializes_correctly
+    - test_fr20_unified_response_mutation_raises_frozen_instance_error
+    - test_fr20_unified_response_metadata_defaults_to_empty_dict
+    - test_fr20_knowledge_source_enum_has_rule_and_escalate
     integration:
-      - test_fr20_pipeline_returns_unified_response_with_correct_source_and_confidence
+    - test_fr20_pipeline_returns_unified_response_with_correct_source_and_confidence
   FR-21:
     unit:
-      - test_fr21_settings_all_env_vars_set_creates_valid_config
-      - test_fr21_missing_database_url_raises_config_error_with_key_list
-      - test_fr21_optional_keys_use_defaults
-      - test_fr21_config_validation_runs_at_startup_fail_fast
+    - test_fr21_settings_all_env_vars_set_creates_valid_config
+    - test_fr21_missing_database_url_raises_config_error_with_key_list
+    - test_fr21_optional_keys_use_defaults
+    - test_fr21_config_validation_runs_at_startup_fail_fast
     integration:
-      - test_fr21_application_starts_with_valid_config_and_env
+    - test_fr21_application_starts_with_valid_config_and_env
   FR-22:
     unit:
-      - test_fr22_ip_whitelist_allowed_ip_proceeds
-      - test_fr22_ip_whitelist_unlisted_ip_returns_403
-      - test_fr22_ip_whitelist_empty_or_missing_ip_returns_400
+    - test_fr22_ip_whitelist_allowed_ip_proceeds
+    - test_fr22_ip_whitelist_unlisted_ip_returns_403
+    - test_fr22_ip_whitelist_empty_or_missing_ip_returns_400
     integration:
-      - test_fr22_ip_whitelist_intercepts_before_hmac
-
+    - test_fr22_ip_whitelist_intercepts_before_hmac
 cross_cutting:
   api_completeness:
-    - test_webhook_telegram_valid_payload_returns_200
-    - test_webhook_telegram_invalid_signature_returns_401
-    - test_webhook_telegram_rate_limit_exceeded_returns_429
-    - test_webhook_telegram_malformed_body_returns_422
-    - test_webhook_line_valid_payload_returns_200
-    - test_webhook_line_invalid_signature_returns_401
-    - test_webhook_line_rate_limit_exceeded_returns_429
-    - test_webhook_line_malformed_body_returns_422
-    - test_health_endpoint_all_services_up_returns_200
-    - test_health_endpoint_db_down_returns_200_degraded
-    - test_health_endpoint_redis_down_returns_200_degraded
+  - test_health_endpoint_all_services_up_returns_200
+  - test_health_endpoint_db_down_returns_200_degraded
+  - test_health_endpoint_redis_down_returns_200_degraded
   security_red_team:
-    - test_redteam_ip_whitelist_blocks_unknown_ip
-    - test_redteam_ip_whitelist_rejects_empty_ip
-    - test_redteam_webhook_signature_replay_attack_blocked
-    - test_redteam_webhook_timing_attack_signature_enumeration_resistant
-    - test_redteam_rate_limit_burst_attack_blocked
-    - test_redteam_pii_phone_leak_masked
-    - test_redteam_pii_email_leak_masked
-    - test_redteam_pii_address_leak_masked
-    - test_redteam_input_sanitization_null_byte_removed
-    - test_redteam_input_sanitization_unicode_confusion_normalized
+  - test_redteam_ip_whitelist_blocks_unknown_ip
+  - test_redteam_ip_whitelist_rejects_empty_ip
+  - test_redteam_webhook_signature_replay_attack_blocked
+  - test_redteam_webhook_timing_attack_signature_enumeration_resistant
+  - test_redteam_rate_limit_burst_attack_blocked
+  - test_redteam_pii_phone_leak_masked
+  - test_redteam_pii_email_leak_masked
+  - test_redteam_pii_address_leak_masked
+  - test_redteam_input_sanitization_null_byte_removed
+  - test_redteam_input_sanitization_unicode_confusion_normalized
   kpi_gates:
-    - test_kpi_p95_latency_phase1_under_3s
-    - test_kpi_fcr_phase1_target_50_percent
+  - test_kpi_p95_latency_phase1_under_3s
+  - test_kpi_fcr_phase1_target_50_percent
   deployment_smoke:
-    - test_deploy_docker_compose_all_services_healthy
-    - test_deploy_health_endpoint_returns_200_after_startup
-    - test_deploy_docker_compose_down_cleans_up
+  - test_deploy_docker_compose_all_services_healthy
+  - test_deploy_health_endpoint_all_services_up_returns_200
+  - test_deploy_docker_compose_down_cleans_up

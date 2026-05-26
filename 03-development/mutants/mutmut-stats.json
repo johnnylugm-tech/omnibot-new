@@ -1,0 +1,58 @@
+{
+    "tests_by_mangled_function_name": {
+        "omnibot.infrastructure.health.x_health_check": [
+            "tests/test_fr14.py::TestHealthCheckStatus::test_response_includes_uptime_seconds",
+            "tests/test_fr14.py::TestHealthCheckStatus::test_postgres_down_returns_degraded",
+            "tests/test_fr14.py::TestHealthCheckStatus::test_both_up_returns_healthy",
+            "tests/test_fr14.py::TestHealthCheckStatus::test_redis_down_returns_degraded",
+            "tests/test_fr14.py::TestHealthCheckStatus::test_uptime_increases_between_calls",
+            "tests/test_fr14.py::TestHealthCheckAlways200::test_degraded_state_does_not_raise",
+            "tests/test_fr14.py::TestHealthCheckStatus::test_both_down_returns_unhealthy",
+            "tests/test_fr14.py::TestHealthCheckResponseTime::test_degraded_response_within_ci_timeout",
+            "tests/test_fr14.py::TestHealthCheckResponseTime::test_healthy_response_within_ci_timeout",
+            "tests/test_fr14.py::TestHealthCheckAlways200::test_unhealthy_state_does_not_raise"
+        ],
+        "omnibot.logging.logger.x\u01c1StructuredLogger\u01c1__init__": [
+            "tests/test_fr14.py::TestHealthCheckStatus::test_both_up_returns_healthy"
+        ],
+        "omnibot.security.verifiers.x\u01c1TelegramWebhookVerifier\u01c1__init__": [
+            "tests/test_pipeline_benchmark.py::test_pipeline_mean_latency_assertion",
+            "tests/test_pipeline_benchmark.py::test_pipeline_process_benchmark"
+        ],
+        "omnibot.processing.pipeline.x\u01c1PipelineOrchestrator\u01c1process": [
+            "tests/test_pipeline_benchmark.py::test_pipeline_mean_latency_assertion",
+            "tests/test_pipeline_benchmark.py::test_pipeline_process_benchmark"
+        ],
+        "omnibot.processing.pipeline.x__telegram_verifier": [
+            "tests/test_pipeline_benchmark.py::test_pipeline_mean_latency_assertion",
+            "tests/test_pipeline_benchmark.py::test_pipeline_process_benchmark"
+        ],
+        "omnibot.security.verifiers.x\u01c1TelegramWebhookVerifier\u01c1verify": [
+            "tests/test_pipeline_benchmark.py::test_pipeline_mean_latency_assertion",
+            "tests/test_pipeline_benchmark.py::test_pipeline_process_benchmark"
+        ],
+        "omnibot.processing.pipeline.x\u01c1PipelineOrchestrator\u01c1__init__": [
+            "tests/test_pipeline_benchmark.py::test_pipeline_mean_latency_assertion",
+            "tests/test_pipeline_benchmark.py::test_pipeline_process_benchmark"
+        ],
+        "omnibot.security.rate_limiter.x\u01c1RateLimiter\u01c1__init__": [
+            "tests/test_pipeline_benchmark.py::test_pipeline_mean_latency_assertion",
+            "tests/test_pipeline_benchmark.py::test_pipeline_process_benchmark"
+        ]
+    },
+    "duration_by_test": {
+        "tests/test_fr14.py::TestHealthCheckStatus::test_both_up_returns_healthy": 4.975000000007057e-05,
+        "tests/test_fr14.py::TestHealthCheckStatus::test_postgres_down_returns_degraded": 3.9292000000079597e-05,
+        "tests/test_fr14.py::TestHealthCheckStatus::test_redis_down_returns_degraded": 3.9208999999873484e-05,
+        "tests/test_fr14.py::TestHealthCheckStatus::test_both_down_returns_unhealthy": 4.258299999992943e-05,
+        "tests/test_fr14.py::TestHealthCheckStatus::test_response_includes_uptime_seconds": 3.841699999984627e-05,
+        "tests/test_fr14.py::TestHealthCheckStatus::test_uptime_increases_between_calls": 4.14579999998832e-05,
+        "tests/test_fr14.py::TestHealthCheckAlways200::test_degraded_state_does_not_raise": 3.858300000003645e-05,
+        "tests/test_fr14.py::TestHealthCheckAlways200::test_unhealthy_state_does_not_raise": 4.2749999999980304e-05,
+        "tests/test_fr14.py::TestHealthCheckResponseTime::test_healthy_response_within_ci_timeout": 4.195900000003583e-05,
+        "tests/test_fr14.py::TestHealthCheckResponseTime::test_degraded_response_within_ci_timeout": 4.441599999993606e-05,
+        "tests/test_pipeline_benchmark.py::test_pipeline_process_benchmark": 7.520800000015981e-05,
+        "tests/test_pipeline_benchmark.py::test_pipeline_mean_latency_assertion": 6.700000000003925e-05
+    },
+    "stats_time": 2.05208
+}

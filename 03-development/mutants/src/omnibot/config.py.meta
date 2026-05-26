@@ -1,0 +1,17 @@
+{
+    "exit_code_by_key": {
+        "omnibot.config.x_get_database_url__mutmut_1": 33,
+        "omnibot.config.x_get_database_url__mutmut_2": 33,
+        "omnibot.config.x_get_database_url__mutmut_3": 33,
+        "omnibot.config.x_get_database_url__mutmut_4": 33,
+        "omnibot.config.x_get_database_url__mutmut_5": 33,
+        "omnibot.config.x_get_database_url__mutmut_6": 33,
+        "omnibot.config.x_get_database_url__mutmut_7": 33,
+        "omnibot.config.x_get_database_url__mutmut_8": 33,
+        "omnibot.config.x_get_database_url__mutmut_9": 33,
+        "omnibot.config.x__parse_int_or_raise__mutmut_1": 33,
+        "omnibot.config.x__parse_int_or_raise__mutmut_2": 33,
+        "omnibot.config.x__parse_int_or_raise__mutmut_3": 33
+    },
+    "hash_by_function_name": {}
+}
