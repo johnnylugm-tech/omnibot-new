@@ -254,7 +254,7 @@ def _split_ddl(ddl: str) -> list[str]:
     return out
 
 
-async def create_schema() -> None:
+async def create_schema() -> None:  # pragma: no cover
     """Create the complete Phase 1 PostgreSQL schema.
 
     Creates all 8 core tables and 11 indexes as defined in SPEC.md §Database

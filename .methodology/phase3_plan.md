@@ -49,13 +49,13 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 ### Entry Gate Verification
 
-- [ ] **[ENTRY-CHECK]** P2 review-complete:
+- [x] **[ENTRY-CHECK]** P2 review-complete:
   Proof: git log contains commit 'phase2(review-complete): Phase 2 deliverables APPROVED'.
   If NOT confirmed: return to Phase 2 and complete exit gate first.
 
 ### Pre-Phase Preflight
 
-- [ ] **[PREFLIGHT]** Run phase hooks (FSM, Constitution, Kill-Switch, Drift, CI Readiness):
+- [x] **[PREFLIGHT]** Run phase hooks (FSM, Constitution, Kill-Switch, Drift, CI Readiness):
   ```bash
   python3 harness_cli.py run-phase --phase 3 --project .
   ```
@@ -64,7 +64,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   After 3 FAIL: escalate to human — provide last `run-phase --phase 3` full output.
   Human fix → re-run `run-phase --phase 3 --project .` → PASS required before continuing.
 
-- [ ] **[PREFLIGHT-CI]** Confirm CI wiring unchanged (should be set since P1):
+- [x] **[PREFLIGHT-CI]** Confirm CI wiring unchanged (should be set since P1):
   1. `.github/workflows/harness_quality_gate.yml` exists
   2. Git hooks installed (`ls .git/hooks/prepare-commit-msg`)
   3. harness importable (submodule, PYTHONPATH, or vendored `quality_gate/`)
@@ -85,7 +85,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 **TDD — FR-01** (Orchestrator dispatches sub-agents · push after each step):
 
-- [ ] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-01:
+- [x] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-01:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-01 --step TDD-RED \
     --project . --srs 01-requirements/SRS.md
@@ -93,7 +93,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `git log --oneline -1` shows `test(RED): failing test for FR-01`
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-01:
+- [x] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-01:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-01 --step TDD-GREEN \
     --project . --srs 01-requirements/SRS.md
@@ -101,7 +101,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr01.py -q` all pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-01:
+- [x] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-01:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-01 --step TDD-IMPROVE \
     --project .
@@ -109,7 +109,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr01.py -q` still pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-01:
+- [x] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-01:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-01 --step GATE1 \
     --project .
@@ -120,7 +120,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → exit 2 = BLOCKED: human intervention required before continuing
   → Human fix → re-run `run-fr-step --step GATE1 --fr-id FR-01` → exit 0 required before continuing.
 
-- [ ] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
+- [x] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 40.0 --fr-id FR-01
   python3 scripts/generate_sab.py --project .
@@ -141,7 +141,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 **TDD — FR-02** (Orchestrator dispatches sub-agents · push after each step):
 
-- [ ] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-02:
+- [x] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-02:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-02 --step TDD-RED \
     --project . --srs 01-requirements/SRS.md
@@ -149,7 +149,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `git log --oneline -1` shows `test(RED): failing test for FR-02`
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-02:
+- [x] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-02:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-02 --step TDD-GREEN \
     --project . --srs 01-requirements/SRS.md
@@ -157,7 +157,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr02.py -q` all pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-02:
+- [x] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-02:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-02 --step TDD-IMPROVE \
     --project .
@@ -165,7 +165,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr02.py -q` still pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-02:
+- [x] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-02:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-02 --step GATE1 \
     --project .
@@ -176,7 +176,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → exit 2 = BLOCKED: human intervention required before continuing
   → Human fix → re-run `run-fr-step --step GATE1 --fr-id FR-02` → exit 0 required before continuing.
 
-- [ ] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
+- [x] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 40.0 --fr-id FR-02
   python3 scripts/generate_sab.py --project .
@@ -197,7 +197,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 **TDD — FR-03** (Orchestrator dispatches sub-agents · push after each step):
 
-- [ ] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-03:
+- [x] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-03:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-03 --step TDD-RED \
     --project . --srs 01-requirements/SRS.md
@@ -205,7 +205,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `git log --oneline -1` shows `test(RED): failing test for FR-03`
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-03:
+- [x] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-03:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-03 --step TDD-GREEN \
     --project . --srs 01-requirements/SRS.md
@@ -213,7 +213,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr03.py -q` all pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-03:
+- [x] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-03:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-03 --step TDD-IMPROVE \
     --project .
@@ -221,7 +221,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr03.py -q` still pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-03:
+- [x] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-03:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-03 --step GATE1 \
     --project .
@@ -232,7 +232,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → exit 2 = BLOCKED: human intervention required before continuing
   → Human fix → re-run `run-fr-step --step GATE1 --fr-id FR-03` → exit 0 required before continuing.
 
-- [ ] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
+- [x] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 40.0 --fr-id FR-03
   python3 scripts/generate_sab.py --project .
@@ -253,7 +253,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 **TDD — FR-04** (Orchestrator dispatches sub-agents · push after each step):
 
-- [ ] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-04:
+- [x] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-04:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-04 --step TDD-RED \
     --project . --srs 01-requirements/SRS.md
@@ -261,7 +261,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `git log --oneline -1` shows `test(RED): failing test for FR-04`
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-04:
+- [x] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-04:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-04 --step TDD-GREEN \
     --project . --srs 01-requirements/SRS.md
@@ -269,7 +269,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr04.py -q` all pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-04:
+- [x] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-04:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-04 --step TDD-IMPROVE \
     --project .
@@ -277,7 +277,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr04.py -q` still pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-04:
+- [x] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-04:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-04 --step GATE1 \
     --project .
@@ -288,7 +288,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → exit 2 = BLOCKED: human intervention required before continuing
   → Human fix → re-run `run-fr-step --step GATE1 --fr-id FR-04` → exit 0 required before continuing.
 
-- [ ] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
+- [x] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 40.0 --fr-id FR-04
   python3 scripts/generate_sab.py --project .
@@ -309,7 +309,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 **TDD — FR-05** (Orchestrator dispatches sub-agents · push after each step):
 
-- [ ] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-05:
+- [x] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-05:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-05 --step TDD-RED \
     --project . --srs 01-requirements/SRS.md
@@ -317,7 +317,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `git log --oneline -1` shows `test(RED): failing test for FR-05`
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-05:
+- [x] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-05:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-05 --step TDD-GREEN \
     --project . --srs 01-requirements/SRS.md
@@ -325,7 +325,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr05.py -q` all pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-05:
+- [x] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-05:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-05 --step TDD-IMPROVE \
     --project .
@@ -333,7 +333,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr05.py -q` still pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-05:
+- [x] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-05:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-05 --step GATE1 \
     --project .
@@ -344,7 +344,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → exit 2 = BLOCKED: human intervention required before continuing
   → Human fix → re-run `run-fr-step --step GATE1 --fr-id FR-05` → exit 0 required before continuing.
 
-- [ ] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
+- [x] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 40.0 --fr-id FR-05
   python3 scripts/generate_sab.py --project .
@@ -365,7 +365,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 **TDD — FR-06** (Orchestrator dispatches sub-agents · push after each step):
 
-- [ ] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-06:
+- [x] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-06:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-06 --step TDD-RED \
     --project . --srs 01-requirements/SRS.md
@@ -373,7 +373,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `git log --oneline -1` shows `test(RED): failing test for FR-06`
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-06:
+- [x] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-06:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-06 --step TDD-GREEN \
     --project . --srs 01-requirements/SRS.md
@@ -381,7 +381,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr06.py -q` all pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-06:
+- [x] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-06:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-06 --step TDD-IMPROVE \
     --project .
@@ -389,7 +389,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr06.py -q` still pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-06:
+- [x] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-06:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-06 --step GATE1 \
     --project .
@@ -400,7 +400,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → exit 2 = BLOCKED: human intervention required before continuing
   → Human fix → re-run `run-fr-step --step GATE1 --fr-id FR-06` → exit 0 required before continuing.
 
-- [ ] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
+- [x] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 40.0 --fr-id FR-06
   python3 scripts/generate_sab.py --project .
@@ -421,7 +421,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 **TDD — FR-07** (Orchestrator dispatches sub-agents · push after each step):
 
-- [ ] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-07:
+- [x] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-07:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-07 --step TDD-RED \
     --project . --srs 01-requirements/SRS.md
@@ -429,7 +429,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `git log --oneline -1` shows `test(RED): failing test for FR-07`
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-07:
+- [x] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-07:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-07 --step TDD-GREEN \
     --project . --srs 01-requirements/SRS.md
@@ -437,7 +437,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr07.py -q` all pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-07:
+- [x] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-07:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-07 --step TDD-IMPROVE \
     --project .
@@ -445,7 +445,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr07.py -q` still pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-07:
+- [x] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-07:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-07 --step GATE1 \
     --project .
@@ -456,7 +456,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → exit 2 = BLOCKED: human intervention required before continuing
   → Human fix → re-run `run-fr-step --step GATE1 --fr-id FR-07` → exit 0 required before continuing.
 
-- [ ] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
+- [x] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 40.0 --fr-id FR-07
   python3 scripts/generate_sab.py --project .
@@ -477,7 +477,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 **TDD — FR-08** (Orchestrator dispatches sub-agents · push after each step):
 
-- [ ] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-08:
+- [x] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-08:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-08 --step TDD-RED \
     --project . --srs 01-requirements/SRS.md
@@ -485,7 +485,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `git log --oneline -1` shows `test(RED): failing test for FR-08`
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-08:
+- [x] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-08:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-08 --step TDD-GREEN \
     --project . --srs 01-requirements/SRS.md
@@ -493,7 +493,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr08.py -q` all pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-08:
+- [x] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-08:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-08 --step TDD-IMPROVE \
     --project .
@@ -501,7 +501,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr08.py -q` still pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-08:
+- [x] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-08:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-08 --step GATE1 \
     --project .
@@ -512,7 +512,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → exit 2 = BLOCKED: human intervention required before continuing
   → Human fix → re-run `run-fr-step --step GATE1 --fr-id FR-08` → exit 0 required before continuing.
 
-- [ ] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
+- [x] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 40.0 --fr-id FR-08
   python3 scripts/generate_sab.py --project .
@@ -533,7 +533,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 **TDD — FR-09** (Orchestrator dispatches sub-agents · push after each step):
 
-- [ ] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-09:
+- [x] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-09:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-09 --step TDD-RED \
     --project . --srs 01-requirements/SRS.md
@@ -541,7 +541,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `git log --oneline -1` shows `test(RED): failing test for FR-09`
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-09:
+- [x] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-09:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-09 --step TDD-GREEN \
     --project . --srs 01-requirements/SRS.md
@@ -549,7 +549,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr09.py -q` all pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-09:
+- [x] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-09:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-09 --step TDD-IMPROVE \
     --project .
@@ -557,7 +557,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr09.py -q` still pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-09:
+- [x] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-09:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-09 --step GATE1 \
     --project .
@@ -568,7 +568,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → exit 2 = BLOCKED: human intervention required before continuing
   → Human fix → re-run `run-fr-step --step GATE1 --fr-id FR-09` → exit 0 required before continuing.
 
-- [ ] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
+- [x] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 40.0 --fr-id FR-09
   python3 scripts/generate_sab.py --project .
@@ -589,7 +589,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 **TDD — FR-10** (Orchestrator dispatches sub-agents · push after each step):
 
-- [ ] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-10:
+- [x] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-10:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-10 --step TDD-RED \
     --project . --srs 01-requirements/SRS.md
@@ -597,7 +597,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `git log --oneline -1` shows `test(RED): failing test for FR-10`
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-10:
+- [x] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-10:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-10 --step TDD-GREEN \
     --project . --srs 01-requirements/SRS.md
@@ -605,7 +605,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr10.py -q` all pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-10:
+- [x] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-10:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-10 --step TDD-IMPROVE \
     --project .
@@ -613,7 +613,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr10.py -q` still pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-10:
+- [x] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-10:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-10 --step GATE1 \
     --project .
@@ -624,7 +624,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → exit 2 = BLOCKED: human intervention required before continuing
   → Human fix → re-run `run-fr-step --step GATE1 --fr-id FR-10` → exit 0 required before continuing.
 
-- [ ] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
+- [x] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 40.0 --fr-id FR-10
   python3 scripts/generate_sab.py --project .
@@ -645,7 +645,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 **TDD — FR-11** (Orchestrator dispatches sub-agents · push after each step):
 
-- [ ] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-11:
+- [x] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-11:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-11 --step TDD-RED \
     --project . --srs 01-requirements/SRS.md
@@ -653,7 +653,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `git log --oneline -1` shows `test(RED): failing test for FR-11`
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-11:
+- [x] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-11:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-11 --step TDD-GREEN \
     --project . --srs 01-requirements/SRS.md
@@ -661,7 +661,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr11.py -q` all pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-11:
+- [x] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-11:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-11 --step TDD-IMPROVE \
     --project .
@@ -669,7 +669,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr11.py -q` still pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-11:
+- [x] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-11:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-11 --step GATE1 \
     --project .
@@ -680,7 +680,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → exit 2 = BLOCKED: human intervention required before continuing
   → Human fix → re-run `run-fr-step --step GATE1 --fr-id FR-11` → exit 0 required before continuing.
 
-- [ ] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
+- [x] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 40.0 --fr-id FR-11
   python3 scripts/generate_sab.py --project .
@@ -701,7 +701,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 **TDD — FR-12** (Orchestrator dispatches sub-agents · push after each step):
 
-- [ ] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-12:
+- [x] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-12:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-12 --step TDD-RED \
     --project . --srs 01-requirements/SRS.md
@@ -709,7 +709,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `git log --oneline -1` shows `test(RED): failing test for FR-12`
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-12:
+- [x] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-12:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-12 --step TDD-GREEN \
     --project . --srs 01-requirements/SRS.md
@@ -717,7 +717,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr12.py -q` all pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-12:
+- [x] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-12:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-12 --step TDD-IMPROVE \
     --project .
@@ -725,7 +725,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr12.py -q` still pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-12:
+- [x] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-12:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-12 --step GATE1 \
     --project .
@@ -736,7 +736,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → exit 2 = BLOCKED: human intervention required before continuing
   → Human fix → re-run `run-fr-step --step GATE1 --fr-id FR-12` → exit 0 required before continuing.
 
-- [ ] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
+- [x] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 40.0 --fr-id FR-12
   python3 scripts/generate_sab.py --project .
@@ -757,7 +757,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 **TDD — FR-13** (Orchestrator dispatches sub-agents · push after each step):
 
-- [ ] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-13:
+- [x] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-13:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-13 --step TDD-RED \
     --project . --srs 01-requirements/SRS.md
@@ -765,7 +765,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `git log --oneline -1` shows `test(RED): failing test for FR-13`
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-13:
+- [x] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-13:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-13 --step TDD-GREEN \
     --project . --srs 01-requirements/SRS.md
@@ -773,7 +773,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr13.py -q` all pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-13:
+- [x] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-13:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-13 --step TDD-IMPROVE \
     --project .
@@ -781,7 +781,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr13.py -q` still pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-13:
+- [x] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-13:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-13 --step GATE1 \
     --project .
@@ -792,7 +792,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → exit 2 = BLOCKED: human intervention required before continuing
   → Human fix → re-run `run-fr-step --step GATE1 --fr-id FR-13` → exit 0 required before continuing.
 
-- [ ] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
+- [x] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 40.0 --fr-id FR-13
   python3 scripts/generate_sab.py --project .
@@ -813,7 +813,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 **TDD — FR-14** (Orchestrator dispatches sub-agents · push after each step):
 
-- [ ] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-14:
+- [x] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-14:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-14 --step TDD-RED \
     --project . --srs 01-requirements/SRS.md
@@ -821,7 +821,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `git log --oneline -1` shows `test(RED): failing test for FR-14`
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-14:
+- [x] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-14:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-14 --step TDD-GREEN \
     --project . --srs 01-requirements/SRS.md
@@ -829,7 +829,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr14.py -q` all pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-14:
+- [x] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-14:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-14 --step TDD-IMPROVE \
     --project .
@@ -837,7 +837,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr14.py -q` still pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-14:
+- [x] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-14:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-14 --step GATE1 \
     --project .
@@ -848,7 +848,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → exit 2 = BLOCKED: human intervention required before continuing
   → Human fix → re-run `run-fr-step --step GATE1 --fr-id FR-14` → exit 0 required before continuing.
 
-- [ ] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
+- [x] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 40.0 --fr-id FR-14
   python3 scripts/generate_sab.py --project .
@@ -869,7 +869,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 **TDD — FR-15** (Orchestrator dispatches sub-agents · push after each step):
 
-- [ ] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-15:
+- [x] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-15:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-15 --step TDD-RED \
     --project . --srs 01-requirements/SRS.md
@@ -877,7 +877,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `git log --oneline -1` shows `test(RED): failing test for FR-15`
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-15:
+- [x] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-15:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-15 --step TDD-GREEN \
     --project . --srs 01-requirements/SRS.md
@@ -885,7 +885,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr15.py -q` all pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-15:
+- [x] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-15:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-15 --step TDD-IMPROVE \
     --project .
@@ -893,7 +893,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr15.py -q` still pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-15:
+- [x] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-15:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-15 --step GATE1 \
     --project .
@@ -904,7 +904,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → exit 2 = BLOCKED: human intervention required before continuing
   → Human fix → re-run `run-fr-step --step GATE1 --fr-id FR-15` → exit 0 required before continuing.
 
-- [ ] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
+- [x] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 40.0 --fr-id FR-15
   python3 scripts/generate_sab.py --project .
@@ -925,7 +925,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 **TDD — FR-16** (Orchestrator dispatches sub-agents · push after each step):
 
-- [ ] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-16:
+- [x] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-16:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-16 --step TDD-RED \
     --project . --srs 01-requirements/SRS.md
@@ -933,7 +933,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `git log --oneline -1` shows `test(RED): failing test for FR-16`
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-16:
+- [x] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-16:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-16 --step TDD-GREEN \
     --project . --srs 01-requirements/SRS.md
@@ -941,7 +941,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr16.py -q` all pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-16:
+- [x] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-16:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-16 --step TDD-IMPROVE \
     --project .
@@ -949,7 +949,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr16.py -q` still pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-16:
+- [x] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-16:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-16 --step GATE1 \
     --project .
@@ -960,7 +960,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → exit 2 = BLOCKED: human intervention required before continuing
   → Human fix → re-run `run-fr-step --step GATE1 --fr-id FR-16` → exit 0 required before continuing.
 
-- [ ] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
+- [x] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 40.0 --fr-id FR-16
   python3 scripts/generate_sab.py --project .
@@ -981,7 +981,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 **TDD — FR-17** (Orchestrator dispatches sub-agents · push after each step):
 
-- [ ] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-17:
+- [x] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-17:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-17 --step TDD-RED \
     --project . --srs 01-requirements/SRS.md
@@ -989,7 +989,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `git log --oneline -1` shows `test(RED): failing test for FR-17`
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-17:
+- [x] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-17:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-17 --step TDD-GREEN \
     --project . --srs 01-requirements/SRS.md
@@ -997,7 +997,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr17.py -q` all pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-17:
+- [x] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-17:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-17 --step TDD-IMPROVE \
     --project .
@@ -1005,7 +1005,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr17.py -q` still pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-17:
+- [x] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-17:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-17 --step GATE1 \
     --project .
@@ -1016,7 +1016,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → exit 2 = BLOCKED: human intervention required before continuing
   → Human fix → re-run `run-fr-step --step GATE1 --fr-id FR-17` → exit 0 required before continuing.
 
-- [ ] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
+- [x] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 40.0 --fr-id FR-17
   python3 scripts/generate_sab.py --project .
@@ -1037,7 +1037,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 **TDD — FR-18** (Orchestrator dispatches sub-agents · push after each step):
 
-- [ ] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-18:
+- [x] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-18:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-18 --step TDD-RED \
     --project . --srs 01-requirements/SRS.md
@@ -1045,7 +1045,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `git log --oneline -1` shows `test(RED): failing test for FR-18`
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-18:
+- [x] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-18:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-18 --step TDD-GREEN \
     --project . --srs 01-requirements/SRS.md
@@ -1053,7 +1053,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr18.py -q` all pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-18:
+- [x] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-18:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-18 --step TDD-IMPROVE \
     --project .
@@ -1061,7 +1061,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr18.py -q` still pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-18:
+- [x] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-18:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-18 --step GATE1 \
     --project .
@@ -1072,7 +1072,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → exit 2 = BLOCKED: human intervention required before continuing
   → Human fix → re-run `run-fr-step --step GATE1 --fr-id FR-18` → exit 0 required before continuing.
 
-- [ ] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
+- [x] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 40.0 --fr-id FR-18
   python3 scripts/generate_sab.py --project .
@@ -1093,7 +1093,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 **TDD — FR-19** (Orchestrator dispatches sub-agents · push after each step):
 
-- [ ] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-19:
+- [x] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-19:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-19 --step TDD-RED \
     --project . --srs 01-requirements/SRS.md
@@ -1101,7 +1101,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `git log --oneline -1` shows `test(RED): failing test for FR-19`
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-19:
+- [x] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-19:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-19 --step TDD-GREEN \
     --project . --srs 01-requirements/SRS.md
@@ -1109,7 +1109,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr19.py -q` all pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-19:
+- [x] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-19:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-19 --step TDD-IMPROVE \
     --project .
@@ -1117,7 +1117,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr19.py -q` still pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-19:
+- [x] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-19:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-19 --step GATE1 \
     --project .
@@ -1128,7 +1128,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → exit 2 = BLOCKED: human intervention required before continuing
   → Human fix → re-run `run-fr-step --step GATE1 --fr-id FR-19` → exit 0 required before continuing.
 
-- [ ] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
+- [x] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 40.0 --fr-id FR-19
   python3 scripts/generate_sab.py --project .
@@ -1149,7 +1149,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 **TDD — FR-20** (Orchestrator dispatches sub-agents · push after each step):
 
-- [ ] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-20:
+- [x] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-20:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-20 --step TDD-RED \
     --project . --srs 01-requirements/SRS.md
@@ -1157,7 +1157,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `git log --oneline -1` shows `test(RED): failing test for FR-20`
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-20:
+- [x] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-20:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-20 --step TDD-GREEN \
     --project . --srs 01-requirements/SRS.md
@@ -1165,7 +1165,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr20.py -q` all pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-20:
+- [x] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-20:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-20 --step TDD-IMPROVE \
     --project .
@@ -1173,7 +1173,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr20.py -q` still pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-20:
+- [x] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-20:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-20 --step GATE1 \
     --project .
@@ -1184,7 +1184,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → exit 2 = BLOCKED: human intervention required before continuing
   → Human fix → re-run `run-fr-step --step GATE1 --fr-id FR-20` → exit 0 required before continuing.
 
-- [ ] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
+- [x] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 40.0 --fr-id FR-20
   python3 scripts/generate_sab.py --project .
@@ -1205,7 +1205,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 **TDD — FR-21** (Orchestrator dispatches sub-agents · push after each step):
 
-- [ ] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-21:
+- [x] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-21:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-21 --step TDD-RED \
     --project . --srs 01-requirements/SRS.md
@@ -1213,7 +1213,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `git log --oneline -1` shows `test(RED): failing test for FR-21`
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-21:
+- [x] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-21:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-21 --step TDD-GREEN \
     --project . --srs 01-requirements/SRS.md
@@ -1221,7 +1221,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr21.py -q` all pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-21:
+- [x] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-21:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-21 --step TDD-IMPROVE \
     --project .
@@ -1229,7 +1229,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr21.py -q` still pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-21:
+- [x] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-21:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-21 --step GATE1 \
     --project .
@@ -1240,7 +1240,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → exit 2 = BLOCKED: human intervention required before continuing
   → Human fix → re-run `run-fr-step --step GATE1 --fr-id FR-21` → exit 0 required before continuing.
 
-- [ ] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
+- [x] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 40.0 --fr-id FR-21
   python3 scripts/generate_sab.py --project .
@@ -1261,7 +1261,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 
 **TDD — FR-22** (Orchestrator dispatches sub-agents · push after each step):
 
-- [ ] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-22:
+- [x] **[ORCH-RED]** Dispatch TDD-RED sub-agent for FR-22:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-22 --step TDD-RED \
     --project . --srs 01-requirements/SRS.md
@@ -1269,7 +1269,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `git log --oneline -1` shows `test(RED): failing test for FR-22`
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-22:
+- [x] **[ORCH-GREEN]** Dispatch TDD-GREEN sub-agent for FR-22:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-22 --step TDD-GREEN \
     --project . --srs 01-requirements/SRS.md
@@ -1277,7 +1277,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr22.py -q` all pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-22:
+- [x] **[ORCH-IMPROVE]** Dispatch TDD-IMPROVE sub-agent for FR-22:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-22 --step TDD-IMPROVE \
     --project .
@@ -1285,7 +1285,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → Verify: `pytest tests/test_fr22.py -q` still pass
   → GitHub push: ✅ auto-done by run-fr-step
 
-- [ ] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-22:
+- [x] **[ORCH-GATE1]** Dispatch GATE1 evaluator sub-agent for FR-22:
   ```bash
   python3 harness_cli.py run-fr-step --phase 3 --fr-id FR-22 --step GATE1 \
     --project .
@@ -1296,7 +1296,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   → exit 2 = BLOCKED: human intervention required before continuing
   → Human fix → re-run `run-fr-step --step GATE1 --fr-id FR-22` → exit 0 required before continuing.
 
-- [ ] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
+- [x] **[ORCH-POST]** After GATE1 PASS — orchestrator runs directly:
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 40.0 --fr-id FR-22
   python3 scripts/generate_sab.py --project .
@@ -1333,7 +1333,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 > also write `HANDOVER.md` with phase/FR/status summary and push to origin.
 > All FR IDs in this project: FR-01,FR-02,FR-03,FR-04,FR-05,…+17
 
-- [ ] **PUSH ③ — P3-mid** (trigger when ≥11/22 FRs have Gate 1 PASS):
+- [x] **PUSH ③ — P3-mid** (trigger when ≥11/22 FRs have Gate 1 PASS):
   ```bash
   python3 harness_cli.py push-milestone --type p3-mid --project . \
     --fr-done 11 --fr-total 22 --fr-ids FR-01,FR-02,FR-03,FR-04,FR-05,FR-06,FR-07,FR-08,FR-09,FR-10,FR-11
@@ -1341,7 +1341,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   > `--fr-ids` lists the FRs with Gate 1 PASS so far. Replace `FR-01,FR-02,FR-03,FR-04,FR-05,FR-06,FR-07,FR-08,FR-09,FR-10,FR-11` with actual.
   > Writes HANDOVER.md + commits + pushes. Next session reads HANDOVER.md to resume.
 
-- [ ] **PUSH ④ — P3-pre-gate2** (trigger when all 22 FRs Gate 1 PASS, before Gate 2):
+- [x] **PUSH ④ — P3-pre-gate2** (trigger when all 22 FRs Gate 1 PASS, before Gate 2):
   ```bash
   python3 harness_cli.py push-milestone --type p3-pre-gate2 --project . \
     --fr-ids FR-01,FR-02,FR-03,FR-04,FR-05,FR-06,FR-07,FR-08,FR-09,FR-10,FR-11,FR-12,FR-13,FR-14,FR-15,FR-16,FR-17,FR-18,FR-19,FR-20,FR-21,FR-22
@@ -1352,22 +1352,22 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 ### 🔒 CHECKPOINT-23: Gate 2 — Phase 3 Exit
 > linting(90) · type_safety(85) · test_coverage(80) · security(80) · secrets_scanning(100) · license_compliance(100) · mutation_testing(70) · integration_coverage(60) · test_assertion_quality(60)  [D4 spec-coverage unified ≥60%]
 
-- [ ] **G2a** Prepare Gate 2:
+- [x] **G2a** Prepare Gate 2:
   ```bash
   python3 harness_cli.py run-gate --gate 2 --phase 3 --project .
   ```
   Read the evaluation prompt printed above.
 
-- [ ] **G2b** Evaluate all Gate 2 dimensions inline:
+- [x] **G2b** Evaluate all Gate 2 dimensions inline:
   - Follow `harness/ssi/prompts/evaluate_dimension.md`
   - Write result to `.sessi-work/gate2_result.json`
   - Failing dim: fix code → re-evaluate → re-score
 
-- [ ] **G2c** Finalize Gate 2:
+- [x] **G2c** Finalize Gate 2:
   ```bash
   python3 harness_cli.py finalize-gate --gate 2 --phase 3 --project .
   ```
-- [ ] **[D4]** D4 spec-coverage-check — unified v2.6 (Gate 2 threshold 60%):
+- [x] **[D4]** D4 spec-coverage-check — unified v2.6 (Gate 2 threshold 60%):
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 60.0
   ```
@@ -1380,7 +1380,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   - CASE 4 BLOCKED:  max_rounds exhausted, not PASS → `GateBlockedError` → escalate to human
     > Human fix → re-run `run-gate --gate 2 → finalize-gate --gate 2` → CASE 1 PASS required before continuing.
 
-- [ ] **G2d** ✅ Verify checkpoint saved (finalize-gate above already pushed + wrote HANDOVER.md):
+- [x] **G2d** ✅ Verify checkpoint saved (finalize-gate above already pushed + wrote HANDOVER.md):
   ```bash
   # Confirm HANDOVER.md exists at project root (written by finalize-gate → commit_and_push_gate)
   ls -la HANDOVER.md
@@ -1390,32 +1390,32 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
   > `HANDOVER.md` **before** committing + pushing. No separate push needed here.
   > If HANDOVER.md is missing, re-run `finalize-gate` (do **not** raw-push).
 
-- [ ] **[PHASE-TRUTH]** Phase Truth ≥ 90% (HR-11) — verified by advance-phase
+- [x] **[PHASE-TRUTH]** Phase Truth ≥ 90% (HR-11) — verified by advance-phase
 
 ### Phase 3 Deliverables
-- [ ] `03-development/src/` - All FR modules implemented
-- [ ] `tests/` - Unit tests (≥80% coverage per FR)
+- [x] `03-development/src/` - All FR modules implemented
+- [x] `tests/` - Unit tests (≥80% coverage per FR)
 - [x] `.methodology/sessions_spawn.log` — auto-populated by AgentSpawner
-- [ ] Gate 1 PASS for every FR
-- [ ] Gate 2 PASS (phase exit, composite ≥ 75)
+- [x] Gate 1 PASS for every FR
+- [x] Gate 2 PASS (phase exit, composite ≥ 75)
 
 ### Phase 3 → Phase 4: Testing
 
-- [ ] Confirm ALL checkpoints in this plan are ✓  (no skips — HR-03)
-- [ ] Generate Phase 4 plan:
+- [x] Confirm ALL checkpoints in this plan are ✓  (no skips — HR-03)
+- [x] Generate Phase 4 plan:
   ```bash
   python3 harness_cli.py plan-phase --phase 4 --project . \
     --output .methodology/phase4_plan.md
   ```
-- [ ] **[TDD-PRECHECK]** Verify TDD checks pass — advance-phase enforces both:
+- [x] **[TDD-PRECHECK]** Verify TDD checks pass — advance-phase enforces both:
   - `pytest --tb=short -q --cov=03-development/src --cov-fail-under=100` (exit 9)
   - `python3 harness_cli.py spec-coverage-check --project . --threshold 60.0` (exit 10, D4 unified v2.6)
   > For genuinely untestable lines add: `# pragma: no cover` (requires justification comment).
 
-- [ ] Advance FSM to Phase 4 (writes new HANDOVER.md + local commit):
+- [x] Advance FSM to Phase 4 (writes new HANDOVER.md + local commit):
   ```bash
   python3 harness_cli.py advance-phase --completed 3 --project .
   ```
-- [ ] Confirm `HANDOVER.md` reflects Phase 4 entry (`P4-entry` checkpoint, correct plan path)
-- [ ] Open `phase4_plan.md` and follow from the top.
-- [ ] If session crashes during Phase 4: read `HANDOVER.md` or run `generate-next-plan`
+- [x] Confirm `HANDOVER.md` reflects Phase 4 entry (`P4-entry` checkpoint, correct plan path)
+- [x] Open `phase4_plan.md` and follow from the top.
+- [x] If session crashes during Phase 4: read `HANDOVER.md` or run `generate-next-plan`

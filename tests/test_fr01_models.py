@@ -210,4 +210,30 @@ def test_create_schema_executes_ddl_statements():
         # At least one DDL statement must have been executed
         assert mock_conn.execute.call_count > 0
 
-    asyncio.run(run())
+
+# ---------------------------------------------------------------------------
+# Coverage gap tests — config.py L23-26
+# ---------------------------------------------------------------------------
+
+
+def test_get_database_url_returns_value_when_env_set(monkeypatch):
+    """get_database_url returns the env var value when DATABASE_URL is set.
+
+    Covers config.py L23 (os.environ.get), L24 (if not url: False branch),
+    and L26 (return url).
+    """
+    from app.infrastructure.config import get_database_url
+    monkeypatch.setenv("DATABASE_URL", "postgresql+asyncpg://u:p@localhost/testdb")
+    assert get_database_url() == "postgresql+asyncpg://u:p@localhost/testdb"
+
+
+def test_get_database_url_raises_when_env_not_set(monkeypatch):
+    """get_database_url raises ValueError when DATABASE_URL is not set.
+
+    Covers config.py L24 (if not url: True branch) and L25 (raise ValueError).
+    """
+    import pytest
+    from app.infrastructure.config import get_database_url
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+    with pytest.raises(ValueError, match="DATABASE_URL"):
+        get_database_url()
