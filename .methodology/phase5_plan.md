@@ -80,7 +80,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 - [ ] Confirm ≥80% branch coverage
 
 **Gate 1 Re-evaluation — FR-01** (carry-forward · sub-agent dispatch):
-- [ ] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
+- [x] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
   ```bash
   python3 harness_cli.py run-fr-step --phase 5 --fr-id FR-01 \
     --step GATE1-DELTA --project .
@@ -106,7 +106,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 - [ ] Confirm ≥80% branch coverage
 
 **Gate 1 Re-evaluation — FR-02** (carry-forward · sub-agent dispatch):
-- [ ] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
+- [x] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
   ```bash
   python3 harness_cli.py run-fr-step --phase 5 --fr-id FR-02 \
     --step GATE1-DELTA --project .
@@ -132,7 +132,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 - [ ] Confirm ≥80% branch coverage
 
 **Gate 1 Re-evaluation — FR-03** (carry-forward · sub-agent dispatch):
-- [ ] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
+- [x] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
   ```bash
   python3 harness_cli.py run-fr-step --phase 5 --fr-id FR-03 \
     --step GATE1-DELTA --project .
@@ -158,7 +158,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 - [ ] Confirm ≥80% branch coverage
 
 **Gate 1 Re-evaluation — FR-04** (carry-forward · sub-agent dispatch):
-- [ ] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
+- [x] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
   ```bash
   python3 harness_cli.py run-fr-step --phase 5 --fr-id FR-04 \
     --step GATE1-DELTA --project .
@@ -184,7 +184,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 - [ ] Confirm ≥80% branch coverage
 
 **Gate 1 Re-evaluation — FR-05** (carry-forward · sub-agent dispatch):
-- [ ] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
+- [x] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
   ```bash
   python3 harness_cli.py run-fr-step --phase 5 --fr-id FR-05 \
     --step GATE1-DELTA --project .
@@ -210,7 +210,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 - [ ] Confirm ≥80% branch coverage
 
 **Gate 1 Re-evaluation — FR-06** (carry-forward · sub-agent dispatch):
-- [ ] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
+- [x] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
   ```bash
   python3 harness_cli.py run-fr-step --phase 5 --fr-id FR-06 \
     --step GATE1-DELTA --project .
@@ -236,7 +236,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 - [ ] Confirm ≥80% branch coverage
 
 **Gate 1 Re-evaluation — FR-07** (carry-forward · sub-agent dispatch):
-- [ ] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
+- [x] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
   ```bash
   python3 harness_cli.py run-fr-step --phase 5 --fr-id FR-07 \
     --step GATE1-DELTA --project .
@@ -262,7 +262,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 - [ ] Confirm ≥80% branch coverage
 
 **Gate 1 Re-evaluation — FR-08** (carry-forward · sub-agent dispatch):
-- [ ] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
+- [x] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
   ```bash
   python3 harness_cli.py run-fr-step --phase 5 --fr-id FR-08 \
     --step GATE1-DELTA --project .
@@ -288,7 +288,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 - [ ] Confirm ≥80% branch coverage
 
 **Gate 1 Re-evaluation — FR-09** (carry-forward · sub-agent dispatch):
-- [ ] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
+- [x] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
   ```bash
   python3 harness_cli.py run-fr-step --phase 5 --fr-id FR-09 \
     --step GATE1-DELTA --project .
@@ -314,7 +314,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 - [ ] Confirm ≥80% branch coverage
 
 **Gate 1 Re-evaluation — FR-10** (carry-forward · sub-agent dispatch):
-- [ ] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
+- [x] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
   ```bash
   python3 harness_cli.py run-fr-step --phase 5 --fr-id FR-10 \
     --step GATE1-DELTA --project .
@@ -340,7 +340,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 - [ ] Confirm ≥80% branch coverage
 
 **Gate 1 Re-evaluation — FR-11** (carry-forward · sub-agent dispatch):
-- [ ] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
+- [x] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
   ```bash
   python3 harness_cli.py run-fr-step --phase 5 --fr-id FR-11 \
     --step GATE1-DELTA --project .
@@ -366,7 +366,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 - [ ] Confirm ≥80% branch coverage
 
 **Gate 1 Re-evaluation — FR-12** (carry-forward · sub-agent dispatch):
-- [ ] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
+- [x] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
   ```bash
   python3 harness_cli.py run-fr-step --phase 5 --fr-id FR-12 \
     --step GATE1-DELTA --project .
@@ -392,7 +392,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 - [ ] Confirm ≥80% branch coverage
 
 **Gate 1 Re-evaluation — FR-13** (carry-forward · sub-agent dispatch):
-- [ ] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
+- [x] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
   ```bash
   python3 harness_cli.py run-fr-step --phase 5 --fr-id FR-13 \
     --step GATE1-DELTA --project .
@@ -418,7 +418,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 - [ ] Confirm ≥80% branch coverage
 
 **Gate 1 Re-evaluation — FR-14** (carry-forward · sub-agent dispatch):
-- [ ] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
+- [x] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
   ```bash
   python3 harness_cli.py run-fr-step --phase 5 --fr-id FR-14 \
     --step GATE1-DELTA --project .
@@ -444,7 +444,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 - [ ] Confirm ≥80% branch coverage
 
 **Gate 1 Re-evaluation — FR-15** (carry-forward · sub-agent dispatch):
-- [ ] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
+- [x] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
   ```bash
   python3 harness_cli.py run-fr-step --phase 5 --fr-id FR-15 \
     --step GATE1-DELTA --project .
@@ -470,7 +470,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 - [ ] Confirm ≥80% branch coverage
 
 **Gate 1 Re-evaluation — FR-16** (carry-forward · sub-agent dispatch):
-- [ ] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
+- [x] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
   ```bash
   python3 harness_cli.py run-fr-step --phase 5 --fr-id FR-16 \
     --step GATE1-DELTA --project .
@@ -496,7 +496,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 - [ ] Confirm ≥80% branch coverage
 
 **Gate 1 Re-evaluation — FR-17** (carry-forward · sub-agent dispatch):
-- [ ] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
+- [x] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
   ```bash
   python3 harness_cli.py run-fr-step --phase 5 --fr-id FR-17 \
     --step GATE1-DELTA --project .
@@ -522,7 +522,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 - [ ] Confirm ≥80% branch coverage
 
 **Gate 1 Re-evaluation — FR-18** (carry-forward · sub-agent dispatch):
-- [ ] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
+- [x] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
   ```bash
   python3 harness_cli.py run-fr-step --phase 5 --fr-id FR-18 \
     --step GATE1-DELTA --project .
@@ -548,7 +548,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 - [ ] Confirm ≥80% branch coverage
 
 **Gate 1 Re-evaluation — FR-19** (carry-forward · sub-agent dispatch):
-- [ ] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
+- [x] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
   ```bash
   python3 harness_cli.py run-fr-step --phase 5 --fr-id FR-19 \
     --step GATE1-DELTA --project .
@@ -574,7 +574,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 - [ ] Confirm ≥80% branch coverage
 
 **Gate 1 Re-evaluation — FR-20** (carry-forward · sub-agent dispatch):
-- [ ] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
+- [x] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
   ```bash
   python3 harness_cli.py run-fr-step --phase 5 --fr-id FR-20 \
     --step GATE1-DELTA --project .
@@ -600,7 +600,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 - [ ] Confirm ≥80% branch coverage
 
 **Gate 1 Re-evaluation — FR-21** (carry-forward · sub-agent dispatch):
-- [ ] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
+- [x] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
   ```bash
   python3 harness_cli.py run-fr-step --phase 5 --fr-id FR-21 \
     --step GATE1-DELTA --project .
@@ -626,7 +626,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). No phase-exit gate — P5
 - [ ] Confirm ≥80% branch coverage
 
 **Gate 1 Re-evaluation — FR-22** (carry-forward · sub-agent dispatch):
-- [ ] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
+- [x] **[ORCH-GATE1-DELTA]** Dispatch GATE1-DELTA evaluator sub-agent:
   ```bash
   python3 harness_cli.py run-fr-step --phase 5 --fr-id FR-22 \
     --step GATE1-DELTA --project .
