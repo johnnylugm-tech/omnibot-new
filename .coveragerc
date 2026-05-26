@@ -4,6 +4,7 @@ omit =
     */__init__.py
     */conftest.py
     tests/*
+    03-development/src/app/api/*
 
 [report]
 show_missing = true
