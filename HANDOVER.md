@@ -1,8 +1,8 @@
 # Harness Methodology — Session Handover
 
-**Checkpoint**: `P4-mid-20260526`  
+**Checkpoint**: `P4-pre-gate3-20260526`  
 **Phase**: P4 — Testing  
-**Generated**: 2026-05-26T07:10:54Z
+**Generated**: 2026-05-26T07:11:01Z
 
 > ⚠️  **開始下一個工作階段前，請先執行 `/compact` 壓縮上下文**，再從「接下來的工作」繼續。
 
@@ -50,11 +50,11 @@ cat .methodology/phase4_plan.md
 
 ## 任務背景
 
-P4 Testing in progress (≥50% milestone). 22/22 FRs done.
+P4 Testing complete. Gate 3 not yet executed.
 
 ## 目前執行狀況
 
-22/22 FRs Gate 1 PASS [FR-01,FR-02,FR-03,FR-04,FR-05,…+17]. Test cycles complete for passing FRs.
+All 22 FR(s) Gate 1 re-eval PASS [FR-01,FR-02,FR-03,FR-04,FR-05,…+17]. Gate 3 (14 dims) not yet started.
 
 **A/B Session Results:**
   - P1 / REQUIREMENTS_ENGINEER: **complete**
@@ -99,6 +99,13 @@ P4 Testing in progress (≥50% milestone). 22/22 FRs done.
   - P4_TEST_PLAN / reviewer: **APPROVE**
 
 **Recently Committed Files:**
+  - `.coverage`
+  - `.harness/traces/agent_trajectory.jsonl`
+  - `.methodology/phase3_plan_v24.md`
+  - `03-development/src/app/__pycache__/models.cpython-312.pyc`
+  - `HANDOVER.md`
+  - `audit_results.json`
+  - `detailed_audit.md`
   - `.methodology/gap_report.json`
   - `.methodology/phase4_plan.md`
   - `.methodology/sessions_spawn.log`
@@ -112,19 +119,12 @@ P4 Testing in progress (≥50% milestone). 22/22 FRs done.
   - `03-development/src/omnibot/db/__pycache__/__init__.cpython-312.pyc`
   - `03-development/src/omnibot/errors/__pycache__/__init__.cpython-312.pyc`
   - `03-development/src/omnibot/errors/__pycache__/codes.cpython-312.pyc`
-  - `03-development/src/omnibot/errors/codes.py`
-  - `03-development/src/omnibot/escalation/__pycache__/queue.cpython-312.pyc`
-  - `03-development/src/omnibot/escalation/queue.py`
-  - `03-development/src/omnibot/infrastructure/__pycache__/__init__.cpython-312.pyc`
-  - `03-development/src/omnibot/infrastructure/__pycache__/health.cpython-312.pyc`
-  - `03-development/src/omnibot/infrastructure/health.py`
-  - `03-development/src/omnibot/knowledge/__pycache__/matcher.cpython-312.pyc`
 
 ## 接下來的工作
 
-1. Complete remaining 0 FR(s): (all FRs Gate 1 PASS — ready for P4-pre-gate3)
-2. Ensure each FR has ≥80% branch coverage
-3. When all FRs done → `push-milestone --type p4-pre-gate3`
+1. Run Gate 3 evaluation (14 dims, target score ≥ 80)
+2. Fix any failures during evaluation
+3. On Gate 3 PASS → `finalize-gate --gate 3` handles push + HANDOVER
 
 ## 注意事項
 
@@ -134,8 +134,7 @@ P4 Testing in progress (≥50% milestone). 22/22 FRs done.
 
 ## 附加資訊
 
-- **fr_done**: 22
-- **fr_total**: 22
+- **fr_count**: 22
 - **HERMES_REVIEWER_TARGET**: ❌ not set (required before P6)
 
 ---
