@@ -1,16 +1,16 @@
 {
     "exit_code_by_key": {
-        "03-development.src.omnibot.security.whitelist.x\u01c1IPWhitelist\u01c1__init____mutmut_1": null,
-        "03-development.src.omnibot.security.whitelist.x\u01c1IPWhitelist\u01c1__init____mutmut_2": null,
-        "03-development.src.omnibot.security.whitelist.x\u01c1IPWhitelist\u01c1__init____mutmut_3": null,
-        "03-development.src.omnibot.security.whitelist.x\u01c1IPWhitelist\u01c1__init____mutmut_4": null,
-        "03-development.src.omnibot.security.whitelist.x\u01c1IPWhitelist\u01c1__init____mutmut_5": null,
-        "03-development.src.omnibot.security.whitelist.x\u01c1IPWhitelist\u01c1__init____mutmut_6": null,
-        "03-development.src.omnibot.security.whitelist.x\u01c1IPWhitelist\u01c1is_allowed__mutmut_1": null,
-        "03-development.src.omnibot.security.whitelist.x\u01c1IPWhitelist\u01c1is_allowed__mutmut_2": null,
-        "03-development.src.omnibot.security.whitelist.x\u01c1IPWhitelist\u01c1is_allowed__mutmut_3": null,
-        "03-development.src.omnibot.security.whitelist.x\u01c1IPWhitelist\u01c1is_allowed__mutmut_4": null,
-        "03-development.src.omnibot.security.whitelist.x\u01c1IPWhitelist\u01c1is_allowed__mutmut_5": null
+        "03-development.src.omnibot.security.whitelist.x\u01c1IPWhitelist\u01c1__init____mutmut_1": 33,
+        "03-development.src.omnibot.security.whitelist.x\u01c1IPWhitelist\u01c1__init____mutmut_2": 33,
+        "03-development.src.omnibot.security.whitelist.x\u01c1IPWhitelist\u01c1__init____mutmut_3": 33,
+        "03-development.src.omnibot.security.whitelist.x\u01c1IPWhitelist\u01c1__init____mutmut_4": 33,
+        "03-development.src.omnibot.security.whitelist.x\u01c1IPWhitelist\u01c1__init____mutmut_5": 33,
+        "03-development.src.omnibot.security.whitelist.x\u01c1IPWhitelist\u01c1__init____mutmut_6": 33,
+        "03-development.src.omnibot.security.whitelist.x\u01c1IPWhitelist\u01c1is_allowed__mutmut_1": 33,
+        "03-development.src.omnibot.security.whitelist.x\u01c1IPWhitelist\u01c1is_allowed__mutmut_2": 33,
+        "03-development.src.omnibot.security.whitelist.x\u01c1IPWhitelist\u01c1is_allowed__mutmut_3": 33,
+        "03-development.src.omnibot.security.whitelist.x\u01c1IPWhitelist\u01c1is_allowed__mutmut_4": 33,
+        "03-development.src.omnibot.security.whitelist.x\u01c1IPWhitelist\u01c1is_allowed__mutmut_5": 33
     },
     "hash_by_function_name": {}
 }

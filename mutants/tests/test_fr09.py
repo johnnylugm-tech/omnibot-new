@@ -1,4 +1,4 @@
-"""FR-09: PII masking L4."""
+"""[FR-09]  PII masking L4."""
 from __future__ import annotations
 
 from io import StringIO
@@ -80,14 +80,15 @@ def test_fr09_pii_masked_in_logs_during_pipeline():
 
     logger = logging.getLogger("test_pipeline")
     logger.setLevel(logging.DEBUG)
-    handler = StringIO()
+    stream = StringIO()
+    handler = logging.StreamHandler(stream)
     logger.addHandler(handler)
 
     text = "帳號 john@example.com 電話 0912345678"
     masked = PIIMasker.mask(text)
     logger.debug(f"Processed: {masked}")
 
-    log_output = handler.getvalue()
+    log_output = stream.getvalue()
     assert "john@example.com" not in log_output
     assert "0912345678" not in log_output
     assert "[REDACTED]" in log_output

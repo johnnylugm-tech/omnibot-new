@@ -1,12 +1,12 @@
 {
   "summary": {
-    "total": 2230,
+    "total": 2275,
     "missing": 0,
     "incomplete": 0,
-    "orphaned": 2230,
+    "orphaned": 2275,
     "critical": 0,
     "major": 0,
-    "minor": 2230
+    "minor": 2275
   },
   "gaps": [
     {
@@ -9894,6 +9894,24 @@
     {
       "type": "ORPHANED",
       "severity": "minor",
+      "reason": "'webhook_telegram' has no corresponding specification in SPEC.md",
+      "action": "Add spec for webhook_telegram or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'webhook_line' has no corresponding specification in SPEC.md",
+      "action": "Add spec for webhook_line or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'health' has no corresponding specification in SPEC.md",
+      "action": "Add spec for health or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
       "reason": "'x_get_database_url__mutmut_orig' has no corresponding specification in SPEC.md",
       "action": "Add spec for x_get_database_url__mutmut_orig or remove if unnecessary"
     },
@@ -10830,6 +10848,132 @@
     {
       "type": "ORPHANED",
       "severity": "minor",
+      "reason": "'x__compute_confidence__mutmut_orig' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x__compute_confidence__mutmut_orig or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x__compute_confidence__mutmut_1' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x__compute_confidence__mutmut_1 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x__compute_confidence__mutmut_2' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x__compute_confidence__mutmut_2 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x__compute_confidence__mutmut_3' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x__compute_confidence__mutmut_3 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x__compute_confidence__mutmut_4' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x__compute_confidence__mutmut_4 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x__compute_confidence__mutmut_5' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x__compute_confidence__mutmut_5 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x__compute_confidence__mutmut_6' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x__compute_confidence__mutmut_6 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x__compute_confidence__mutmut_7' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x__compute_confidence__mutmut_7 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x__compute_confidence__mutmut_8' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x__compute_confidence__mutmut_8 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x__compute_confidence__mutmut_9' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x__compute_confidence__mutmut_9 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x__compute_confidence__mutmut_10' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x__compute_confidence__mutmut_10 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x__compute_confidence__mutmut_11' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x__compute_confidence__mutmut_11 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x__compute_confidence__mutmut_12' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x__compute_confidence__mutmut_12 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x__compute_confidence__mutmut_13' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x__compute_confidence__mutmut_13 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x__compute_confidence__mutmut_14' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x__compute_confidence__mutmut_14 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x__compute_confidence__mutmut_15' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x__compute_confidence__mutmut_15 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x__compute_confidence__mutmut_16' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x__compute_confidence__mutmut_16 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x__compute_confidence__mutmut_17' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x__compute_confidence__mutmut_17 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x__compute_confidence__mutmut_18' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x__compute_confidence__mutmut_18 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x__compute_confidence__mutmut_19' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x__compute_confidence__mutmut_19 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x__compute_confidence__mutmut_20' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x__compute_confidence__mutmut_20 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
       "reason": "'KnowledgeMatcher' has no corresponding specification in SPEC.md",
       "action": "Add spec for KnowledgeMatcher or remove if unnecessary"
     },
@@ -11478,6 +11622,834 @@
     {
       "type": "ORPHANED",
       "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_orig' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_orig or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_1' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_1 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_2' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_2 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_3' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_3 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_4' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_4 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_5' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_5 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_6' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_6 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_7' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_7 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_8' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_8 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_9' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_9 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_10' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_10 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_11' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_11 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_12' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_12 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_13' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_13 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_14' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_14 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_15' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_15 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_16' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_16 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_17' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_17 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_18' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_18 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_19' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_19 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_20' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_20 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_21' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_21 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_22' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_22 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_23' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_23 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_24' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_24 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_25' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_25 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_26' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_26 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_27' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_27 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_28' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_28 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_29' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_29 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_30' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_30 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_31' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_31 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_32' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_32 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_33' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_33 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_34' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_34 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_35' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_35 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_36' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_36 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_37' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_37 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_38' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_38 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_39' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_39 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_40' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_40 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_41' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_41 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_42' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_42 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_43' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_43 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_44' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_44 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_45' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_45 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_46' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_46 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_47' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_47 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_48' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_verify_signature__mutmut_48 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_orig' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_orig or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_1' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_1 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_2' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_2 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_3' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_3 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_4' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_4 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_5' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_5 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_6' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_6 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_7' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_7 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_8' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_8 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_9' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_9 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_10' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_10 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_11' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_11 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_12' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_parse_message__mutmut_12 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_orig' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_orig or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_1' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_1 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_2' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_2 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_3' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_3 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_4' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_4 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_5' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_5 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_6' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_6 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_7' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_7 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_8' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_8 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_9' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_9 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_10' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_10 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_11' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_11 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_12' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_12 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_13' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_13 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_14' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_14 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_15' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_15 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_16' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_16 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_17' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_17 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_18' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_18 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_19' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_19 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_20' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_20 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_21' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_check_rate_limit__mutmut_21 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_orig' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_orig or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_1' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_1 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_2' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_2 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_3' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_3 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_4' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_4 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_5' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_5 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_6' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_6 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_7' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_7 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_8' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_8 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_9' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_9 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_10' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_10 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_11' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_11 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_12' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_process_content__mutmut_12 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_orig' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_orig or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_1' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_1 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_2' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_2 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_3' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_3 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_4' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_4 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_5' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_5 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_6' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_6 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_7' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_7 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_8' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_8 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_9' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_9 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_10' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_10 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_11' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_11 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_12' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_12 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_13' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_13 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_14' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_14 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_15' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_15 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_16' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_16 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_17' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_17 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_18' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_18 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_19' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_19 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_20' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_20 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_21' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_21 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_22' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_22 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_23' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_23 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_24' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_24 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_25' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_25 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_26' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_26 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_27' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_27 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_28' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_28 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_29' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_29 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_30' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_30 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_31' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_31 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_32' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_32 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_33' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_33 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_34' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_34 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_35' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_35 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_36' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_36 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_37' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_37 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_38' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_38 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_39' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_39 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_40' has no corresponding specification in SPEC.md",
+      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1_build_response__mutmut_40 or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
       "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_orig' has no corresponding specification in SPEC.md",
       "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_orig or remove if unnecessary"
     },
@@ -11942,708 +12914,6 @@
       "severity": "minor",
       "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_77' has no corresponding specification in SPEC.md",
       "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_77 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_78' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_78 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_79' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_79 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_80' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_80 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_81' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_81 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_82' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_82 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_83' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_83 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_84' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_84 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_85' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_85 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_86' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_86 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_87' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_87 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_88' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_88 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_89' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_89 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_90' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_90 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_91' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_91 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_92' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_92 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_93' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_93 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_94' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_94 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_95' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_95 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_96' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_96 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_97' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_97 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_98' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_98 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_99' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_99 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_100' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_100 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_101' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_101 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_102' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_102 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_103' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_103 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_104' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_104 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_105' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_105 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_106' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_106 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_107' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_107 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_108' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_108 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_109' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_109 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_110' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_110 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_111' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_111 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_112' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_112 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_113' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_113 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_114' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_114 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_115' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_115 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_116' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_116 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_117' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_117 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_118' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_118 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_119' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_119 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_120' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_120 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_121' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_121 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_122' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_122 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_123' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_123 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_124' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_124 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_125' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_125 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_126' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_126 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_127' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_127 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_128' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_128 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_129' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_129 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_130' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_130 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_131' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_131 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_132' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_132 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_133' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_133 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_134' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_134 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_135' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_135 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_136' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_136 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_137' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_137 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_138' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_138 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_139' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_139 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_140' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_140 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_141' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_141 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_142' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_142 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_143' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_143 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_144' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_144 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_145' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_145 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_146' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_146 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_147' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_147 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_148' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_148 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_149' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_149 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_150' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_150 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_151' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_151 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_152' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_152 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_153' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_153 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_154' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_154 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_155' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_155 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_156' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_156 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_157' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_157 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_158' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_158 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_159' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_159 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_160' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_160 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_161' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_161 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_162' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_162 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_163' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_163 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_164' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_164 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_165' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_165 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_166' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_166 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_167' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_167 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_168' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_168 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_169' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_169 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_170' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_170 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_171' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_171 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_172' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_172 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_173' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_173 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_174' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_174 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_175' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_175 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_176' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_176 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_177' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_177 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_178' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_178 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_179' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_179 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_180' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_180 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_181' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_181 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_182' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_182 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_183' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_183 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_184' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_184 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_185' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_185 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_186' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_186 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_187' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_187 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_188' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_188 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_189' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_189 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_190' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_190 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_191' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_191 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_192' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_192 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_193' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_193 or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'x\u01c1PipelineOrchestrator\u01c1process__mutmut_194' has no corresponding specification in SPEC.md",
-      "action": "Add spec for x\u01c1PipelineOrchestrator\u01c1process__mutmut_194 or remove if unnecessary"
     },
     {
       "type": "ORPHANED",

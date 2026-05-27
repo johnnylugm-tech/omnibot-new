@@ -6,15 +6,16 @@ import re
 import subprocess
 from pathlib import Path
 
-SRC_ROOT = Path("03-development/src/omnibot")
+SRC_ROOT = Path("/Users/johnny/projects/omnibot-new/03-development/src/omnibot")
 
 
 def test_fr18_ruff_check_zero_violations():
     """Run ruff check on the source and assert zero violations."""
     result = subprocess.run(
-        ["ruff", "check", "03-development/src/"],
+        ["ruff", "check", "/Users/johnny/projects/omnibot-new/03-development/src/"],
         capture_output=True,
         text=True,
+        cwd="/Users/johnny/projects/omnibot-new",
     )
     assert result.returncode == 0, f"ruff found violations:\n{result.stdout}\n{result.stderr}"
 
@@ -24,9 +25,10 @@ def test_fr18_radon_cc_max_less_than_or_equal_10():
     import json
 
     result = subprocess.run(
-        ["radon", "cc", "03-development/src/", "-j"],
+        ["radon", "cc", "/Users/johnny/projects/omnibot-new/03-development/src/", "-j"],
         capture_output=True,
         text=True,
+        cwd="/Users/johnny/projects/omnibot-new",
     )
     assert result.returncode == 0, f"radon cc failed: {result.stderr}"
 

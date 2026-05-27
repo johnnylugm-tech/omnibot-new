@@ -213,7 +213,13 @@
       "open_critical": 0,
       "open_high": 0
     },
-    "gate4": null
+    "gate4": {
+      "score": 96.45000000000002,
+      "quality_complete": true,
+      "rounds_used": 1,
+      "open_critical": 0,
+      "open_high": 0
+    }
   },
   "nfr_fr_mapping": {
     "NFR-08": [

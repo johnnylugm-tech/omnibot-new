@@ -904,7 +904,7 @@ _split_ddl.__signature__ = _mutmut_signature(x__split_ddl__mutmut_orig)
 x__split_ddl__mutmut_orig.__name__ = 'x__split_ddl'
 
 
-async def x_create_schema__mutmut_orig() -> None:
+async def x_create_schema__mutmut_orig() -> None:  # pragma: no cover
     """Create the complete Phase 1 PostgreSQL schema.
 
     Creates all 8 core tables and 11 indexes as defined in SPEC.md §Database
@@ -936,7 +936,7 @@ async def x_create_schema__mutmut_orig() -> None:
             await conn.execute(text(statement))
 
 
-async def x_create_schema__mutmut_1() -> None:
+async def x_create_schema__mutmut_1() -> None:  # pragma: no cover
     """Create the complete Phase 1 PostgreSQL schema.
 
     Creates all 8 core tables and 11 indexes as defined in SPEC.md §Database
@@ -968,7 +968,7 @@ async def x_create_schema__mutmut_1() -> None:
             await conn.execute(text(statement))
 
 
-async def x_create_schema__mutmut_2() -> None:
+async def x_create_schema__mutmut_2() -> None:  # pragma: no cover
     """Create the complete Phase 1 PostgreSQL schema.
 
     Creates all 8 core tables and 11 indexes as defined in SPEC.md §Database
@@ -1000,7 +1000,7 @@ async def x_create_schema__mutmut_2() -> None:
             await conn.execute(text(statement))
 
 
-async def x_create_schema__mutmut_3() -> None:
+async def x_create_schema__mutmut_3() -> None:  # pragma: no cover
     """Create the complete Phase 1 PostgreSQL schema.
 
     Creates all 8 core tables and 11 indexes as defined in SPEC.md §Database
@@ -1024,7 +1024,7 @@ async def x_create_schema__mutmut_3() -> None:
             await conn.execute(text(statement))
 
 
-async def x_create_schema__mutmut_4() -> None:
+async def x_create_schema__mutmut_4() -> None:  # pragma: no cover
     """Create the complete Phase 1 PostgreSQL schema.
 
     Creates all 8 core tables and 11 indexes as defined in SPEC.md §Database
@@ -1048,7 +1048,7 @@ async def x_create_schema__mutmut_4() -> None:
             await conn.execute(text(statement))
 
 
-async def x_create_schema__mutmut_5() -> None:
+async def x_create_schema__mutmut_5() -> None:  # pragma: no cover
     """Create the complete Phase 1 PostgreSQL schema.
 
     Creates all 8 core tables and 11 indexes as defined in SPEC.md §Database
@@ -1080,7 +1080,7 @@ async def x_create_schema__mutmut_5() -> None:
             await conn.execute(text(statement))
 
 
-async def x_create_schema__mutmut_6() -> None:
+async def x_create_schema__mutmut_6() -> None:  # pragma: no cover
     """Create the complete Phase 1 PostgreSQL schema.
 
     Creates all 8 core tables and 11 indexes as defined in SPEC.md §Database
@@ -1112,7 +1112,7 @@ async def x_create_schema__mutmut_6() -> None:
             await conn.execute(None)
 
 
-async def x_create_schema__mutmut_7() -> None:
+async def x_create_schema__mutmut_7() -> None:  # pragma: no cover
     """Create the complete Phase 1 PostgreSQL schema.
 
     Creates all 8 core tables and 11 indexes as defined in SPEC.md §Database

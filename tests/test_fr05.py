@@ -63,10 +63,10 @@ def test_fr05_line_wrong_secret_returns_false():
 
 def test_fr05_line_uses_hmac_compare_digest():
     """FR-05: verify uses hmac.compare_digest for timing safety."""
+    from omnibot.security.verifiers import LineWebhookVerifier
+    import omnibot.security.verifiers as verifiers_mod
     import inspect
-    from omnibot.security import LineWebhookVerifier
-
-    source = inspect.getsource(LineWebhookVerifier.verify)
+    source = inspect.getsource(verifiers_mod.LineWebhookVerifier)
     assert "compare_digest" in source, "Must use hmac.compare_digest"
 
 
@@ -76,10 +76,10 @@ def test_fr05_line_uses_hmac_compare_digest():
 
 def test_fr05_line_uses_compare_digest_timing_safe():
     """FR-05: verify uses hmac.compare_digest for timing-safe comparison."""
+    from omnibot.security.verifiers import LineWebhookVerifier
+    import omnibot.security.verifiers as verifiers_mod
     import inspect
-    from omnibot.security import LineWebhookVerifier
-
-    source = inspect.getsource(LineWebhookVerifier.verify)
+    source = inspect.getsource(verifiers_mod.LineWebhookVerifier)
     assert "compare_digest" in source, "Must use hmac.compare_digest for timing safety"
 
 
@@ -101,10 +101,10 @@ def test_fr05_line_webhook_invalid_signature_returns_401():
 
 def test_fr05_line_uses_hmac_compare_digest_for_timing_safety():
     """FR-05: verify uses both hmac.new and hmac.compare_digest for timing safety."""
+    from omnibot.security.verifiers import LineWebhookVerifier
+    import omnibot.security.verifiers as verifiers_mod
     import inspect
-    from omnibot.security import LineWebhookVerifier
-
-    source = inspect.getsource(LineWebhookVerifier.verify)
+    source = inspect.getsource(verifiers_mod.LineWebhookVerifier)
     assert "hmac.new" in source or "hmac.digest" in source, (
         "Must use HMAC for signature computation"
     )

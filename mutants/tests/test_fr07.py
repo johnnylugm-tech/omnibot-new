@@ -1,4 +1,4 @@
-"""FR-07: Define ApiResponse and PaginatedResponse dataclasses.
+"""[FR-07]  Define ApiResponse and PaginatedResponse dataclasses.
 
 SRS.md §FR-07:
   "Define generic ApiResponse[T] and PaginatedResponse[T] dataclasses"

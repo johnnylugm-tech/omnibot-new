@@ -1,4 +1,25 @@
 {
-    "exit_code_by_key": {},
+    "exit_code_by_key": {
+        "03-development.src.omnibot.knowledge.matcher.x__compute_confidence__mutmut_1": 33,
+        "03-development.src.omnibot.knowledge.matcher.x__compute_confidence__mutmut_2": 33,
+        "03-development.src.omnibot.knowledge.matcher.x__compute_confidence__mutmut_3": 33,
+        "03-development.src.omnibot.knowledge.matcher.x__compute_confidence__mutmut_4": 33,
+        "03-development.src.omnibot.knowledge.matcher.x__compute_confidence__mutmut_5": 33,
+        "03-development.src.omnibot.knowledge.matcher.x__compute_confidence__mutmut_6": 33,
+        "03-development.src.omnibot.knowledge.matcher.x__compute_confidence__mutmut_7": 33,
+        "03-development.src.omnibot.knowledge.matcher.x__compute_confidence__mutmut_8": 33,
+        "03-development.src.omnibot.knowledge.matcher.x__compute_confidence__mutmut_9": 33,
+        "03-development.src.omnibot.knowledge.matcher.x__compute_confidence__mutmut_10": 33,
+        "03-development.src.omnibot.knowledge.matcher.x__compute_confidence__mutmut_11": 33,
+        "03-development.src.omnibot.knowledge.matcher.x__compute_confidence__mutmut_12": 33,
+        "03-development.src.omnibot.knowledge.matcher.x__compute_confidence__mutmut_13": 33,
+        "03-development.src.omnibot.knowledge.matcher.x__compute_confidence__mutmut_14": 33,
+        "03-development.src.omnibot.knowledge.matcher.x__compute_confidence__mutmut_15": 33,
+        "03-development.src.omnibot.knowledge.matcher.x__compute_confidence__mutmut_16": 33,
+        "03-development.src.omnibot.knowledge.matcher.x__compute_confidence__mutmut_17": 33,
+        "03-development.src.omnibot.knowledge.matcher.x__compute_confidence__mutmut_18": 33,
+        "03-development.src.omnibot.knowledge.matcher.x__compute_confidence__mutmut_19": 33,
+        "03-development.src.omnibot.knowledge.matcher.x__compute_confidence__mutmut_20": 33
+    },
     "hash_by_function_name": {}
 }

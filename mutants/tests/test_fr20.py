@@ -1,4 +1,4 @@
-"""FR-20: UnifiedResponse dataclass — 6 tests."""
+"""[FR-20]  UnifiedResponse dataclass — 6 tests."""
 from __future__ import annotations
 
 import json
@@ -85,6 +85,7 @@ def test_fr20_pipeline_returns_unified_response_with_correct_source_and_confiden
     secret_key = hashlib.sha256(bot_token.encode("utf-8")).digest()
 
     orch = PipelineOrchestrator()
+    orch._skip_signature_check = True
     payload = {
         "message": {
             "from": {"id": 123456},

@@ -1,11 +1,11 @@
 {
     "exit_code_by_key": {
-        "03-development.src.omnibot.errors.x\u01c1ConfigError\u01c1__init____mutmut_1": null,
-        "03-development.src.omnibot.errors.x\u01c1ValidationError\u01c1__init____mutmut_1": null,
-        "03-development.src.omnibot.errors.x\u01c1ValidationError\u01c1__init____mutmut_2": null,
-        "03-development.src.omnibot.errors.x\u01c1ValidationError\u01c1__init____mutmut_3": null,
-        "03-development.src.omnibot.errors.x\u01c1IPWhitelistError\u01c1__init____mutmut_1": null,
-        "03-development.src.omnibot.errors.x\u01c1IPWhitelistError\u01c1__init____mutmut_2": null
+        "03-development.src.omnibot.errors.x\u01c1ConfigError\u01c1__init____mutmut_1": 33,
+        "03-development.src.omnibot.errors.x\u01c1ValidationError\u01c1__init____mutmut_1": 33,
+        "03-development.src.omnibot.errors.x\u01c1ValidationError\u01c1__init____mutmut_2": 33,
+        "03-development.src.omnibot.errors.x\u01c1ValidationError\u01c1__init____mutmut_3": 33,
+        "03-development.src.omnibot.errors.x\u01c1IPWhitelistError\u01c1__init____mutmut_1": 33,
+        "03-development.src.omnibot.errors.x\u01c1IPWhitelistError\u01c1__init____mutmut_2": 33
     },
     "hash_by_function_name": {}
 }

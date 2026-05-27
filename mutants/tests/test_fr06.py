@@ -1,4 +1,4 @@
-"""FR-06: Define immutable UnifiedMessage dataclass with Platform/MessageType enums.
+"""[FR-06]  Define immutable UnifiedMessage dataclass with Platform/MessageType enums.
 
 SRS.md §FR-06:
   "Define immutable UnifiedMessage dataclass with Platform/MessageType enums"

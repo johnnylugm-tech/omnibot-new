@@ -1,4 +1,4 @@
-"""FR-11: Layer 1 rule-based knowledge matcher."""
+"""[FR-11] Layer 1 rule-based knowledge matcher."""
 from __future__ import annotations
 
 import re
@@ -36,6 +36,183 @@ def _mutmut_trampoline(orig, mutants, call_args, call_kwargs, self_arg = None):
     return result
 
 
+def x__compute_confidence__mutmut_orig(kw_lower: str, text_lower: str, words: set) -> float:
+    """Compute confidence tier for a keyword match."""
+    word_match = kw_lower in words
+    boundary_match = re.search(r'\b' + re.escape(kw_lower) + r'\b', text_lower) is not None
+    return 0.95 if (word_match or boundary_match) else 0.70
+
+
+def x__compute_confidence__mutmut_1(kw_lower: str, text_lower: str, words: set) -> float:
+    """Compute confidence tier for a keyword match."""
+    word_match = None
+    boundary_match = re.search(r'\b' + re.escape(kw_lower) + r'\b', text_lower) is not None
+    return 0.95 if (word_match or boundary_match) else 0.70
+
+
+def x__compute_confidence__mutmut_2(kw_lower: str, text_lower: str, words: set) -> float:
+    """Compute confidence tier for a keyword match."""
+    word_match = kw_lower not in words
+    boundary_match = re.search(r'\b' + re.escape(kw_lower) + r'\b', text_lower) is not None
+    return 0.95 if (word_match or boundary_match) else 0.70
+
+
+def x__compute_confidence__mutmut_3(kw_lower: str, text_lower: str, words: set) -> float:
+    """Compute confidence tier for a keyword match."""
+    word_match = kw_lower in words
+    boundary_match = None
+    return 0.95 if (word_match or boundary_match) else 0.70
+
+
+def x__compute_confidence__mutmut_4(kw_lower: str, text_lower: str, words: set) -> float:
+    """Compute confidence tier for a keyword match."""
+    word_match = kw_lower in words
+    boundary_match = re.search(None, text_lower) is not None
+    return 0.95 if (word_match or boundary_match) else 0.70
+
+
+def x__compute_confidence__mutmut_5(kw_lower: str, text_lower: str, words: set) -> float:
+    """Compute confidence tier for a keyword match."""
+    word_match = kw_lower in words
+    boundary_match = re.search(r'\b' + re.escape(kw_lower) + r'\b', None) is not None
+    return 0.95 if (word_match or boundary_match) else 0.70
+
+
+def x__compute_confidence__mutmut_6(kw_lower: str, text_lower: str, words: set) -> float:
+    """Compute confidence tier for a keyword match."""
+    word_match = kw_lower in words
+    boundary_match = re.search(text_lower) is not None
+    return 0.95 if (word_match or boundary_match) else 0.70
+
+
+def x__compute_confidence__mutmut_7(kw_lower: str, text_lower: str, words: set) -> float:
+    """Compute confidence tier for a keyword match."""
+    word_match = kw_lower in words
+    boundary_match = re.search(r'\b' + re.escape(kw_lower) + r'\b', ) is not None
+    return 0.95 if (word_match or boundary_match) else 0.70
+
+
+def x__compute_confidence__mutmut_8(kw_lower: str, text_lower: str, words: set) -> float:
+    """Compute confidence tier for a keyword match."""
+    word_match = kw_lower in words
+    boundary_match = re.search(r'\b' + re.escape(kw_lower) - r'\b', text_lower) is not None
+    return 0.95 if (word_match or boundary_match) else 0.70
+
+
+def x__compute_confidence__mutmut_9(kw_lower: str, text_lower: str, words: set) -> float:
+    """Compute confidence tier for a keyword match."""
+    word_match = kw_lower in words
+    boundary_match = re.search(r'\b' - re.escape(kw_lower) + r'\b', text_lower) is not None
+    return 0.95 if (word_match or boundary_match) else 0.70
+
+
+def x__compute_confidence__mutmut_10(kw_lower: str, text_lower: str, words: set) -> float:
+    """Compute confidence tier for a keyword match."""
+    word_match = kw_lower in words
+    boundary_match = re.search(r'XX\bXX' + re.escape(kw_lower) + r'\b', text_lower) is not None
+    return 0.95 if (word_match or boundary_match) else 0.70
+
+
+def x__compute_confidence__mutmut_11(kw_lower: str, text_lower: str, words: set) -> float:
+    """Compute confidence tier for a keyword match."""
+    word_match = kw_lower in words
+    boundary_match = re.search(r'\b' + re.escape(kw_lower) + r'\b', text_lower) is not None
+    return 0.95 if (word_match or boundary_match) else 0.70
+
+
+def x__compute_confidence__mutmut_12(kw_lower: str, text_lower: str, words: set) -> float:
+    """Compute confidence tier for a keyword match."""
+    word_match = kw_lower in words
+    boundary_match = re.search(r'\b' + re.escape(kw_lower) + r'\b', text_lower) is not None
+    return 0.95 if (word_match or boundary_match) else 0.70
+
+
+def x__compute_confidence__mutmut_13(kw_lower: str, text_lower: str, words: set) -> float:
+    """Compute confidence tier for a keyword match."""
+    word_match = kw_lower in words
+    boundary_match = re.search(r'\b' + re.escape(None) + r'\b', text_lower) is not None
+    return 0.95 if (word_match or boundary_match) else 0.70
+
+
+def x__compute_confidence__mutmut_14(kw_lower: str, text_lower: str, words: set) -> float:
+    """Compute confidence tier for a keyword match."""
+    word_match = kw_lower in words
+    boundary_match = re.search(r'\b' + re.escape(kw_lower) + r'XX\bXX', text_lower) is not None
+    return 0.95 if (word_match or boundary_match) else 0.70
+
+
+def x__compute_confidence__mutmut_15(kw_lower: str, text_lower: str, words: set) -> float:
+    """Compute confidence tier for a keyword match."""
+    word_match = kw_lower in words
+    boundary_match = re.search(r'\b' + re.escape(kw_lower) + r'\b', text_lower) is not None
+    return 0.95 if (word_match or boundary_match) else 0.70
+
+
+def x__compute_confidence__mutmut_16(kw_lower: str, text_lower: str, words: set) -> float:
+    """Compute confidence tier for a keyword match."""
+    word_match = kw_lower in words
+    boundary_match = re.search(r'\b' + re.escape(kw_lower) + r'\b', text_lower) is not None
+    return 0.95 if (word_match or boundary_match) else 0.70
+
+
+def x__compute_confidence__mutmut_17(kw_lower: str, text_lower: str, words: set) -> float:
+    """Compute confidence tier for a keyword match."""
+    word_match = kw_lower in words
+    boundary_match = re.search(r'\b' + re.escape(kw_lower) + r'\b', text_lower) is None
+    return 0.95 if (word_match or boundary_match) else 0.70
+
+
+def x__compute_confidence__mutmut_18(kw_lower: str, text_lower: str, words: set) -> float:
+    """Compute confidence tier for a keyword match."""
+    word_match = kw_lower in words
+    boundary_match = re.search(r'\b' + re.escape(kw_lower) + r'\b', text_lower) is not None
+    return 1.95 if (word_match or boundary_match) else 0.70
+
+
+def x__compute_confidence__mutmut_19(kw_lower: str, text_lower: str, words: set) -> float:
+    """Compute confidence tier for a keyword match."""
+    word_match = kw_lower in words
+    boundary_match = re.search(r'\b' + re.escape(kw_lower) + r'\b', text_lower) is not None
+    return 0.95 if (word_match and boundary_match) else 0.70
+
+
+def x__compute_confidence__mutmut_20(kw_lower: str, text_lower: str, words: set) -> float:
+    """Compute confidence tier for a keyword match."""
+    word_match = kw_lower in words
+    boundary_match = re.search(r'\b' + re.escape(kw_lower) + r'\b', text_lower) is not None
+    return 0.95 if (word_match or boundary_match) else 1.7
+
+x__compute_confidence__mutmut_mutants : ClassVar[MutantDict] = {
+'x__compute_confidence__mutmut_1': x__compute_confidence__mutmut_1, 
+    'x__compute_confidence__mutmut_2': x__compute_confidence__mutmut_2, 
+    'x__compute_confidence__mutmut_3': x__compute_confidence__mutmut_3, 
+    'x__compute_confidence__mutmut_4': x__compute_confidence__mutmut_4, 
+    'x__compute_confidence__mutmut_5': x__compute_confidence__mutmut_5, 
+    'x__compute_confidence__mutmut_6': x__compute_confidence__mutmut_6, 
+    'x__compute_confidence__mutmut_7': x__compute_confidence__mutmut_7, 
+    'x__compute_confidence__mutmut_8': x__compute_confidence__mutmut_8, 
+    'x__compute_confidence__mutmut_9': x__compute_confidence__mutmut_9, 
+    'x__compute_confidence__mutmut_10': x__compute_confidence__mutmut_10, 
+    'x__compute_confidence__mutmut_11': x__compute_confidence__mutmut_11, 
+    'x__compute_confidence__mutmut_12': x__compute_confidence__mutmut_12, 
+    'x__compute_confidence__mutmut_13': x__compute_confidence__mutmut_13, 
+    'x__compute_confidence__mutmut_14': x__compute_confidence__mutmut_14, 
+    'x__compute_confidence__mutmut_15': x__compute_confidence__mutmut_15, 
+    'x__compute_confidence__mutmut_16': x__compute_confidence__mutmut_16, 
+    'x__compute_confidence__mutmut_17': x__compute_confidence__mutmut_17, 
+    'x__compute_confidence__mutmut_18': x__compute_confidence__mutmut_18, 
+    'x__compute_confidence__mutmut_19': x__compute_confidence__mutmut_19, 
+    'x__compute_confidence__mutmut_20': x__compute_confidence__mutmut_20
+}
+
+def _compute_confidence(*args, **kwargs):
+    result = _mutmut_trampoline(x__compute_confidence__mutmut_orig, x__compute_confidence__mutmut_mutants, args, kwargs)
+    return result 
+
+_compute_confidence.__signature__ = _mutmut_signature(x__compute_confidence__mutmut_orig)
+x__compute_confidence__mutmut_orig.__name__ = 'x__compute_confidence'
+
+
 class KnowledgeMatcher:
     @staticmethod
     def match(text: str, rules: list[dict]) -> dict | None:
@@ -51,26 +228,22 @@ class KnowledgeMatcher:
         if not text:
             return None
 
-        text_lower = text.lower()
-        words = set(re.findall(r'\b\w+\b', text_lower))
-
-        # Filter out inactive rules
-        active_rules = [r for r in rules if r.get("active", True)]
-
-        for rule in sorted(active_rules, key=lambda r: r.get("version", 0), reverse=True)[:5]:
-            for keyword in rule.get("keywords", []):
-                kw_lower = keyword.lower()
-                if kw_lower in text_lower:
-                    # Determine confidence tier
-                    if kw_lower in words or re.search(r'\b' + re.escape(kw_lower) + r'\b', text_lower):
-                        confidence = 0.95
-                    else:
-                        confidence = 0.70
-                    return {
-                        "question": rule.get("question", ""),
-                        "answer": rule.get("answer", ""),
-                        "category": rule.get("category", "general"),
-                        "confidence": confidence,
-                        "source": "rule",
-                    }
+        try:
+            text_lower = text.lower()
+            words = set(re.findall(r'\b\w+\b', text_lower))
+            active_rules = [r for r in rules if r.get("active", True)]
+            for rule in sorted(active_rules, key=lambda r: r.get("version", 0), reverse=True)[:5]:
+                for keyword in rule.get("keywords", []):
+                    kw_lower = keyword.lower()
+                    if kw_lower in text_lower:
+                        confidence = _compute_confidence(kw_lower, text_lower, words)
+                        return {
+                            "question": rule.get("question", ""),
+                            "answer": rule.get("answer", ""),
+                            "category": rule.get("category", "general"),
+                            "confidence": confidence,
+                            "source": "rule",
+                        }
+        except Exception:
+            pass
         return None

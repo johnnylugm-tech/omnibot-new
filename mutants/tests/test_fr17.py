@@ -1,4 +1,4 @@
-"""FR-17: Standardized error codes."""
+"""[FR-17]  Standardized error codes."""
 from __future__ import annotations
 
 

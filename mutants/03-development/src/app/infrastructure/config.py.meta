@@ -1,9 +1,9 @@
 {
     "exit_code_by_key": {
-        "03-development.src.app.infrastructure.config.x_get_database_url__mutmut_1": null,
-        "03-development.src.app.infrastructure.config.x_get_database_url__mutmut_2": null,
-        "03-development.src.app.infrastructure.config.x_get_database_url__mutmut_3": null,
-        "03-development.src.app.infrastructure.config.x_get_database_url__mutmut_4": null
+        "03-development.src.app.infrastructure.config.x_get_database_url__mutmut_1": 33,
+        "03-development.src.app.infrastructure.config.x_get_database_url__mutmut_2": 33,
+        "03-development.src.app.infrastructure.config.x_get_database_url__mutmut_3": 33,
+        "03-development.src.app.infrastructure.config.x_get_database_url__mutmut_4": 33
     },
     "hash_by_function_name": {}
 }

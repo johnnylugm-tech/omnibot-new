@@ -1,4 +1,4 @@
-"""FR-12: Basic escalation queue."""
+"""[FR-12] Basic escalation queue."""
 from __future__ import annotations
 from inspect import signature as _mutmut_signature
 from typing import Annotated

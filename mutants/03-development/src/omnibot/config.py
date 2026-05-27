@@ -1,4 +1,4 @@
-"""FR-21: Configuration loader and settings dataclass.
+"""[FR-21] Configuration loader and settings dataclass.
 
 Loads and validates all required environment variables at startup.
 Fail-fast on missing critical keys.

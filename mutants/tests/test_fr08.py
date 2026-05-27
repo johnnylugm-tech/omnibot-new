@@ -1,4 +1,4 @@
-"""FR-08: Input Sanitizer L2 — NFKC normalization, strip control chars.
+"""[FR-08]  Input Sanitizer L2 — NFKC normalization, strip control chars.
 
 SRS.md §FR-08:
   "Normalize all inbound message text using Unicode NFKC normalization"
@@ -69,7 +69,7 @@ def test_fr08_sanitizer_output_feeds_fr09_pii_masker():
     from omnibot.processing.sanitizer import InputSanitizer
     from omnibot.processing.pii import PIIMasker
     # Sanitizer should clean the text before PII masking
-    dirty = "user@example.com and 123-456-7890"
+    dirty = "user@example.com and 0912345678"
     sanitized = InputSanitizer.sanitize(dirty)
     masked = PIIMasker.mask(sanitized)
     assert masked == "[REDACTED] and [REDACTED]"

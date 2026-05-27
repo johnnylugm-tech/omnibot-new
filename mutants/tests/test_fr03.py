@@ -1,4 +1,4 @@
-"""FR-03: Accept LINE webhook POST, parse into immutable UnifiedMessage.
+"""[FR-03]  Accept LINE webhook POST, parse into immutable UnifiedMessage.
 
 SRS.md §FR-03:
   "Accept LINE webhook POST, parse into UnifiedMessage with reply_token"

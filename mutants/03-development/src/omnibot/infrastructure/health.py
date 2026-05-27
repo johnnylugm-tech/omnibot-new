@@ -1,5 +1,5 @@
 """
-FR-14: Health check endpoint.
+[FR-14] Health check endpoint.
 
 GET /api/v1/health → {"status": "healthy|degraded|unhealthy", "postgres": bool, "redis": bool, "uptime_seconds": float}
 

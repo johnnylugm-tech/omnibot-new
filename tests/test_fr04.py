@@ -64,10 +64,11 @@ def test_fr04_telegram_wrong_signature_returns_false():
 
 def test_fr04_telegram_uses_hmac_compare_digest():
     """FR-04: verify uses hmac.compare_digest for timing safety."""
+    from omnibot.security.verifiers import TelegramWebhookVerifier
+    # Read source from module file to avoid inspect.getsource() mutant/patch issues
+    import omnibot.security.verifiers as verifiers_mod
     import inspect
-    from omnibot.security import TelegramWebhookVerifier
-
-    source = inspect.getsource(TelegramWebhookVerifier.verify)
+    source = inspect.getsource(verifiers_mod.TelegramWebhookVerifier)
     assert "compare_digest" in source, "Must use hmac.compare_digest"
 
 
@@ -105,10 +106,10 @@ def test_fr04_telegram_missing_signature_header_returns_false():
 
 def test_fr04_telegram_uses_compare_digest_timing_safe():
     """FR-04: verify uses hmac.compare_digest for timing-safe comparison."""
+    from omnibot.security.verifiers import TelegramWebhookVerifier
+    import omnibot.security.verifiers as verifiers_mod
     import inspect
-    from omnibot.security import TelegramWebhookVerifier
-
-    source = inspect.getsource(TelegramWebhookVerifier.verify)
+    source = inspect.getsource(verifiers_mod.TelegramWebhookVerifier)
     assert "compare_digest" in source, "Must use hmac.compare_digest"
 
 
