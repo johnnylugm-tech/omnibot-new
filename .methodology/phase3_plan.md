@@ -80,7 +80,16 @@ python3 harness_cli.py load-context --phase 3 --project . --json \
 - [ ] **[ORCH-GREEN]**   `run-fr-step --phase 3 --fr-id {FR-ID} --step TDD-GREEN --project . --srs 01-requirements/SRS.md`
 - [ ] **[ORCH-IMPROVE]** `run-fr-step --phase 3 --fr-id {FR-ID} --step TDD-IMPROVE --project .`
 - [ ] **[ORCH-GATE1]**   `run-fr-step --phase 3 --fr-id {FR-ID} --step GATE1 --project .`
+> Gate 1 thresholds: linting(90) · type_safety(85) · test_coverage(80) · test_assertion_quality(50)
 > Crash recovery: `resume-fr-phase --phase 3 --project .`
+>
+> **Gate 1 outcomes:**
+> - CASE 1 PASS:    Gate 1 PASS → continue to next {FR-ID}
+> - CASE 2 FAIL:    Fix failing dims → re-run `run-fr-step --step GATE1`
+>   (linting: `ruff check . --fix`; coverage: add tests; type_safety: fix mypy errors;
+>   test_assertion_quality: add assertions to zero-assert test functions)
+> - CASE 3 BLOCKED: 3 rounds still failing → escalate to human.
+>   Provide: Gate 1 output + failing dimension details.
 
 ---
 
@@ -119,6 +128,7 @@ python3 harness_cli.py load-context --phase 3 --project . --json \
   - Follow `harness/ssi/prompts/evaluate_dimension.md`
   - Write result to `.sessi-work/gate2_result.json`
   - Failing dim: fix code → re-evaluate → re-score
+  > Auto-fix engine may attempt to correct linting/coverage/type_safety issues automatically.
 
 - [ ] **G2c** Finalize Gate 2:
   ```bash

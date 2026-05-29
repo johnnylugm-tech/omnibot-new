@@ -70,6 +70,13 @@ python3 harness_cli.py load-context --phase 8 --project . --json \
 
 - [ ] **[ORCH-GATE1-DELTA]** `run-fr-step --phase 8 --fr-id {FR-ID} --step GATE1-DELTA --project .`
 > Crash recovery: `resume-fr-phase` auto-detects code changes → switches to full TDD if needed.
+>
+> **GATE1-DELTA outcomes:**
+> - CASE 1 PASS:    Gate 1 PASS → continue to next {FR-ID}
+> - CASE 2 FAIL:    Gate 1 FAIL → full TDD auto-triggered by crash recovery:
+>   `run-fr-step --phase 8 --fr-id {FR-ID} --step TDD-RED` → TDD-GREEN → TDD-IMPROVE → GATE1
+> - CASE 3 BLOCKED: 3 TDD rounds still failing → escalate to human.
+>   Provide: last Gate 1 output + pytest failure log.
 
 ---
 

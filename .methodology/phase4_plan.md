@@ -23,6 +23,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). Phase exits via Gate 3 (1
 > At milestones, `HANDOVER.md` is written with phase/FR/status summary.
 
 > **Checkpoint Index**:
+> - CHECKPOINT-0: TEST_PLAN.md (generate before per-FR testing starts)
 > - MILESTONE: P4-mid push (≥50% FRs Gate 1 PASS) → **HANDOVER.md**
 > - MILESTONE: P4-pre-gate3 push (all FRs done, before Gate 3) → **HANDOVER.md**
 > - CHECKPOINT-1: Gate 3 (Phase 4 Exit) → **push + HANDOVER.md**
@@ -85,7 +86,16 @@ python3 harness_cli.py load-context --phase 4 --project . --json \
 - [ ] **[ORCH-GREEN]**   `run-fr-step --phase 4 --fr-id {FR-ID} --step TDD-GREEN --project . --srs 01-requirements/SRS.md`
 - [ ] **[ORCH-IMPROVE]** `run-fr-step --phase 4 --fr-id {FR-ID} --step TDD-IMPROVE --project .`
 - [ ] **[ORCH-GATE1]**   `run-fr-step --phase 4 --fr-id {FR-ID} --step GATE1 --project .`
+> Gate 1 thresholds: linting(90) · type_safety(85) · test_coverage(80) · test_assertion_quality(50)
 > Crash recovery: `resume-fr-phase --phase 4 --project .`
+>
+> **Gate 1 outcomes:**
+> - CASE 1 PASS:    Gate 1 PASS → continue to next {FR-ID}
+> - CASE 2 FAIL:    Fix failing dims → re-run `run-fr-step --step GATE1`
+>   (linting: `ruff check . --fix`; coverage: add tests; type_safety: fix mypy errors;
+>   test_assertion_quality: add assertions to zero-assert test functions)
+> - CASE 3 BLOCKED: 3 rounds still failing → escalate to human.
+>   Provide: Gate 1 output + failing dimension details.
 
 ---
 
@@ -131,6 +141,11 @@ python3 harness_cli.py load-context --phase 4 --project . --json \
   - Follow `harness/ssi/prompts/evaluate_dimension.md`
   - Write result to `.sessi-work/gate3_result.json`
   - Failing dim: fix code → re-evaluate → re-score
+  > Auto-fix engine may attempt to correct linting/coverage/type_safety issues automatically.
+  > **CRG-ONLY dims** (architecture, error_handling): scores come from `crg_metrics.json`.
+  > If score = 0 due to Orchestrator/hub-and-spoke pattern: complete DA challenge (A3 above)
+  > and set `da_waiver` in gate4_result.json to bypass the threshold.
+  > See `harness/ssi/prompts/evaluate_dimension.md` §Orchestrator Pattern False Positive.
 
 - [ ] **G3c** Finalize Gate 3:
   ```bash

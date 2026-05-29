@@ -22,14 +22,14 @@ No FR loop — Gate 4 evaluates the full project (14 dims, CRG recon, fully auto
 
 ### Entry Gate Verification
 
-- [x] **[ENTRY-CHECK]** Gate 3 PASS (P4 exit — P5 has no exit gate, P5 completed stands between):
+- [ ] **[ENTRY-CHECK]** Gate 3 PASS (P4 exit — P5 has no exit gate, P5 completed stands between):
   Verify P5 output artifacts exist: `05-verification/VERIFICATION_REPORT.md` + `05-verification/BASELINE.md`
   Proof: .methodology/quality_manifest.json records Gate 3 PASS from P4.
   If NOT confirmed: return to Phase 4 and complete exit gate first.
 
 ### Pre-Phase Preflight
 
-- [x] **[PREFLIGHT]** Run phase hooks (FSM, Constitution, Kill-Switch, Drift, CI Readiness):
+- [ ] **[PREFLIGHT]** Run phase hooks (FSM, Constitution, Kill-Switch, Drift, CI Readiness):
   ```bash
   python3 harness_cli.py run-phase --phase 6 --project .
   ```
@@ -38,7 +38,7 @@ No FR loop — Gate 4 evaluates the full project (14 dims, CRG recon, fully auto
   After 3 FAIL: escalate to human — provide last `run-phase --phase 6` full output.
   Human fix → re-run `run-phase --phase 6 --project .` → PASS required before continuing.
 
-- [x] **[PREFLIGHT-CI]** Confirm CI wiring unchanged (should be set since P1):
+- [ ] **[PREFLIGHT-CI]** Confirm CI wiring unchanged (should be set since P1):
   1. `.github/workflows/harness_quality_gate.yml` exists
   2. Git hooks installed (`ls .git/hooks/prepare-commit-msg`)
   3. harness importable (submodule, PYTHONPATH, or vendored `quality_gate/`)
@@ -58,31 +58,83 @@ python3 harness_cli.py load-context --phase 6 --project . --json \
 > Phase 6 does not use A/B collaboration. Gate 4 evaluation + Phase End Audit replace it.
 
 ### Pre-Gate Preparation
-- [x] Confirm all FRs are merged to main branch
-- [x] Confirm no open critical or high issues from Gate 3
+- [ ] Confirm all FRs are merged to main branch
+- [ ] Confirm no open critical or high issues from Gate 3
+
+### Gate 4 Result JSON — Required Fields (A2–A5)
+
+> `finalize-gate --gate 4` validates these fields **before** scoring.
+> Missing any field → `[BLOCKED]` with a specific error message.
+
+- [ ] **[A2] `model_used`** — record which model evaluated each dimension:
+  ```json
+  "model_used": {
+    "linting": "gemini-flash", "type_safety": "gemini-flash",
+    "test_coverage": "gemini-flash", "security": "gemini-flash",
+    "secrets_scanning": "gemini-flash", "license_compliance": "gemini-flash",
+    "mutation_testing": "gemini-flash", "integration_coverage": "gemini-flash",
+    "test_assertion_quality": "gemini-flash",
+    "architecture": "claude", "readability": "claude",
+    "error_handling": "claude", "documentation": "claude", "performance": "claude"
+  }
+  ```
+  > Tier 1/2 dims → `gemini-flash`. Tier 3 dims → `claude`.
+
+- [ ] **[A3] `devil_advocate`** — complete DA challenge for all Tier 3 dimensions:
+  ```json
+  "devil_advocate": {
+    "architecture": true, "readability": true, "error_handling": true,
+    "documentation": true, "performance": true
+  }
+  ```
+  > For each Tier 3 dim: dispatch Gemini to challenge Claude's evaluation findings.
+  > **Orchestrator Pattern** (architecture/error_handling score = 0 due to hub-and-spoke):
+  > complete DA challenge AND add `"da_waiver": {"architecture": true}` to bypass
+  > the score threshold. See `harness/ssi/prompts/evaluate_dimension.md` §Orchestrator.
+
+- [ ] **[A4] `high_score_confirmations`** — for each dim with score ≥ 85:
+  ```json
+  "high_score_confirmations": {
+    "<dim_name>": {
+      "negative_space_verified": true,
+      "crg_cited": true,
+      "tool_triangulated": true
+    }
+  }
+  ```
+
+- [ ] **[A5] `issue_registry_path`** — path to the populated issue registry:
+  ```json
+  "issue_registry_path": ".sessi-work/issue_registry.json"
+  ```
+  > Must be non-empty. Populate via `issue_tracker.py add` during G4b dimension evaluation.
 
 
 ### 🔒 CHECKPOINT-1: Gate 4 — Phase 6 Exit
 > linting(90) · type_safety(85) · test_coverage(80) · security(80) · secrets_scanning(100) · license_compliance(100) · mutation_testing(70) · architecture(80) · readability(80) · error_handling(80) · documentation(75) · performance(75) · integration_coverage(75) · test_assertion_quality(70)  [CRG recon inside run-gate · D4 spec-coverage unified ≥90%]
 
-- [x] **G4a** Prepare Gate 4:
+- [ ] **G4a** Prepare Gate 4:
   ```bash
   python3 harness_cli.py run-gate --gate 4 --phase 6 --project .
   ```
   Read the evaluation prompt printed above.
   (CRG recon triggered inside run-gate automatically — no separate action needed)
 
-- [x] **G4b** Evaluate all Gate 4 dimensions inline:
+- [ ] **G4b** Evaluate all Gate 4 dimensions inline:
   - Follow `harness/ssi/prompts/evaluate_dimension.md`
   - Write result to `.sessi-work/gate4_result.json`
   - Failing dim: fix code → re-evaluate → re-score
+  > **CRG-ONLY dims** (architecture, error_handling): scores come from `crg_metrics.json`.
+  > If score = 0 due to Orchestrator/hub-and-spoke pattern: complete DA challenge (A3 above)
+  > and set `da_waiver` in gate4_result.json to bypass the threshold.
+  > See `harness/ssi/prompts/evaluate_dimension.md` §Orchestrator Pattern False Positive.
 
-- [x] **G4c** Finalize Gate 4:
+- [ ] **G4c** Finalize Gate 4:
   ```bash
   python3 harness_cli.py finalize-gate --gate 4 --phase 6 --project .
   ```
   > **PUSH ⑧ in the 10-Push Strategy**: `finalize-gate --gate 4` writes HANDOVER.md + commits + pushes.
-- [x] **[D4]** D4 spec-coverage-check — unified v2.6 (Gate 4 threshold 90%):
+- [ ] **[D4]** D4 spec-coverage-check — unified v2.6 (Gate 4 threshold 90%):
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 90.0
   ```
@@ -95,7 +147,7 @@ python3 harness_cli.py load-context --phase 6 --project . --json \
   - CASE 4 BLOCKED:  max_rounds exhausted, not PASS → `GateBlockedError` → escalate to human
     > Human fix → re-run `run-gate --gate 4 → finalize-gate --gate 4` → CASE 1 PASS required before continuing.
 
-- [x] **G4d** ✅ Verify checkpoint saved (finalize-gate above already pushed + wrote HANDOVER.md):
+- [ ] **G4d** ✅ Verify checkpoint saved (finalize-gate above already pushed + wrote HANDOVER.md):
   ```bash
   # Confirm HANDOVER.md exists at project root (written by finalize-gate → commit_and_push_gate)
   ls -la HANDOVER.md
@@ -105,42 +157,42 @@ python3 harness_cli.py load-context --phase 6 --project . --json \
   > `HANDOVER.md` **before** committing + pushing. No separate push needed here.
   > If HANDOVER.md is missing, re-run `finalize-gate` (do **not** raw-push).
 
-- [x] **G4e** Generate Release Notes:
+- [ ] **G4e** Generate Release Notes:
   Create `RELEASE_NOTES.md` at project root summarizing changes since Gate 3.
   Include: version, date, FR list, Gate 4 composite score, known limitations.
   Reference: `06-quality/QUALITY_REPORT.md` (auto-generated by G4c finalize-gate).
 
-- [x] **G4f** Generate Final Sign-Off:
+- [ ] **G4f** Generate Final Sign-Off:
   Create `FINAL_SIGN_OFF.md` at project root.
   Include: project name, completion date, Gate 4 composite score, sign-off statement.
   Must reference `BASELINE.md` and `VERIFICATION_REPORT.md` (ASPICE traceability).
 
-- [x] **[PHASE-TRUTH]** Phase Truth ≥ 90% (HR-11) — verified by advance-phase
+- [ ] **[PHASE-TRUTH]** Phase Truth ≥ 90% (HR-11) — verified by advance-phase
 
 ### Phase 6 Deliverables
-- [x] Gate 4 PASS (composite ≥ 85, all 14 dims, CRG recon done)
-- [x] `QUALITY_REPORT.md` - Quality report (auto-generated by Gate 4)
-- [x] `RELEASE_NOTES.md` - Release notes
-- [x] `FINAL_SIGN_OFF.md` - Final sign-off
+- [ ] Gate 4 PASS (composite ≥ 85, all 14 dims, CRG recon done)
+- [ ] `QUALITY_REPORT.md` - Quality report (auto-generated by Gate 4)
+- [ ] `RELEASE_NOTES.md` - Release notes
+- [ ] `FINAL_SIGN_OFF.md` - Final sign-off
 - [x] `.methodology/sessions_spawn.log` — auto-populated by AgentSpawner
 
 #### ASPICE Traceability Requirements (enforced by postflight)
 
-- [x] **[ASPICE]** Artifact for Phase 6 MUST reference `05-verification/BASELINE.md` by filename keyword `BASELINE` (ASPICE traceability — `postflight_artifact_links()` enforces this)
-- [x] **[ASPICE]** Artifact for Phase 6 MUST reference `05-verification/VERIFICATION_REPORT.md` by filename keyword `VERIFICATION_REPORT` (ASPICE traceability — `postflight_artifact_links()` enforces this)
+- [ ] **[ASPICE]** Artifact for Phase 6 MUST reference `05-verification/BASELINE.md` by filename keyword `BASELINE` (ASPICE traceability — `postflight_artifact_links()` enforces this)
+- [ ] **[ASPICE]** Artifact for Phase 6 MUST reference `05-verification/VERIFICATION_REPORT.md` by filename keyword `VERIFICATION_REPORT` (ASPICE traceability — `postflight_artifact_links()` enforces this)
 
 
 ### Phase 6 → Phase 7: Risk Management
 
-- [x] Confirm ALL checkpoints in this plan are ✓  (no skips — HR-03)
-- [x] **[GIT-TAG]** Push Gate 4 git tag (SKILL.md §0.4):
+- [ ] Confirm ALL checkpoints in this plan are ✓  (no skips — HR-03)
+- [ ] **[GIT-TAG]** Push Gate 4 git tag (SKILL.md §0.4):
   ```bash
   SCORE=$(python3 -c "import json; d=json.load(open('.sessi-work/gate4_result.json')); print(d.get('composite_score','XX'))" 2>/dev/null || echo 'XX')
   git tag -a "harness-v4-$(date +%Y%m%d)-score${SCORE}" -m "Gate 4 PASS (score ${SCORE})"
   git push origin --tags
   ```
 
-- [x] **[TDD-PRECHECK]** Verify TDD checks pass — advance-phase enforces both:
+- [ ] **[TDD-PRECHECK]** Verify TDD checks pass — advance-phase enforces both:
   - `pytest --tb=short -q --cov=03-development/src --cov-fail-under=100` (exit 9)
   - `python3 harness_cli.py spec-coverage-check --project . --threshold 90.0` (exit 10, D4 unified v2.6)
   > For genuinely untestable lines add: `# pragma: no cover` (requires justification comment).

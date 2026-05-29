@@ -70,6 +70,13 @@ python3 harness_cli.py load-context --phase 5 --project . --json \
 
 - [ ] **[ORCH-GATE1-DELTA]** `run-fr-step --phase 5 --fr-id {FR-ID} --step GATE1-DELTA --project .`
 > Crash recovery: `resume-fr-phase` auto-detects code changes → switches to full TDD if needed.
+>
+> **GATE1-DELTA outcomes:**
+> - CASE 1 PASS:    Gate 1 PASS → continue to next {FR-ID}
+> - CASE 2 FAIL:    Gate 1 FAIL → full TDD auto-triggered by crash recovery:
+>   `run-fr-step --phase 5 --fr-id {FR-ID} --step TDD-RED` → TDD-GREEN → TDD-IMPROVE → GATE1
+> - CASE 3 BLOCKED: 3 TDD rounds still failing → escalate to human.
+>   Provide: last Gate 1 output + pytest failure log.
 
 ---
 
@@ -110,6 +117,11 @@ python3 harness_cli.py load-context --phase 5 --project . --json \
 
 - [ ] Confirm ALL checkpoints in this plan are ✓  (no skips — HR-03)
 - [ ] **[PHASE-TRUTH]** Phase Truth ≥ 90% (HR-11) — verified by advance-phase
+
+- [ ] **[D4-GAP WARNING]** Gate 4 (next phase) requires spec-coverage ≥ 90% but current advance threshold is 80%.
+  > Close this gap NOW to avoid a surprise Gate 4 D4 block.
+  > Check: `python3 harness_cli.py spec-coverage-check --project . --threshold 90.0`
+  > If below 90%: add missing test implementations before advancing to Phase 6.
 
 - [ ] **[TDD-PRECHECK]** Verify TDD checks pass — advance-phase enforces both:
   - `pytest --tb=short -q --cov=03-development/src --cov-fail-under=100` (exit 9)

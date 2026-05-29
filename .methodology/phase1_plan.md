@@ -23,6 +23,15 @@ Phase 1 is the project starting point. Define complete SRS.
 > **Checkpoint Index** (push to GitHub = checkpoint + HANDOVER.md saved):
 > - CHECKPOINT-1: Agent B Peer Review (Phase 1 Exit) → `push-checkpoint --phase 1`
 
+### Phase 1 Precondition
+
+- [ ] **[PROJECT-BRIEF]** Prepare `PROJECT_BRIEF.md` at project root **before starting Phase 1**:
+  - Project domain, stakeholders, business goals (1–2 pages)
+  - Key constraints (technical, regulatory, budget, timeline)
+  - This file is **Agent B's primary context** for all P1 reviews (embedded as DOC 1 in each B-1 prompt)
+  - Source: project owner / product manager supplies this before Phase 1 begins
+  - Not a P1 deliverable — it is the seed input that drives requirements authoring
+
 ### Pre-Phase Preflight
 
 - [ ] **[PREFLIGHT]** Run phase hooks (FSM, Constitution, Kill-Switch, Drift, CI Readiness):
@@ -111,11 +120,14 @@ are not re-opened. This bounds backtracking to a single step.
   - Every stakeholder need covered?
 
   Return JSON only:
-  {"status":"STAGE_PASS"|"REJECT","review_status":"APPROVE"|"REJECT",
-   "reason":"...","confidence":1-10,"citations":["file:line"],"gaps":[...]}
+  {"review_status":"APPROVE"|"REJECT",
+   "reason":"<concise summary>",
+   "citations":["file:line"],
+   "gaps":[{"severity":"low|medium|high","message":"<issue>","fr_id":"<FR-XX or null>"}]}
   ```
 
 - [ ] **[B-2]** Agent B returns JSON — parse `review_status` **AND** `gaps` severity:
+  > gaps schema: `[{"severity": "low|medium|high", "message": "...", "fr_id": "FR-XX or null"}]`
   - `APPROVE` + all gaps are `low` → continue to Sub-Task 2/4
   - `APPROVE` + any gap is `medium` or `high` → fix gaps → **re-dispatch B as round 2**
     (embed same docs as B-1 above, replacing `SRS.md` with its updated content)
@@ -175,11 +187,14 @@ are not re-opened. This bounds backtracking to a single step.
   - No orphan FRs (in SRS but not tracked)?
 
   Return JSON only:
-  {"status":"STAGE_PASS"|"REJECT","review_status":"APPROVE"|"REJECT",
-   "reason":"...","confidence":1-10,"citations":["file:line"],"gaps":[...]}
+  {"review_status":"APPROVE"|"REJECT",
+   "reason":"<concise summary>",
+   "citations":["file:line"],
+   "gaps":[{"severity":"low|medium|high","message":"<issue>","fr_id":"<FR-XX or null>"}]}
   ```
 
 - [ ] **[B-2]** Agent B returns JSON — parse `review_status` **AND** `gaps` severity:
+  > gaps schema: `[{"severity": "low|medium|high", "message": "...", "fr_id": "FR-XX or null"}]`
   - `APPROVE` + all gaps are `low` → continue to Sub-Task 3/4
   - `APPROVE` + any gap is `medium` or `high` → fix gaps → **re-dispatch B as round 2**
     (embed same docs as B-1 above, replacing `SPEC_TRACKING.md` with its updated content)
@@ -247,11 +262,14 @@ are not re-opened. This bounds backtracking to a single step.
   - Coverage complete (all FRs traceable)?
 
   Return JSON only:
-  {"status":"STAGE_PASS"|"REJECT","review_status":"APPROVE"|"REJECT",
-   "reason":"...","confidence":1-10,"citations":["file:line"],"gaps":[...]}
+  {"review_status":"APPROVE"|"REJECT",
+   "reason":"<concise summary>",
+   "citations":["file:line"],
+   "gaps":[{"severity":"low|medium|high","message":"<issue>","fr_id":"<FR-XX or null>"}]}
   ```
 
 - [ ] **[B-2]** Agent B returns JSON — parse `review_status` **AND** `gaps` severity:
+  > gaps schema: `[{"severity": "low|medium|high", "message": "...", "fr_id": "FR-XX or null"}]`
   - `APPROVE` + all gaps are `low` → continue to Sub-Task 4/4
   - `APPROVE` + any gap is `medium` or `high` → fix gaps → **re-dispatch B as round 2**
     (embed same docs as B-1 above, replacing `TRACEABILITY_MATRIX.md` with its updated content)
@@ -315,11 +333,14 @@ are not re-opened. This bounds backtracking to a single step.
   - All upstream deliverables consistent with each other? No contradictory decisions?
 
   Return JSON only:
-  {"status":"STAGE_PASS"|"REJECT","review_status":"APPROVE"|"REJECT",
-   "reason":"...","confidence":1-10,"citations":["file:line"],"gaps":[...]}
+  {"review_status":"APPROVE"|"REJECT",
+   "reason":"<concise summary>",
+   "citations":["file:line"],
+   "gaps":[{"severity":"low|medium|high","message":"<issue>","fr_id":"<FR-XX or null>"}]}
   ```
 
 - [ ] **[B-2]** Agent B returns JSON — parse `review_status` **AND** `gaps` severity:
+  > gaps schema: `[{"severity": "low|medium|high", "message": "...", "fr_id": "FR-XX or null"}]`
   - `APPROVE` + all gaps are `low` → all deliverables complete; proceed to Agent B Peer Review
   - `APPROVE` + any gap is `medium` or `high` → fix gaps → **re-dispatch B as round 2**
     (embed same docs as B-1 above, replacing `TEST_INVENTORY.yaml` with its updated content)
@@ -384,8 +405,10 @@ are not re-opened. This bounds backtracking to a single step.
   - Terminology consistent across all documents?
 
   Return JSON only:
-  {"status":"STAGE_PASS"|"REJECT","review_status":"APPROVE"|"REJECT",
-   "reason":"...","confidence":1-10,"citations":["file:line"],"gaps":[...]}
+  {"review_status":"APPROVE"|"REJECT",
+   "reason":"<concise summary>",
+   "citations":["file:line"],
+   "gaps":[{"severity":"low|medium|high","message":"<issue>","fr_id":"<FR-XX or null>"}]}
   ```
 
 - [ ] **[B-2]** Agent B returns JSON — parse `review_status` **AND** `gaps` severity:

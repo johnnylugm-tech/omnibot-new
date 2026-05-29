@@ -70,6 +70,13 @@ python3 harness_cli.py load-context --phase 7 --project . --json \
 
 - [ ] **[ORCH-GATE1-DELTA]** `run-fr-step --phase 7 --fr-id {FR-ID} --step GATE1-DELTA --project .`
 > Crash recovery: `resume-fr-phase` auto-detects code changes → switches to full TDD if needed.
+>
+> **GATE1-DELTA outcomes:**
+> - CASE 1 PASS:    Gate 1 PASS → continue to next {FR-ID}
+> - CASE 2 FAIL:    Gate 1 FAIL → full TDD auto-triggered by crash recovery:
+>   `run-fr-step --phase 7 --fr-id {FR-ID} --step TDD-RED` → TDD-GREEN → TDD-IMPROVE → GATE1
+> - CASE 3 BLOCKED: 3 TDD rounds still failing → escalate to human.
+>   Provide: last Gate 1 output + pytest failure log.
 
 ---
 
@@ -94,9 +101,9 @@ python3 harness_cli.py load-context --phase 7 --project . --json \
   > Writes HANDOVER.md + commits + pushes.
 
 ### Phase 7 Deliverables
-- [ ] `RISK_REGISTER.md` - Risk register
-- [ ] `RISK_MITIGATION_PLANS.md` - Mitigation plans
-- [ ] `RISK_STATUS_REPORT.md` - Risk status report
+- [ ] `07-risk/RISK_REGISTER.md` - Risk register
+- [ ] `07-risk/RISK_MITIGATION_PLANS.md` - Mitigation plans
+- [ ] `07-risk/RISK_STATUS_REPORT.md` - Risk status report
 - [x] `.methodology/sessions_spawn.log` — auto-populated by AgentSpawner
 - [ ] Gate 1 PASS for every FR
 
