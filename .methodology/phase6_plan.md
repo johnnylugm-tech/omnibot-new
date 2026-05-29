@@ -133,14 +133,14 @@ python3 harness_cli.py load-context --phase 6 --project . --json \
 ### Phase 6 → Phase 7: Risk Management
 
 - [x] Confirm ALL checkpoints in this plan are ✓  (no skips — HR-03)
-- [ ] **[GIT-TAG]** Push Gate 4 git tag (SKILL.md §0.4):
+- [x] **[GIT-TAG]** Push Gate 4 git tag (SKILL.md §0.4):
   ```bash
   SCORE=$(python3 -c "import json; d=json.load(open('.sessi-work/gate4_result.json')); print(d.get('composite_score','XX'))" 2>/dev/null || echo 'XX')
   git tag -a "harness-v4-$(date +%Y%m%d)-score${SCORE}" -m "Gate 4 PASS (score ${SCORE})"
   git push origin --tags
   ```
 
-- [ ] **[TDD-PRECHECK]** Verify TDD checks pass — advance-phase enforces both:
+- [x] **[TDD-PRECHECK]** Verify TDD checks pass — advance-phase enforces both:
   - `pytest --tb=short -q --cov=03-development/src --cov-fail-under=100` (exit 9)
   - `python3 harness_cli.py spec-coverage-check --project . --threshold 90.0` (exit 10, D4 unified v2.6)
   > For genuinely untestable lines add: `# pragma: no cover` (requires justification comment).
