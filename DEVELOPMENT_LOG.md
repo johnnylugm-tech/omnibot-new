@@ -139,3 +139,5 @@ test_coverage score: 100%
 All 441 unit and integration tests successfully verified functional requirements FR-01 through FR-22, confirming 100% test coverage and 100% test pass rate.
 - [x] FR-04 test pass — Gate 1 score: 92.17 | RED→GREEN cycle complete | 2026-05-29T16:35:17Z
 - [x] FR-05 test pass — Gate 1 score: 92.16 | RED→GREEN cycle complete | 2026-05-29T16:37:01Z
+- [x] FR-18 test pass — Gate 1 score: 91.89 | RED→GREEN cycle complete | 2026-05-29T16:38:13Z
+- [x] FR-22 test pass — Gate 1 score: 84.75 | RED→GREEN cycle complete | 2026-05-29T16:57:29Z
