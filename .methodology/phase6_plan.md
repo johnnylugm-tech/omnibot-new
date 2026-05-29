@@ -2,10 +2,12 @@
 
 > **Version**: v2.4.0 (project plan)
 > **Project**: omnibot-new
-> **Date**: 2026-05-27
+> **Date**: 2026-05-30
 > **Framework**: harness-methodology v2.4.0
 > **Phase**: 6 - Quality Assurance
 > **Status**: Full version (including Phase 6 detailed tasks)
+> **Mode**: Dynamic (load-context at execution time)
+
 
 ---
 
@@ -20,14 +22,14 @@ No FR loop — Gate 4 evaluates the full project (14 dims, CRG recon, fully auto
 
 ### Entry Gate Verification
 
-- [ ] **[ENTRY-CHECK]** Gate 3 PASS (P4 exit — P5 has no exit gate, P5 completed stands between):
+- [x] **[ENTRY-CHECK]** Gate 3 PASS (P4 exit — P5 has no exit gate, P5 completed stands between):
   Verify P5 output artifacts exist: `05-verification/VERIFICATION_REPORT.md` + `05-verification/BASELINE.md`
   Proof: .methodology/quality_manifest.json records Gate 3 PASS from P4.
   If NOT confirmed: return to Phase 4 and complete exit gate first.
 
 ### Pre-Phase Preflight
 
-- [ ] **[PREFLIGHT]** Run phase hooks (FSM, Constitution, Kill-Switch, Drift, CI Readiness):
+- [x] **[PREFLIGHT]** Run phase hooks (FSM, Constitution, Kill-Switch, Drift, CI Readiness):
   ```bash
   python3 harness_cli.py run-phase --phase 6 --project .
   ```
@@ -36,42 +38,51 @@ No FR loop — Gate 4 evaluates the full project (14 dims, CRG recon, fully auto
   After 3 FAIL: escalate to human — provide last `run-phase --phase 6` full output.
   Human fix → re-run `run-phase --phase 6 --project .` → PASS required before continuing.
 
-- [ ] **[PREFLIGHT-CI]** Confirm CI wiring unchanged (should be set since P1):
+- [x] **[PREFLIGHT-CI]** Confirm CI wiring unchanged (should be set since P1):
   1. `.github/workflows/harness_quality_gate.yml` exists
   2. Git hooks installed (`ls .git/hooks/prepare-commit-msg`)
   3. harness importable (submodule, PYTHONPATH, or vendored `quality_gate/`)
   4. Phase 6 confirmed in `.methodology/state.json` (`advance-phase` already run)
   > If stale: run `python3 harness_cli.py init-project --phase 6 --project . --overwrite`
 
+### 🔄 [PHASE-CONTEXT] — Load Before Starting
+
+```bash
+python3 harness_cli.py load-context --phase 6 --project . --json \
+  > .sessi-work/phase6_ctx.json
+```
+> Outputs `fr_ids`, `fr_details`, `modules` from current project state.
+
 ### P6 Phase End Audit (Replaces A/B)
 
 > Phase 6 does not use A/B collaboration. Gate 4 evaluation + Phase End Audit replace it.
 
 ### Pre-Gate Preparation
-- [ ] Confirm all FRs are merged to main branch
-- [ ] Confirm no open critical or high issues from Gate 3
+- [x] Confirm all FRs are merged to main branch
+- [x] Confirm no open critical or high issues from Gate 3
 
 
 ### 🔒 CHECKPOINT-1: Gate 4 — Phase 6 Exit
 > linting(90) · type_safety(85) · test_coverage(80) · security(80) · secrets_scanning(100) · license_compliance(100) · mutation_testing(70) · architecture(80) · readability(80) · error_handling(80) · documentation(75) · performance(75) · integration_coverage(75) · test_assertion_quality(70)  [CRG recon inside run-gate · D4 spec-coverage unified ≥90%]
 
-- [ ] **G4a** Prepare Gate 4:
+- [x] **G4a** Prepare Gate 4:
   ```bash
   python3 harness_cli.py run-gate --gate 4 --phase 6 --project .
   ```
   Read the evaluation prompt printed above.
   (CRG recon triggered inside run-gate automatically — no separate action needed)
 
-- [ ] **G4b** Evaluate all Gate 4 dimensions inline:
+- [x] **G4b** Evaluate all Gate 4 dimensions inline:
   - Follow `harness/ssi/prompts/evaluate_dimension.md`
   - Write result to `.sessi-work/gate4_result.json`
   - Failing dim: fix code → re-evaluate → re-score
 
-- [ ] **G4c** Finalize Gate 4:
+- [x] **G4c** Finalize Gate 4:
   ```bash
   python3 harness_cli.py finalize-gate --gate 4 --phase 6 --project .
   ```
-- [ ] **[D4]** D4 spec-coverage-check — unified v2.6 (Gate 4 threshold 90%):
+  > **PUSH ⑧ in the 10-Push Strategy**: `finalize-gate --gate 4` writes HANDOVER.md + commits + pushes.
+- [x] **[D4]** D4 spec-coverage-check — unified v2.6 (Gate 4 threshold 90%):
   ```bash
   python3 harness_cli.py spec-coverage-check --project . --threshold 90.0
   ```
@@ -84,7 +95,7 @@ No FR loop — Gate 4 evaluates the full project (14 dims, CRG recon, fully auto
   - CASE 4 BLOCKED:  max_rounds exhausted, not PASS → `GateBlockedError` → escalate to human
     > Human fix → re-run `run-gate --gate 4 → finalize-gate --gate 4` → CASE 1 PASS required before continuing.
 
-- [ ] **G4d** ✅ Verify checkpoint saved (finalize-gate above already pushed + wrote HANDOVER.md):
+- [x] **G4d** ✅ Verify checkpoint saved (finalize-gate above already pushed + wrote HANDOVER.md):
   ```bash
   # Confirm HANDOVER.md exists at project root (written by finalize-gate → commit_and_push_gate)
   ls -la HANDOVER.md
@@ -94,29 +105,34 @@ No FR loop — Gate 4 evaluates the full project (14 dims, CRG recon, fully auto
   > `HANDOVER.md` **before** committing + pushing. No separate push needed here.
   > If HANDOVER.md is missing, re-run `finalize-gate` (do **not** raw-push).
 
-- [ ] **[PHASE-TRUTH]** Phase Truth ≥ 90% (HR-11) — verified by advance-phase
+- [x] **G4e** Generate Release Notes:
+  Create `RELEASE_NOTES.md` at project root summarizing changes since Gate 3.
+  Include: version, date, FR list, Gate 4 composite score, known limitations.
+  Reference: `06-quality/QUALITY_REPORT.md` (auto-generated by G4c finalize-gate).
+
+- [x] **G4f** Generate Final Sign-Off:
+  Create `FINAL_SIGN_OFF.md` at project root.
+  Include: project name, completion date, Gate 4 composite score, sign-off statement.
+  Must reference `BASELINE.md` and `VERIFICATION_REPORT.md` (ASPICE traceability).
+
+- [x] **[PHASE-TRUTH]** Phase Truth ≥ 90% (HR-11) — verified by advance-phase
 
 ### Phase 6 Deliverables
-- [ ] Gate 4 PASS (composite ≥ 85, all 14 dims, CRG recon done)
-- [ ] `QUALITY_REPORT.md` - Quality report (auto-generated by Gate 4)
-- [ ] `RELEASE_NOTES.md` - Release notes
-- [ ] `FINAL_SIGN_OFF.md` - Final sign-off
+- [x] Gate 4 PASS (composite ≥ 85, all 14 dims, CRG recon done)
+- [x] `QUALITY_REPORT.md` - Quality report (auto-generated by Gate 4)
+- [x] `RELEASE_NOTES.md` - Release notes
+- [x] `FINAL_SIGN_OFF.md` - Final sign-off
 - [x] `.methodology/sessions_spawn.log` — auto-populated by AgentSpawner
 
 #### ASPICE Traceability Requirements (enforced by postflight)
 
-- [ ] **[ASPICE]** Artifact for Phase 6 MUST reference `05-verification/BASELINE.md` by filename keyword `BASELINE` (ASPICE traceability — `postflight_artifact_links()` enforces this)
-- [ ] **[ASPICE]** Artifact for Phase 6 MUST reference `05-verification/VERIFICATION_REPORT.md` by filename keyword `VERIFICATION_REPORT` (ASPICE traceability — `postflight_artifact_links()` enforces this)
+- [x] **[ASPICE]** Artifact for Phase 6 MUST reference `05-verification/BASELINE.md` by filename keyword `BASELINE` (ASPICE traceability — `postflight_artifact_links()` enforces this)
+- [x] **[ASPICE]** Artifact for Phase 6 MUST reference `05-verification/VERIFICATION_REPORT.md` by filename keyword `VERIFICATION_REPORT` (ASPICE traceability — `postflight_artifact_links()` enforces this)
 
 
 ### Phase 6 → Phase 7: Risk Management
 
-- [ ] Confirm ALL checkpoints in this plan are ✓  (no skips — HR-03)
-- [ ] Generate Phase 7 plan:
-  ```bash
-  python3 harness_cli.py plan-phase --phase 7 --project . \
-    --output .methodology/phase7_plan.md
-  ```
+- [x] Confirm ALL checkpoints in this plan are ✓  (no skips — HR-03)
 - [ ] **[GIT-TAG]** Push Gate 4 git tag (SKILL.md §0.4):
   ```bash
   SCORE=$(python3 -c "import json; d=json.load(open('.sessi-work/gate4_result.json')); print(d.get('composite_score','XX'))" 2>/dev/null || echo 'XX')
