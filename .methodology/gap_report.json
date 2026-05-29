@@ -1,12 +1,12 @@
 {
   "summary": {
-    "total": 2275,
+    "total": 2277,
     "missing": 0,
     "incomplete": 0,
-    "orphaned": 2275,
+    "orphaned": 2277,
     "critical": 0,
     "major": 0,
-    "minor": 2275
+    "minor": 2277
   },
   "gaps": [
     {
@@ -8220,6 +8220,12 @@
     {
       "type": "ORPHANED",
       "severity": "minor",
+      "reason": "'cmd_plan_all' has no corresponding specification in SPEC.md",
+      "action": "Add spec for cmd_plan_all or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
       "reason": "'cmd_spec_coverage_check' has no corresponding specification in SPEC.md",
       "action": "Add spec for cmd_spec_coverage_check or remove if unnecessary"
     },
@@ -8306,6 +8312,12 @@
       "severity": "minor",
       "reason": "'cmd_status' has no corresponding specification in SPEC.md",
       "action": "Add spec for cmd_status or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'cmd_load_context' has no corresponding specification in SPEC.md",
+      "action": "Add spec for cmd_load_context or remove if unnecessary"
     },
     {
       "type": "ORPHANED",

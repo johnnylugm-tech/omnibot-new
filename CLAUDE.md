@@ -1,136 +1,154 @@
-# Project: omnibot-new
+# CLAUDE.md
 
-## Methodology Handoff
-- Framework: harness-methodology v2.4.0
-- Quality Manifest: .methodology/quality_manifest.json
-- Active Phase: P3 (Implementation)
-- Last Gate: Gate 1 (per-FR, ongoing)
-- Reviewer Chain: hermes,gemini  (P1–P2 A/B; Hermes optional)
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## FR Registry
-| FR ID | Description | Gate 1 Status | Gate 1 Score |
-|-------|-------------|---------------|--------------|
-| FR-01 | PostgreSQL schema — users/conversations/messages/knowledge_base/... | PASS | 89 |
-| FR-02 | Telegram webhook handler | PASS | 100 |
-| FR-03 | LINE webhook handler | PASS | 100 |
-| FR-04 | Telegram HMAC signature verification | PASS | 100 |
-| FR-05 | LINE HMAC signature verification | PASS | 100 |
-| FR-06 | Unified message ingestion (multi-platform → DB) | PASS | 100 |
-| FR-07 | REST API response builder | PASS | 100 |
-| FR-08 | Input sanitizer (fullwidth → ASCII, script injection) | PASS | 100 |
-| FR-09 | PII masker (Taiwan phone/ID/email) | PENDING | — |
-| FR-10 | Token-bucket rate limiter | PENDING | — |
-| FR-11 | AI response pipeline (OpenAI + fallback) | PENDING | — |
-| FR-12 | Health check endpoint (/health) | PENDING | — |
-| FR-13 | Structured JSON logger | PENDING | — |
-| FR-14 | Graceful shutdown handler | PENDING | — |
-| FR-15 | Docker Compose stack | PENDING | — |
-| FR-16 | Ruff zero-violation enforcement | PENDING | — |
-| FR-17 | DB schema migration runner | PENDING | — |
-| FR-18 | Request-ID correlation middleware | PENDING | — |
-| FR-19 | AI pipeline latency metrics (p95 < 3s) | PENDING | — |
-| FR-20 | Cyclomatic complexity guard (CC ≤ 10) | PENDING | — |
-| FR-21 | Escalation queue worker | PENDING | — |
-| FR-22 | IP whitelist middleware | PENDING | — |
+## Commands
 
-## Architecture Constraints
-- No synchronous I/O in main thread
-- Security validation before business logic (HMAC → sanitize → process)
-- PII masking before any external AI call
-- All webhook secrets via environment variables, never hardcoded
+### Testing
+```bash
+# Run all tests
+PYTHONPATH=03-development/src python3 -m pytest tests/ -v --tb=short
 
-## High-Risk Modules
-- 03-development/src/omnibot/security/ (HMAC verification — must never skip)
-- 03-development/src/omnibot/processing/pii.py (PII masking — recall ≥ 95%)
+# Run a single test file
+PYTHONPATH=03-development/src python3 -m pytest tests/test_fr02.py -v
 
-## Open Issues (Top Priority)
-- FR-09 Gate 1 FAIL: test_coverage dim failing (score 67, threshold 80)
-- FR-10 Gate 1 FAIL: test_coverage dim failing (score 67, threshold 80)
+# Run with coverage (required: 100% on src)
+/opt/homebrew/bin/python3.12 -m pytest tests/ --tb=short -q \
+  --cov=03-development/src --cov-fail-under=100
 
-## NFR → Dimension Mapping
-| NFR | Dimension | Target |
-|-----|-----------|--------|
-| NFR-01 | performance | p95 < 3.0s (pipeline latency) |
-| NFR-02 | security | HMAC rejection before business logic |
-| NFR-03 | security | sanitization on every inbound message |
-| NFR-04 | security | PII recall ≥ 95%, precision ≥ 99% |
-| NFR-05 | security | rate limiter independent per-user buckets |
-| NFR-06 | reliability | health check < 500ms |
-| NFR-07 | maintainability | single-line JSON logs |
-| NFR-08 | maintainability | ruff zero violations, CC ≤ 10 |
-| NFR-09 | deployability | docker compose healthy within 60s |
-| NFR-10 | security | IP whitelist blocks before HMAC |
-
-## Gate Status
-| Gate | Trigger | Score | Status |
-|------|---------|-------|--------|
-| Gate 1 | P3 per-FR | varies | IN PROGRESS (8/22 PASS) |
-| Gate 2 | P3 exit | — | PENDING |
-| Gate 3 | P4 exit | — | PENDING |
-| Gate 4 | P6 full | — | PENDING |
-
-## Agent Interaction Model
-```
-Johnny: "執行 Phase N"
-  → Agent: plan-phase N       (generates Plan_Phase_N.md)
-  → Johnny: reviews plan
-  → Agent: run-phase N        (executes plan)
-  → POST-FLIGHT: gate check + Hermes reviewer
+# Run a single test by name
+PYTHONPATH=03-development/src python3 -m pytest tests/ -k "test_fr02_telegram_valid_payload"
 ```
 
-## Project Layout
+### Linting & Type Checking
+```bash
+# Linting (zero violations required)
+ruff check 03-development/src/ 2>&1 | head -200
+
+# Type checking
+pyright 03-development/src/ --outputjson 2>&1 | head -200
+
+# Spec-coverage check (≥90% required)
+python3 harness/harness_cli.py spec-coverage-check --project . --threshold 90.0
 ```
-03-development/src/omnibot/   ← main package (tests import from omnibot.*)
-03-development/src/app/       ← future package (migration in progress, see TODO.md)
-tests/test_frXX.py            ← per-FR test files
-02-architecture/TEST_SPEC.md  ← required test function names per FR
-harness/                      ← harness-methodology submodule
+
+### Harness (Quality Gate Framework)
+```bash
+# Check current phase / gate status
+python3 harness/harness_cli.py status --project .
+
+# Run phase preflight (FSM, Constitution, Kill-Switch, CI readiness)
+python3 harness/harness_cli.py run-phase --phase N --project .
+
+# Run Gate 1 evaluation for a single FR
+python3 harness/harness_cli.py run-gate --gate 1 --phase N --fr-id FR-XX --project .
+python3 harness/harness_cli.py finalize-gate --gate 1 --phase N --fr-id FR-XX --project .
+
+# Advance FSM to next phase (runs TDD-PRECHECK internally)
+python3 harness/harness_cli.py advance-phase --completed N --project .
+
+# Crash recovery
+python3 harness/harness_cli.py resume-fr-phase --phase N --project .
+python3 harness/harness_cli.py generate-next-plan --project .
+
+# Submodule update
+git submodule update --remote harness
 ```
 
-## IMPORTANT for Gate 1 evaluation
-Gate 1 evaluates 3 dimensions: linting, type_safety, test_coverage.
-Commands (use exactly as printed by run-gate FR-SCOPED TOOL OVERRIDES):
-- linting: `ruff check 03-development/src/ 2>&1 | head -200`
-- type_safety: `pyright 03-development/src/ --outputjson 2>&1 | head -200`
-- test_coverage: see run-gate output for FR-specific coverage command
+### Docker
+```bash
+docker compose up -d          # Start postgres + redis + omnibot-api
+docker compose logs -f        # Tail logs
+docker compose down -v        # Tear down (including volumes)
+```
 
-gate1_result.json MUST include `tool_evidence` in every breakdown entry or finalize-gate will BLOCK with S3 error.
+## Architecture
 
-<!-- code-review-graph MCP tools -->
+### Package Layout
+```
+03-development/src/omnibot/   ← main Python package (import as omnibot.*)
+  adapters/                   ← platform-specific webhook parsers (telegram.py, line.py)
+  security/                   ← verifiers.py (HMAC), rate_limiter.py, whitelist.py
+  processing/                 ← pipeline.py (orchestrator), pii.py, sanitizer.py
+  knowledge/                  ← matcher.py (Layer 1 rule-based KB lookup)
+  escalation/                 ← queue.py (human handoff)
+  db/                         ← SQLAlchemy async engine + schema DDL
+  models/                     ← UnifiedMessage, Platform, MessageType (frozen dataclasses)
+  infrastructure/             ← health.py (/api/v1/health endpoint)
+  logging/                    ← logger.py (structured JSON logger)
+  config.py                   ← Settings dataclass, loads env vars, fail-fast
+  errors.py                   ← ValidationError, ConfigError
+
+tests/test_frXX.py            ← per-FR test files (one file per FR)
+02-architecture/TEST_SPEC.md  ← canonical test function names per FR
+harness/                      ← harness-methodology git submodule
+.methodology/                 ← FSM state, quality manifest, phase plans
+```
+
+### Message Flow (PipelineOrchestrator, 11 stages)
+All inbound messages follow a fixed stage order enforced in `processing/pipeline.py`:
+
+1. **IP whitelist check** (`security/whitelist.py`) — blocks before any auth
+2. **HMAC signature verification** (`security/verifiers.py`) — platform-specific, constant-time
+3. **Platform adapter parse** (`adapters/telegram.py` or `adapters/line.py`) → `UnifiedMessage`
+4. **Rate limiter** (`security/rate_limiter.py`) — per-user token bucket
+5. **Input sanitization** (`processing/sanitizer.py`) — fullwidth→ASCII, script injection strip
+6. **PII masking** (`processing/pii.py`) — Taiwan phone/ID/email, must run before any AI call
+7. **Knowledge matching** (`knowledge/matcher.py`) — Layer 1 rule-based
+8. **Escalation** (`escalation/queue.py`) — triggered when no knowledge match
+9. **Response construction** → `UnifiedResponse`
+10. **Platform reply** (platform adapter)
+11. **Structured log** (`logging/logger.py`)
+
+**The stage order is a security invariant**: IP whitelist → HMAC → sanitize → PII → process. Never reorder.
+
+### Key Data Types (`models/__init__.py`)
+- `UnifiedMessage` — frozen dataclass; cross-platform normalized inbound message
+- `Platform` — enum: `TELEGRAM`, `LINE` (+ future MESSENGER, WHATSAPP)
+- `UnifiedResponse` — outbound response structure
+
+### Security Constraints
+- `security/verifiers.py`: `hmac.compare_digest` used exclusively (constant-time). Never use `==` for signature comparison.
+- `processing/pii.py`: PII masking recall ≥ 95% / precision ≥ 99%. Must execute before any LLM call.
+- All secrets via environment variables (`Settings` dataclass in `config.py`). Required vars: `TELEGRAM_BOT_TOKEN`, `LINE_CHANNEL_SECRET`, `DATABASE_URL`, `REDIS_URL`.
+
+### Database (`db/`)
+- SQLAlchemy async engine (`create_async_engine`) — no sync I/O in main thread
+- Schema: `users`, `conversations`, `messages`, `knowledge_base`, `platform_configs`, `escalation_queue`, `user_feedback`, `security_logs`
+- pgvector extension (pg16) for future RAG/semantic search
+
+### Testing Conventions
+- `PYTHONPATH=03-development/src` must be set for all test runs
+- Each `tests/test_frXX.py` covers exactly one FR; test function names must match `02-architecture/TEST_SPEC.md`
+- Infrastructure stubs (DB, Redis) use dependency injection — tests inject mock callables, not monkeypatching
+- `# pragma: no cover` only for genuinely unreachable infrastructure stubs
+
+## Harness-Methodology Framework
+
+This project uses a structured quality gate framework (`harness/` submodule, v2.7.0). Current state: **Phase 7 (Risk Management)**, Gate 4 PASS (score 96.5).
+
+### Phase FSM
+State tracked in `.methodology/state.json`. Do not edit manually; use `advance-phase`.
+
+### Gate 4 (14 dimensions, score ≥ 85)
+Completed. Results in `.sessi-work/gate4_result.json`.
+
+### Working in Phase 7+
+- Per-FR work uses `GATE1-DELTA` (delta check — skips full TDD when code unchanged)
+- Deliverables in `07-risk/`: `RISK_REGISTER.md`, `RISK_STATUS_REPORT.md`, `RISK_ASSESSMENT.md`
+- All Phase 7 artifacts must contain keyword `QUALITY_REPORT` (ASPICE traceability)
+
 ## MCP Tools: code-review-graph
 
-**IMPORTANT: This project has a knowledge graph. ALWAYS use the
-code-review-graph MCP tools BEFORE using Grep/Glob/Read to explore
-the codebase.** The graph is faster, cheaper (fewer tokens), and gives
-you structural context (callers, dependents, test coverage) that file
-scanning cannot.
-
-### When to use graph tools FIRST
-
-- **Exploring code**: `semantic_search_nodes` or `query_graph` instead of Grep
-- **Understanding impact**: `get_impact_radius` instead of manually tracing imports
-- **Code review**: `detect_changes` + `get_review_context` instead of reading entire files
-- **Finding relationships**: `query_graph` with callers_of/callees_of/imports_of/tests_for
-- **Architecture questions**: `get_architecture_overview` + `list_communities`
-
-Fall back to Grep/Glob/Read **only** when the graph doesn't cover what you need.
-
-### Key Tools
+Use CRG tools **before** Grep/Glob/Read for codebase exploration. The graph is pre-built and auto-updates on file changes.
 
 | Tool | Use when |
-| ------ | ---------- |
-| `detect_changes` | Reviewing code changes — gives risk-scored analysis |
-| `get_review_context` | Need source snippets for review — token-efficient |
-| `get_impact_radius` | Understanding blast radius of a change |
-| `get_affected_flows` | Finding which execution paths are impacted |
-| `query_graph` | Tracing callers, callees, imports, tests, dependencies |
-| `semantic_search_nodes` | Finding functions/classes by name or keyword |
-| `get_architecture_overview` | Understanding high-level codebase structure |
-| `refactor_tool` | Planning renames, finding dead code |
+|------|----------|
+| `semantic_search_nodes` | Finding functions/classes by name or concept |
+| `query_graph` | Tracing callers, callees, imports (`callers_of`/`tests_for`) |
+| `get_impact_radius` | Understanding blast radius before editing |
+| `detect_changes` | Risk-scored review of recent edits |
+| `get_architecture_overview` | High-level structural overview |
+| `generate_wiki` | Refresh wiki pages before DA challenge or architecture review |
 
-### Workflow
-
-1. The graph auto-updates on file changes (via hooks).
-2. Use `detect_changes` for code review.
-3. Use `get_affected_flows` to understand impact.
-4. Use `query_graph` pattern="tests_for" to check coverage.
+Fall back to `grep`/`Read` only when the graph doesn't cover what you need.

@@ -2,10 +2,12 @@
 
 > **Version**: v2.4.0 (project plan)
 > **Project**: omnibot-new
-> **Date**: 2026-05-23
+> **Date**: 2026-05-30
 > **Framework**: harness-methodology v2.4.0
 > **Phase**: 1 - Requirements Specification
 > **Status**: Full version (including Phase 1 detailed tasks)
+> **Mode**: Dynamic (load-context at execution time)
+
 
 ---
 
@@ -23,26 +25,34 @@ Phase 1 is the project starting point. Define complete SRS.
 
 ### Pre-Phase Preflight
 
-- [x] **[PREFLIGHT]** Run phase hooks (FSM, Constitution, Kill-Switch, Drift, CI Readiness):
+- [ ] **[PREFLIGHT]** Run phase hooks (FSM, Constitution, Kill-Switch, Drift, CI Readiness):
   ```bash
-  python3 harness_cli.py run-phase --phase 1 --project $REPO
+  python3 harness_cli.py run-phase --phase 1 --project .
   ```
   If FAILED: fix FSM/Constitution/Drift issues. There is no gate bypass flag.
   Re-run `run-phase` after each fix. Max 3 attempts.
   After 3 FAIL: escalate to human — provide last `run-phase --phase 1` full output.
-  Human fix → re-run `run-phase --phase 1 --project $REPO` → PASS required before continuing.
+  Human fix → re-run `run-phase --phase 1 --project .` → PASS required before continuing.
 
-- [x] **[PREFLIGHT-CI]** Verify CI wiring (all 3 items auto-set by `init-project`):
+- [ ] **[PREFLIGHT-CI]** Verify CI wiring (all 3 items auto-set by `init-project`):
   1. `.methodology/state.json` exists with `current_phase = 1`
   2. `.github/workflows/harness_quality_gate.yml` exists in project root
   3. Git hooks installed (`ls .git/hooks/prepare-commit-msg`)
   4. Phase stored in `.methodology/state.json` — single source of truth (no GitHub variable needed)
   If any item (1-3) is missing — run automated fix:
   ```bash
-  python3 harness_cli.py init-project --phase 1 --project $REPO
+  python3 harness_cli.py init-project --phase 1 --project .
   ```
   Re-verify items 1-3 after running.
   If still failing after `init-project`: escalate to human — provide `init-project` error output.
+
+### 🔄 [PHASE-CONTEXT] — Load Before Starting
+
+```bash
+python3 harness_cli.py load-context --phase 1 --project . --json \
+  > .sessi-work/phase1_ctx.json
+```
+> Outputs `fr_ids`, `fr_details`, `modules` from current project state.
 
 ### Task Decomposition (Dependency Analysis)
 
@@ -68,10 +78,10 @@ are not re-opened. This bounds backtracking to a single step.
 **Agent B**: BUSINESS_ANALYST
 
 **A/B Work** (HR-01: A≠B · HR-04: HybridWorkflow ON · HR-10: log required):
-- [x] **[A-1]** Agent A (REQUIREMENTS_ENGINEER): Elicit requirements → write FRs/NFRs in SRS.md (### FR-XX: format) → validate completeness
+- [ ] **[A-1]** Agent A (REQUIREMENTS_ENGINEER): Elicit requirements → write FRs/NFRs in SRS.md (### FR-XX: format) → validate completeness
   - FORBIDDEN: vague/non-testable acceptance criteria
-- [x] **[A-2]** Agent A returns `{status, files, confidence, citations, summary}`
-- [x] **[B-1]** Agent B (BUSINESS_ANALYST) — dispatch as **STATELESS** subagent:
+- [ ] **[A-2]** Agent A returns `{status, files, confidence, citations, summary}`
+- [ ] **[B-1]** Agent B (BUSINESS_ANALYST) — dispatch as **STATELESS** subagent:
   > ⚠️  **STATELESS SANDBOX**: Agent B has ZERO access to local files or /tmp.
   > NEVER write 'read 01-requirements/SRS.md' in the prompt — it will fail silently.
   > ALL context must be pasted verbatim into the prompt text. This is mandatory.
@@ -105,7 +115,7 @@ are not re-opened. This bounds backtracking to a single step.
    "reason":"...","confidence":1-10,"citations":["file:line"],"gaps":[...]}
   ```
 
-- [x] **[B-2]** Agent B returns JSON — parse `review_status` **AND** `gaps` severity:
+- [ ] **[B-2]** Agent B returns JSON — parse `review_status` **AND** `gaps` severity:
   - `APPROVE` + all gaps are `low` → continue to Sub-Task 2/4
   - `APPROVE` + any gap is `medium` or `high` → fix gaps → **re-dispatch B as round 2**
     (embed same docs as B-1 above, replacing `SRS.md` with its updated content)
@@ -127,10 +137,10 @@ are not re-opened. This bounds backtracking to a single step.
 **Agent B**: BUSINESS_ANALYST
 
 **A/B Work** (HR-01: A≠B · HR-04: HybridWorkflow ON · HR-10: log required):
-- [x] **[A-1]** Agent A (REQUIREMENTS_ENGINEER): Build spec tracking matrix from SRS.md FRs → assign status/owner per FR → validate completeness
+- [ ] **[A-1]** Agent A (REQUIREMENTS_ENGINEER): Build spec tracking matrix from SRS.md FRs → assign status/owner per FR → validate completeness
   - FORBIDDEN: vague/non-testable acceptance criteria
-- [x] **[A-2]** Agent A returns `{status, files, confidence, citations, summary}`
-- [x] **[B-1]** Agent B (BUSINESS_ANALYST) — dispatch as **STATELESS** subagent:
+- [ ] **[A-2]** Agent A returns `{status, files, confidence, citations, summary}`
+- [ ] **[B-1]** Agent B (BUSINESS_ANALYST) — dispatch as **STATELESS** subagent:
   > ⚠️  **STATELESS SANDBOX**: Agent B has ZERO access to local files or /tmp.
   > NEVER write 'read 01-requirements/SRS.md' in the prompt — it will fail silently.
   > ALL context must be pasted verbatim into the prompt text. This is mandatory.
@@ -169,7 +179,7 @@ are not re-opened. This bounds backtracking to a single step.
    "reason":"...","confidence":1-10,"citations":["file:line"],"gaps":[...]}
   ```
 
-- [x] **[B-2]** Agent B returns JSON — parse `review_status` **AND** `gaps` severity:
+- [ ] **[B-2]** Agent B returns JSON — parse `review_status` **AND** `gaps` severity:
   - `APPROVE` + all gaps are `low` → continue to Sub-Task 3/4
   - `APPROVE` + any gap is `medium` or `high` → fix gaps → **re-dispatch B as round 2**
     (embed same docs as B-1 above, replacing `SPEC_TRACKING.md` with its updated content)
@@ -191,10 +201,10 @@ are not re-opened. This bounds backtracking to a single step.
 **Agent B**: BUSINESS_ANALYST
 
 **A/B Work** (HR-01: A≠B · HR-04: HybridWorkflow ON · HR-10: log required):
-- [x] **[A-1]** Agent A (REQUIREMENTS_ENGINEER): Build bidirectional traceability matrix → link FRs → design elements → test cases → validate coverage
+- [ ] **[A-1]** Agent A (REQUIREMENTS_ENGINEER): Build bidirectional traceability matrix → link FRs → design elements → test cases → validate coverage
   - FORBIDDEN: vague/non-testable acceptance criteria
-- [x] **[A-2]** Agent A returns `{status, files, confidence, citations, summary}`
-- [x] **[B-1]** Agent B (BUSINESS_ANALYST) — dispatch as **STATELESS** subagent:
+- [ ] **[A-2]** Agent A returns `{status, files, confidence, citations, summary}`
+- [ ] **[B-1]** Agent B (BUSINESS_ANALYST) — dispatch as **STATELESS** subagent:
   > ⚠️  **STATELESS SANDBOX**: Agent B has ZERO access to local files or /tmp.
   > NEVER write 'read 01-requirements/SRS.md' in the prompt — it will fail silently.
   > ALL context must be pasted verbatim into the prompt text. This is mandatory.
@@ -241,7 +251,7 @@ are not re-opened. This bounds backtracking to a single step.
    "reason":"...","confidence":1-10,"citations":["file:line"],"gaps":[...]}
   ```
 
-- [x] **[B-2]** Agent B returns JSON — parse `review_status` **AND** `gaps` severity:
+- [ ] **[B-2]** Agent B returns JSON — parse `review_status` **AND** `gaps` severity:
   - `APPROVE` + all gaps are `low` → continue to Sub-Task 4/4
   - `APPROVE` + any gap is `medium` or `high` → fix gaps → **re-dispatch B as round 2**
     (embed same docs as B-1 above, replacing `TRACEABILITY_MATRIX.md` with its updated content)
@@ -256,17 +266,17 @@ are not re-opened. This bounds backtracking to a single step.
 
   > fr_id uses P1 as phase-level placeholder; replace with FR-XX for FR-specific plans.
 
-### Sub-Task 4/4: TEST_INVENTORY.yaml — Test Inventory — maps every FR to test function names (forward D4 check source)
+### Sub-Task 4/4: TEST_INVENTORY.yaml — Test Inventory — P1 naming authority, feeds TEST_SPEC.md (D4 unified source)
 
 **Depends on**: TRACEABILITY_MATRIX.md (+ Sub-Task 3/4 review: previous review gaps carry forward)
 **Agent A**: REQUIREMENTS_ENGINEER
 **Agent B**: BUSINESS_ANALYST
 
 **A/B Work** (HR-01: A≠B · HR-04: HybridWorkflow ON · HR-10: log required):
-- [x] **[A-1]** Agent A (REQUIREMENTS_ENGINEER): Generate TEST_INVENTORY.yaml from SRS.md FR acceptance criteria → assign test function names per FR → validate naming convention
+- [ ] **[A-1]** Agent A (REQUIREMENTS_ENGINEER): Generate TEST_INVENTORY.yaml from SRS.md FR acceptance criteria → assign test function names per FR → validate naming convention
   - FORBIDDEN: vague/non-testable acceptance criteria
-- [x] **[A-2]** Agent A returns `{status, files, confidence, citations, summary}`
-- [x] **[B-1]** Agent B (BUSINESS_ANALYST) — dispatch as **STATELESS** subagent:
+- [ ] **[A-2]** Agent A returns `{status, files, confidence, citations, summary}`
+- [ ] **[B-1]** Agent B (BUSINESS_ANALYST) — dispatch as **STATELESS** subagent:
   > ⚠️  **STATELESS SANDBOX**: Agent B has ZERO access to local files or /tmp.
   > NEVER write 'read 01-requirements/SRS.md' in the prompt — it will fail silently.
   > ALL context must be pasted verbatim into the prompt text. This is mandatory.
@@ -309,7 +319,7 @@ are not re-opened. This bounds backtracking to a single step.
    "reason":"...","confidence":1-10,"citations":["file:line"],"gaps":[...]}
   ```
 
-- [x] **[B-2]** Agent B returns JSON — parse `review_status` **AND** `gaps` severity:
+- [ ] **[B-2]** Agent B returns JSON — parse `review_status` **AND** `gaps` severity:
   - `APPROVE` + all gaps are `low` → all deliverables complete; proceed to Agent B Peer Review
   - `APPROVE` + any gap is `medium` or `high` → fix gaps → **re-dispatch B as round 2**
     (embed same docs as B-1 above, replacing `TEST_INVENTORY.yaml` with its updated content)
@@ -325,10 +335,10 @@ are not re-opened. This bounds backtracking to a single step.
   > fr_id uses P1 as phase-level placeholder; replace with FR-XX for FR-specific plans.
 
 ### Phase 1 Deliverables
-- [x] `SRS.md` - Software Requirements Specification (FRs + NFRs)
-- [x] `SPEC_TRACKING.md` - Spec tracking matrix
-- [x] `TRACEABILITY_MATRIX.md` - Requirements traceability matrix
-- [x] `TEST_INVENTORY.yaml` - Test inventory (I-1 P1 deliverable)
+- [ ] `SRS.md` - Software Requirements Specification (FRs + NFRs)
+- [ ] `SPEC_TRACKING.md` - Spec tracking matrix
+- [ ] `TRACEABILITY_MATRIX.md` - Requirements traceability matrix
+- [ ] `TEST_INVENTORY.yaml` - Test inventory (P1 naming authority — feeds TEST_SPEC.md)
 - [x] `.methodology/sessions_spawn.log` — auto-populated by AgentSpawner (HR-10)
 
 
@@ -336,7 +346,7 @@ are not re-opened. This bounds backtracking to a single step.
 > Phase 1/2 exit gate = Agent B document review (NOT `harness run-gate --gate 1`).
 > APPROVE criteria: all FRs addressed, no critical gaps, terminology consistent.
 
-- [x] **[B-1]** Agent B (BUSINESS_ANALYST) — dispatch as **STATELESS** subagent (holistic review of all deliverables):
+- [ ] **[B-1]** Agent B (BUSINESS_ANALYST) — dispatch as **STATELESS** subagent (holistic review of all deliverables):
   > ⚠️  **STATELESS SANDBOX**: Agent B has ZERO access to local files or /tmp.
   > NEVER pass file paths in the prompt — ALL document content must be pasted verbatim.
   >
@@ -378,7 +388,7 @@ are not re-opened. This bounds backtracking to a single step.
    "reason":"...","confidence":1-10,"citations":["file:line"],"gaps":[...]}
   ```
 
-- [x] **[B-2]** Agent B returns JSON — parse `review_status` **AND** `gaps` severity:
+- [ ] **[B-2]** Agent B returns JSON — parse `review_status` **AND** `gaps` severity:
   - `APPROVE` + all gaps are `low` → proceed to push (CHECKPOINT saved)
   - `APPROVE` + any gap is `medium` or `high` → fix gaps → **re-dispatch B as round 2**
     (embed same docs as B-1 above with updated content) → push only after round-2 APPROVE
@@ -386,12 +396,11 @@ are not re-opened. This bounds backtracking to a single step.
     > If round 5 REJECT: escalate to human — orchestrator cannot self-resolve.
     > Human fix → re-dispatch Agent B (same prompt + updated content) → `APPROVE` required before continuing.
 
-- [x] **[B-PUSH]** ✅ Push to GitHub + HANDOVER.md — retry until success (CHECKPOINT-1 saved):
+- [ ] **[B-PUSH]** ✅ PUSH ① — Push to GitHub + HANDOVER.md — retry until success (CHECKPOINT-1 saved):
   > Run `push-checkpoint` → if blocked, read the error → fix → re-run until green.
   > Do NOT use `--no-verify` to bypass.
   ```bash
-  python3 harness_cli.py push-checkpoint --phase 1 --project . \
-    --fr-ids FR-01,FR-02,FR-03
+  python3 harness_cli.py push-checkpoint --phase 1 --project .
   ```
   > This writes `HANDOVER.md` (crash-recovery checkpoint) to project root,
   > then commits + pushes all changes to origin.
@@ -399,16 +408,11 @@ are not re-opened. This bounds backtracking to a single step.
 
 ### Phase 1 → Phase 2: Architecture Design
 
-- [x] Confirm ALL checkpoints in this plan are ✓  (no skips — HR-03)
-- [x] Generate Phase 2 plan:
-  ```bash
-  python3 harness_cli.py plan-phase --phase 2 --project $REPO \
-    --output $REPO/.methodology/phase2_plan.md
-  ```
-- [x] Advance FSM to Phase 2 (writes new HANDOVER.md + local commit):
+- [ ] Confirm ALL checkpoints in this plan are ✓  (no skips — HR-03)
+- [ ] Advance FSM to Phase 2 (writes new HANDOVER.md + local commit):
   ```bash
   python3 harness_cli.py advance-phase --completed 1 --project .
   ```
-- [x] Confirm `HANDOVER.md` reflects Phase 2 entry (`P2-entry` checkpoint, correct plan path)
-- [x] Open `phase2_plan.md` and follow from the top.
-- [x] If session crashes during Phase 2: read `HANDOVER.md` or run `generate-next-plan`
+- [ ] Confirm `HANDOVER.md` reflects Phase 2 entry (`P2-entry` checkpoint, correct plan path)
+- [ ] Open `phase2_plan.md` and follow from the top.
+- [ ] If session crashes during Phase 2: read `HANDOVER.md` or run `generate-next-plan`
