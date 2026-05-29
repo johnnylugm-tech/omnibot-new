@@ -103,10 +103,10 @@ python3 harness_cli.py load-context --phase 7 --project . --json \
   - `python3 harness_cli.py spec-coverage-check --project . --threshold 90.0` (exit 10, D4 unified v2.6)
   > For genuinely untestable lines add: `# pragma: no cover` (requires justification comment).
 
-- [ ] Advance FSM to Phase 8 (writes new HANDOVER.md + local commit):
+- [x] Advance FSM to Phase 8 (writes new HANDOVER.md + local commit):
   ```bash
   python3 harness_cli.py advance-phase --completed 7 --project .
   ```
-- [ ] Confirm `HANDOVER.md` reflects Phase 8 entry (`P8-entry` checkpoint, correct plan path)
-- [ ] Open `phase8_plan.md` and follow from the top.
-- [ ] If session crashes during Phase 8: read `HANDOVER.md` or run `generate-next-plan`
+- [x] Confirm `HANDOVER.md` reflects Phase 8 entry (`P8-entry` checkpoint, correct plan path)
+- [x] Open `phase8_plan.md` and follow from the top.
+- [x] If session crashes during Phase 8: read `HANDOVER.md` or run `generate-next-plan`

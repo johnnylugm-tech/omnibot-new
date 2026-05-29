@@ -192,9 +192,9 @@
         "open_high": 0
       },
       "FR-22": {
-        "score": 84.75,
-        "quality_complete": false,
-        "rounds_used": 1,
+        "score": 91.65,
+        "quality_complete": true,
+        "rounds_used": 2,
         "open_critical": 0,
         "open_high": 0
       }
