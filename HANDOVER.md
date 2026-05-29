@@ -1,8 +1,8 @@
 # Harness Methodology — Session Handover
 
-**Checkpoint**: `P6-gate4-20260527`  
-**Phase**: P6 — Full Review / Gate 4  
-**Generated**: 2026-05-27T05:35:16Z
+**Checkpoint**: `P7-entry-20260529`  
+**Phase**: P7 — Risk Register  
+**Generated**: 2026-05-29T16:25:47Z
 
 > ⚠️  **開始下一個工作階段前，請先執行 `/compact` 壓縮上下文**，再從「接下來的工作」繼續。
 
@@ -16,9 +16,9 @@ git clone --recurse-submodules https://github.com/johnnylugm-tech/omnibot-new &&
 
 # 2. Set env vars (all optional)
 
-# 3. Read plan and start Phase 7
+# 3. Read plan and continue Phase 7
 cat .methodology/phase7_plan.md
-# Follow SKILL.md §0.1 Phase 7 entry check, then execute
+# Follow the active plan and continue from where you left off
 ```
 
 ---
@@ -33,7 +33,7 @@ git clone --recurse-submodules https://github.com/johnnylugm-tech/omnibot-new /t
 git log --oneline -3
 
 # Confirm FSM state
-cat .methodology/state.json   # expected: phase=6 state=RUNNING last_gate=4
+cat .methodology/state.json   # expected: phase=7 state=RUNNING last_gate=4 last_fr=FR-22
 
 # Read active plan
 cat .methodology/phase7_plan.md
@@ -43,36 +43,29 @@ cat .methodology/phase7_plan.md
 |------|----|
 | Remote | `https://github.com/johnnylugm-tech/omnibot-new` |
 | Branch | `main` |
-| State | `phase=6 state=RUNNING last_gate=4` |
+| State | `phase=7 state=RUNNING last_gate=4 last_fr=FR-22` |
 | Plan | `.methodology/phase7_plan.md` |
 
 ---
 
 ## 任務背景
 
-Gate 4 PASS — quality cycle complete.
+Phase 6 complete (22/22 FRs Gate 1 PASS). Gate 4 (score=96.45000000000002). Advancing to Phase 7.
 
 ## 目前執行狀況
 
-Gate 4 PASS: score=96.5. — pipeline complete
+Phase 6: 22/22 FRs Gate 1 PASS. Gate 4 (score=96.45000000000002) — quality_complete. Ready to begin Phase 7.
 
 ## 接下來的工作
 
-1. Proceed to P7: Risk Register
-2. Document all known risks
-3. On P7 done → call commit_and_push_p7()
-4. On P8 done → call commit_and_push_p8()
+1. Follow SKILL.md §0.1 Phase 7 entry checklist
+2. Read the Phase 7 plan and execute
 
 ## 注意事項
 
 - 100% follow SKILL.md
 - Do NOT commit `.sessi-work/` or `.methodology/` runtime artifacts
 - Git failures are warnings — they never block the pipeline
-
-## 附加資訊
-
-- **gate**: 4
-- **score**: 96.5
 
 ---
 *由 `HandoverGenerator` 自動生成。下次 push 時此檔案將被覆寫。*
