@@ -4,5 +4,7 @@
   "last_gate": 1,
   "last_fr": "FR-22",
   "last_update": "2026-05-29T17:49:01.832860+00:00",
-  "phase_truth_passed": false
+  "phase_truth_passed": false,
+  "last_milestone_command": "push-milestone --type p8",
+  "last_milestone_at": "2026-05-29T17:50:24.949996+00:00"
 }
