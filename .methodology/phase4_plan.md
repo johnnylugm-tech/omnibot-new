@@ -2,7 +2,7 @@
 
 > **Version**: v2.7.0 (project plan)
 > **Project**: omnibot-new
-> **Date**: 2026-05-30
+> **Date**: 2026-05-31
 > **Framework**: harness-methodology v2.7.0
 > **Phase**: 4 - Testing
 > **Status**: Full version (including Phase 4 detailed tasks)
@@ -26,7 +26,7 @@ Each FR ends with a Gate 1 re-evaluation (CHECKPOINT). Phase exits via Gate 3 (1
 > - CHECKPOINT-0: TEST_PLAN.md (generate before per-FR testing starts)
 > - MILESTONE: P4-mid push (≥50% FRs Gate 1 PASS) → **HANDOVER.md**
 > - MILESTONE: P4-pre-gate3 push (all FRs done, before Gate 3) → **HANDOVER.md**
-> - CHECKPOINT-1: Gate 3 (Phase 4 Exit) → **push + HANDOVER.md**
+> - CHECKPOINT-GATE-3: Gate 3 (Phase 4 Exit) → **push + HANDOVER.md**
 
 ### Entry Gate Verification
 
@@ -82,7 +82,7 @@ python3 harness_cli.py load-context --phase 4 --project . --json \
   # evaluate inline → write .sessi-work/env_check_result.json →
   python3 harness_cli.py finalize-env-check --phase 4 --project .
   ```
-  > Without this, every `run-fr-step --step GATE1` blocks on 'env_check_result.json not found'.
+  > Without this, every `run-fr-step --step GATE1-DELTA` blocks on 'env_check_result.json not found'.
 
 > Read `fr_ids` from `.sessi-work/phase4_ctx.json`.
 > For each `{FR-ID}` in the list, execute the template below:
@@ -90,20 +90,18 @@ python3 harness_cli.py load-context --phase 4 --project . --json \
 ---
 **{FR-ID} — {FR-TITLE from fr_details}**
 
-- [ ] **[ORCH-RED]**     `run-fr-step --phase 4 --fr-id {FR-ID} --step TDD-RED --project . --srs 01-requirements/SRS.md`
-- [ ] **[ORCH-GREEN]**   `run-fr-step --phase 4 --fr-id {FR-ID} --step TDD-GREEN --project . --srs 01-requirements/SRS.md`
-- [ ] **[ORCH-IMPROVE]** `run-fr-step --phase 4 --fr-id {FR-ID} --step TDD-IMPROVE --project .`
-- [ ] **[ORCH-GATE1]**   `run-fr-step --phase 4 --fr-id {FR-ID} --step GATE1 --project .`
-> Gate 1 thresholds: linting(90) · type_safety(85) · test_coverage(80) · test_assertion_quality(50)
-> Crash recovery: `resume-fr-phase --phase 4 --project .`
+- [ ] **[ORCH-GATE1-DELTA]** `run-fr-step --phase 4 --fr-id {FR-ID} --step GATE1-DELTA --project .`
+> Crash recovery: `resume-fr-phase` auto-detects code changes → switches to full TDD if needed.
+> **Auto-skip**: if NO FR's code changed since its last Gate 1 PASS, `advance-phase --completed 4`
+> treats this entire DELTA loop as satisfied automatically — you may skip the per-FR steps.
+> Only FRs whose code actually changed need a re-evaluation.
 >
-> **Gate 1 outcomes:**
+> **GATE1-DELTA outcomes:**
 > - CASE 1 PASS:    Gate 1 PASS → continue to next {FR-ID}
-> - CASE 2 FAIL:    Fix failing dims → re-run `run-fr-step --step GATE1`
->   (linting: `ruff check . --fix`; coverage: add tests; type_safety: fix mypy errors;
->   test_assertion_quality: add assertions to zero-assert test functions)
-> - CASE 3 BLOCKED: 3 rounds still failing → escalate to human.
->   Provide: Gate 1 output + failing dimension details.
+> - CASE 2 FAIL:    Gate 1 FAIL → full TDD auto-triggered by crash recovery:
+>   `run-fr-step --phase 4 --fr-id {FR-ID} --step TDD-RED` → TDD-GREEN → TDD-IMPROVE → GATE1
+> - CASE 3 BLOCKED: 3 TDD rounds still failing → escalate to human.
+>   Provide: last Gate 1 output + pytest failure log.
 
 ---
 
@@ -135,7 +133,7 @@ python3 harness_cli.py load-context --phase 4 --project . --json \
   - Real test execution is enforced by advance-phase TDD-PRECHECK (`pytest --cov-fail-under=100`), not by string-matching this document
 
 
-### 🔒 CHECKPOINT-1: Gate 3 — Phase 4 Exit
+### 🔒 CHECKPOINT-GATE-3: Phase 4 Exit
 > linting(90) · type_safety(85) · test_coverage(80) · security(80) · secrets_scanning(100) · license_compliance(100) · mutation_testing(70) · integration_coverage(60) · architecture(80) · readability(80) · error_handling(80) · documentation(75) · test_assertion_quality(60) · performance(75)  [CRG recon inside run-gate · D4 spec-coverage unified ≥80%]
 
 - [ ] **G3a** Prepare Gate 3:
@@ -150,8 +148,10 @@ python3 harness_cli.py load-context --phase 4 --project . --json \
   - Write result to `.sessi-work/gate3_result.json`
   - Failing dim: fix code → re-evaluate → re-score
   > Auto-fix engine may attempt to correct linting/coverage/type_safety issues automatically.
-  > **CRG-ONLY dims** (architecture, error_handling): scores come from `crg_metrics.json`.
-  > If score = 0 due to Orchestrator/hub-and-spoke pattern: complete DA challenge (A3 above)
+  > **architecture** is framework-owned: the harness runs an independent CRG build itself
+  > (`harness/crg_independent.py`) and overrides any agent-recorded score with
+  > `community_cohesion`. error_handling is tool-scored (`ast-error-handling`), not CRG.
+  > If architecture = 0 due to Orchestrator/hub-and-spoke pattern: complete DA challenge (A3 above)
   > and set `da_waiver` in gate4_result.json to bypass the threshold.
   > See `harness/ssi/prompts/evaluate_dimension.md` §Orchestrator Pattern False Positive.
 
@@ -183,6 +183,10 @@ python3 harness_cli.py load-context --phase 4 --project . --json \
   > If HANDOVER.md is missing, re-run `finalize-gate` (do **not** raw-push).
 
 - [ ] **[PHASE-TRUTH]** Phase Truth ≥ 90% (HR-11) — verified by advance-phase
+  > **FAIL** → check `phase_truth_verifier` output in `.sessi-work/`
+  >   → identify which phase link or gate artifact failed
+  >   → fix artifacts → re-run `advance-phase`
+  >   → If 3 consecutive failures: escalate to human with `phase_truth_verifier` log
 
 ### Phase 4 Deliverables
 - [ ] `TEST_PLAN.md` - Test plan

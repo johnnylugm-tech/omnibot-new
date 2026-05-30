@@ -1,12 +1,12 @@
 {
   "summary": {
-    "total": 2275,
+    "total": 2279,
     "missing": 0,
     "incomplete": 0,
-    "orphaned": 2275,
+    "orphaned": 2279,
     "critical": 0,
     "major": 0,
-    "minor": 2275
+    "minor": 2279
   },
   "gaps": [
     {
@@ -7290,6 +7290,24 @@
     {
       "type": "ORPHANED",
       "severity": "minor",
+      "reason": "'CrgIndependentError' has no corresponding specification in SPEC.md",
+      "action": "Add spec for CrgIndependentError or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'crg_binary' has no corresponding specification in SPEC.md",
+      "action": "Add spec for crg_binary or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'run_independent_crg' has no corresponding specification in SPEC.md",
+      "action": "Add spec for run_independent_crg or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
       "reason": "'DecisionContext' has no corresponding specification in SPEC.md",
       "action": "Add spec for DecisionContext or remove if unnecessary"
     },
@@ -7844,6 +7862,12 @@
       "severity": "minor",
       "reason": "'seed_issues_from_suggested_questions' has no corresponding specification in SPEC.md",
       "action": "Add spec for seed_issues_from_suggested_questions or remove if unnecessary"
+    },
+    {
+      "type": "ORPHANED",
+      "severity": "minor",
+      "reason": "'main' has no corresponding specification in SPEC.md",
+      "action": "Add spec for main or remove if unnecessary"
     },
     {
       "type": "ORPHANED",

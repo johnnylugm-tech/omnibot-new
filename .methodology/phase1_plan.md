@@ -2,7 +2,7 @@
 
 > **Version**: v2.7.0 (project plan)
 > **Project**: omnibot-new
-> **Date**: 2026-05-30
+> **Date**: 2026-05-31
 > **Framework**: harness-methodology v2.7.0
 > **Phase**: 1 - Requirements Specification
 > **Status**: Full version (including Phase 1 detailed tasks)
@@ -21,7 +21,7 @@ Phase 1 is the project starting point. Define complete SRS.
 > If context is lost, read `HANDOVER.md` first — it contains phase, status, and next steps.
 
 > **Checkpoint Index** (push to GitHub = checkpoint + HANDOVER.md saved):
-> - CHECKPOINT-1: Agent B Peer Review (Phase 1 Exit) → `push-checkpoint --phase 1`
+> - CHECKPOINT-PEER-REVIEW: Agent B Peer Review (Phase 1 Exit) → `push-checkpoint --phase 1`
 
 ### Phase 1 Precondition
 
@@ -363,7 +363,7 @@ are not re-opened. This bounds backtracking to a single step.
 - [x] `.methodology/sessions_spawn.log` — auto-populated by AgentSpawner (non-blocking debug trail)
 
 
-### 🔒 CHECKPOINT-1: Agent B Peer Review — Phase 1 Exit
+### 🔒 CHECKPOINT-PEER-REVIEW: Agent B Peer Review — Phase 1 Exit
 > Phase 1/2 exit gate = Agent B document review (NOT `harness run-gate --gate 1`).
 > APPROVE criteria: all FRs addressed, no critical gaps, terminology consistent.
 
@@ -419,7 +419,7 @@ are not re-opened. This bounds backtracking to a single step.
     > If round 5 REJECT: escalate to human — orchestrator cannot self-resolve.
     > Human fix → re-dispatch Agent B (same prompt + updated content) → `APPROVE` required before continuing.
 
-- [ ] **[B-PUSH]** ✅ PUSH ① — Push to GitHub + HANDOVER.md — retry until success (CHECKPOINT-1 saved):
+- [ ] **[B-PUSH]** ✅ PUSH ① — Push to GitHub + HANDOVER.md — retry until success (CHECKPOINT-PEER-REVIEW saved):
   > Run `push-checkpoint` → if blocked, read the error → fix → re-run until green.
   > Do NOT use `--no-verify` to bypass.
   ```bash

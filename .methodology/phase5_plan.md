@@ -2,7 +2,7 @@
 
 > **Version**: v2.7.0 (project plan)
 > **Project**: omnibot-new
-> **Date**: 2026-05-30
+> **Date**: 2026-05-31
 > **Framework**: harness-methodology v2.7.0
 > **Phase**: 5 - Verification & Delivery
 > **Status**: Full version (including Phase 5 detailed tasks)
@@ -122,6 +122,10 @@ python3 harness_cli.py load-context --phase 5 --project . --json \
 
 - [ ] Confirm ALL checkpoints in this plan are ✓  (no skips — HR-03)
 - [ ] **[PHASE-TRUTH]** Phase Truth ≥ 90% (HR-11) — verified by advance-phase
+  > **FAIL** → check `phase_truth_verifier` output in `.sessi-work/`
+  >   → identify which phase link or gate artifact failed
+  >   → fix artifacts → re-run `advance-phase`
+  >   → If 3 consecutive failures: escalate to human with `phase_truth_verifier` log
 
 - [ ] **[D4-GAP WARNING]** Gate 4 (next phase) requires spec-coverage ≥ 90% but current advance threshold is 80%.
   > Close this gap NOW to avoid a surprise Gate 4 D4 block.

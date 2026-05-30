@@ -2,7 +2,7 @@
 
 > **Version**: v2.7.0 (project plan)
 > **Project**: omnibot-new
-> **Date**: 2026-05-30
+> **Date**: 2026-05-31
 > **Framework**: harness-methodology v2.7.0
 > **Phase**: 3 - Implementation
 > **Status**: Full version (including Phase 3 detailed tasks)
@@ -25,7 +25,7 @@ Each FR ends with a Gate 1 quality evaluation (CHECKPOINT). Phase exits via Gate
 > **Checkpoint Index**:
 > - MILESTONE: P3-mid push (≥50% FRs Gate 1 PASS) → **HANDOVER.md**
 > - MILESTONE: P3-pre-gate2 push (all FRs done) → **HANDOVER.md**
-> - CHECKPOINT-1: Gate 2 (Phase 3 Exit) → **push + HANDOVER.md**
+> - CHECKPOINT-GATE-2: Gate 2 (Phase 3 Exit) → **push + HANDOVER.md**
 
 ### Entry Gate Verification
 
@@ -88,14 +88,13 @@ python3 harness_cli.py load-context --phase 3 --project . --json \
 - [ ] **[ORCH-GREEN]**   `run-fr-step --phase 3 --fr-id {FR-ID} --step TDD-GREEN --project . --srs 01-requirements/SRS.md`
 - [ ] **[ORCH-IMPROVE]** `run-fr-step --phase 3 --fr-id {FR-ID} --step TDD-IMPROVE --project .`
 - [ ] **[ORCH-GATE1]**   `run-fr-step --phase 3 --fr-id {FR-ID} --step GATE1 --project .`
-> Gate 1 thresholds: linting(90) · type_safety(85) · test_coverage(80) · test_assertion_quality(50)
+> Gate 1 thresholds: linting(90) · type_safety(85) · test_coverage(80)
 > Crash recovery: `resume-fr-phase --phase 3 --project .`
 >
 > **Gate 1 outcomes:**
 > - CASE 1 PASS:    Gate 1 PASS → continue to next {FR-ID}
 > - CASE 2 FAIL:    Fix failing dims → re-run `run-fr-step --step GATE1`
->   (linting: `ruff check . --fix`; coverage: add tests; type_safety: fix mypy errors;
->   test_assertion_quality: add assertions to zero-assert test functions)
+>   (linting: `ruff check . --fix`; coverage: add tests; type_safety: fix pyright errors)
 > - CASE 3 BLOCKED: 3 rounds still failing → escalate to human.
 >   Provide: Gate 1 output + failing dimension details.
 
@@ -123,7 +122,7 @@ python3 harness_cli.py load-context --phase 3 --project . --json \
   > Last stable snapshot before Gate 2 evaluation. HANDOVER.md + push.
 
 
-### 🔒 CHECKPOINT-1: Gate 2 — Phase 3 Exit
+### 🔒 CHECKPOINT-GATE-2: Phase 3 Exit
 > linting(90) · type_safety(85) · test_coverage(80) · security(80) · secrets_scanning(100) · license_compliance(100) · mutation_testing(70) · integration_coverage(60) · test_assertion_quality(60)  [D4 spec-coverage unified ≥60%]
 
 - [ ] **G2a** Prepare Gate 2:
@@ -166,6 +165,10 @@ python3 harness_cli.py load-context --phase 3 --project . --json \
   > If HANDOVER.md is missing, re-run `finalize-gate` (do **not** raw-push).
 
 - [ ] **[PHASE-TRUTH]** Phase Truth ≥ 90% (HR-11) — verified by advance-phase
+  > **FAIL** → check `phase_truth_verifier` output in `.sessi-work/`
+  >   → identify which phase link or gate artifact failed
+  >   → fix artifacts → re-run `advance-phase`
+  >   → If 3 consecutive failures: escalate to human with `phase_truth_verifier` log
 
 ### Phase 3 Deliverables
 - [ ] `03-development/src/` - All FR modules implemented

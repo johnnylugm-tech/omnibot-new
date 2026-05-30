@@ -2,7 +2,7 @@
 
 > **Version**: v2.7.0 (project plan)
 > **Project**: omnibot-new
-> **Date**: 2026-05-30
+> **Date**: 2026-05-31
 > **Framework**: harness-methodology v2.7.0
 > **Phase**: 6 - Quality Assurance
 > **Status**: Full version (including Phase 6 detailed tasks)
@@ -14,11 +14,12 @@
 ## Phase 6 Tasks: Quality Assurance
 
 ### Phase 6 Overview
-Phase 6 is a complete Gate 4 evaluation. Gate 4 replaces the entire P6 SOP.
-No FR loop — Gate 4 evaluates the full project (14 dims, CRG recon, fully automated).
+Phase 6 centres on Gate 4 — the full-project quality evaluation.
+No FR loop. Gate 4 = tool-scored automated evaluation (14 dims, CRG recon) PLUS
+Agent B peer review of the QA deliverables (HR-01) — both are required to exit.
 
 > **Checkpoint Index** (push to GitHub = checkpoint saved):
-> - CHECKPOINT-1: Gate 4 (Full Project — 14 dims, fully automated)
+> - CHECKPOINT-GATE-4: Gate 4 (Full Project — 14 dims) + Agent B peer review
 
 ### Entry Gate Verification
 
@@ -53,9 +54,11 @@ python3 harness_cli.py load-context --phase 6 --project . --json \
 ```
 > Outputs `fr_ids`, `fr_details`, `modules` from current project state.
 
-### P6 Phase End Audit (Replaces A/B)
+### P6 Phase End Audit (+ A/B Review)
 
-> Phase 6 does not use A/B collaboration. Gate 4 evaluation + Phase End Audit replace it.
+> A/B collaboration is active for Phase 6 deliverables (HR-01).
+> Agent A generates QUALITY_REPORT.md and RELEASE_NOTES.md.
+> Agent B (ARCHITECT) reviews the deliverables and verifies Gate 4 score.
 
 ### Pre-Gate Preparation
 - [ ] Confirm all FRs are merged to main branch
@@ -94,7 +97,7 @@ python3 harness_cli.py load-context --phase 6 --project . --json \
   > Populate via `issue_tracker.py add` during G4b for a useful audit trail.
 
 
-### 🔒 CHECKPOINT-1: Gate 4 — Phase 6 Exit
+### 🔒 CHECKPOINT-GATE-4: Phase 6 Exit
 > linting(90) · type_safety(85) · test_coverage(80) · security(80) · secrets_scanning(100) · license_compliance(100) · mutation_testing(70) · architecture(80) · readability(80) · error_handling(80) · documentation(75) · performance(75) · integration_coverage(75) · test_assertion_quality(70)  [CRG recon inside run-gate · D4 spec-coverage unified ≥90%]
 
 - [ ] **G4a** Prepare Gate 4:
@@ -108,8 +111,11 @@ python3 harness_cli.py load-context --phase 6 --project . --json \
   - Follow `harness/ssi/prompts/evaluate_dimension.md`
   - Write result to `.sessi-work/gate4_result.json`
   - Failing dim: fix code → re-evaluate → re-score
-  > **CRG-ONLY dims** (architecture, error_handling): scores come from `crg_metrics.json`.
-  > If score = 0 due to Orchestrator/hub-and-spoke pattern: complete DA challenge (A3 above)
+  > Auto-fix engine may attempt to correct linting/coverage/type_safety issues automatically.
+  > **architecture** is framework-owned: the harness runs an independent CRG build itself
+  > (`harness/crg_independent.py`) and overrides any agent-recorded score with
+  > `community_cohesion`. error_handling is tool-scored (`ast-error-handling`), not CRG.
+  > If architecture = 0 due to Orchestrator/hub-and-spoke pattern: complete DA challenge (A3 above)
   > and set `da_waiver` in gate4_result.json to bypass the threshold.
   > See `harness/ssi/prompts/evaluate_dimension.md` §Orchestrator Pattern False Positive.
 
@@ -151,7 +157,15 @@ python3 harness_cli.py load-context --phase 6 --project . --json \
   Include: project name, completion date, Gate 4 composite score, sign-off statement.
   Must reference `BASELINE.md` and `VERIFICATION_REPORT.md` (verification provenance).
 
+- [ ] **G4g** Agent B Peer Review (HR-01):
+  Agent B (ARCHITECT) reviews `06-quality/QUALITY_REPORT.md` and `RELEASE_NOTES.md`.
+  Confirm all FRs are merged and Gate 4 score ≥ 85.
+
 - [ ] **[PHASE-TRUTH]** Phase Truth ≥ 90% (HR-11) — verified by advance-phase
+  > **FAIL** → check `phase_truth_verifier` output in `.sessi-work/`
+  >   → identify which phase link or gate artifact failed
+  >   → fix artifacts → re-run `advance-phase`
+  >   → If 3 consecutive failures: escalate to human with `phase_truth_verifier` log
 
 ### Phase 6 Deliverables
 - [ ] Gate 4 PASS (composite ≥ 85, all 14 dims, CRG recon done)
