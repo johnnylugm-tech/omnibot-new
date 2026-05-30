@@ -1,9 +1,9 @@
 # Phase 2 Full Execution Plan -- omnibot-new
 
-> **Version**: v2.4.0 (project plan)
+> **Version**: v2.7.0 (project plan)
 > **Project**: omnibot-new
 > **Date**: 2026-05-30
-> **Framework**: harness-methodology v2.4.0
+> **Framework**: harness-methodology v2.7.0
 > **Phase**: 2 - Architecture Design
 > **Status**: Full version (including Phase 2 detailed tasks)
 > **Mode**: Dynamic (load-context at execution time)
@@ -86,7 +86,7 @@ are not re-opened. This bounds backtracking to a single step.
 **Agent A**: ARCHITECT
 **Agent B**: TECH_LEAD
 
-**A/B Work** (HR-01: A≠B · HR-04: HybridWorkflow ON · HR-10: log required):
+**A/B Work** (HR-04: HybridWorkflow ON — Agent A authors, a separate Agent B sub-agent reviews):
 - [ ] **[A-1]** Agent A (ARCHITECT): Design system architecture → write SAD.md → validate every FR has a module mapping
   - FORBIDDEN: vague/non-testable acceptance criteria
 - [ ] **[A-2]** Agent A returns `{status, files, confidence, citations, summary}`
@@ -138,7 +138,7 @@ are not re-opened. This bounds backtracking to a single step.
 
   > ⚠️ **BLOCKING**: Do NOT start the next Sub-Task until this sub-task's current
   > round is fully APPROVED (including any required round 2).
-  > AgentSpawner auto-logs round-2 re-dispatch to `.methodology/sessions_spawn.log` (HR-10).
+  > AgentSpawner records dispatches to `.methodology/sessions_spawn.log` (non-blocking debug trail).
 
   > fr_id uses P2 as phase-level placeholder; replace with FR-XX for FR-specific plans.
 
@@ -148,7 +148,7 @@ are not re-opened. This bounds backtracking to a single step.
 **Agent A**: ARCHITECT
 **Agent B**: TECH_LEAD
 
-**A/B Work** (HR-01: A≠B · HR-04: HybridWorkflow ON · HR-10: log required):
+**A/B Work** (HR-04: HybridWorkflow ON — Agent A authors, a separate Agent B sub-agent reviews):
 - [ ] **[A-1]** Agent A (ARCHITECT): Extract key architecture decisions from SAD.md → write individual ADR entries → validate rationale and consequences are recorded
   - FORBIDDEN: vague/non-testable acceptance criteria
 - [ ] **[A-2]** Agent A returns `{status, files, confidence, citations, summary}`
@@ -209,7 +209,7 @@ are not re-opened. This bounds backtracking to a single step.
 
   > ⚠️ **BLOCKING**: Do NOT start the next Sub-Task until this sub-task's current
   > round is fully APPROVED (including any required round 2).
-  > AgentSpawner auto-logs round-2 re-dispatch to `.methodology/sessions_spawn.log` (HR-10).
+  > AgentSpawner records dispatches to `.methodology/sessions_spawn.log` (non-blocking debug trail).
 
   > fr_id uses P2 as phase-level placeholder; replace with FR-XX for FR-specific plans.
 
@@ -219,7 +219,7 @@ are not re-opened. This bounds backtracking to a single step.
 **Agent A**: ARCHITECT
 **Agent B**: TECH_LEAD
 
-**A/B Work** (HR-01: A≠B · HR-04: HybridWorkflow ON · HR-10: log required):
+**A/B Work** (HR-04: HybridWorkflow ON — Agent A authors, a separate Agent B sub-agent reviews):
 - [ ] **[A-1]** Agent A (ARCHITECT): Generate TEST_SPEC.md via derive_test_cases.md skill → preserve TEST_INVENTORY.yaml names where specified → apply 7-Question Protocol per FR → populate cross-cutting section
   - FORBIDDEN: vague/non-testable acceptance criteria
 - [ ] **[A-2]** Agent A returns `{status, files, confidence, citations, summary}`
@@ -285,7 +285,7 @@ are not re-opened. This bounds backtracking to a single step.
 
   > ⚠️ **BLOCKING**: Do NOT start the next Sub-Task until this sub-task's current
   > round is fully APPROVED (including any required round 2).
-  > AgentSpawner auto-logs round-2 re-dispatch to `.methodology/sessions_spawn.log` (HR-10).
+  > AgentSpawner records dispatches to `.methodology/sessions_spawn.log` (non-blocking debug trail).
 
   > fr_id uses P2 as phase-level placeholder; replace with FR-XX for FR-specific plans.
 
@@ -305,7 +305,7 @@ are not re-opened. This bounds backtracking to a single step.
 - [ ] `TEST_SPEC.md` — Test specification catalog (named test cases from SRS, single source of truth — D4 unified check)
 - [ ] `.methodology/quality_manifest.json` — Quality manifest (FR list + SAB data)
 - [ ] `.methodology/SAB.json` — Machine-readable architecture baseline
-- [x] `.methodology/sessions_spawn.log` — auto-populated by AgentSpawner (HR-10)
+- [x] `.methodology/sessions_spawn.log` — auto-populated by AgentSpawner (non-blocking debug trail)
 
 
 ### 🔒 CHECKPOINT-1: Agent B Peer Review — Phase 2 Exit

@@ -1,9 +1,9 @@
 # Phase 1 Full Execution Plan -- omnibot-new
 
-> **Version**: v2.4.0 (project plan)
+> **Version**: v2.7.0 (project plan)
 > **Project**: omnibot-new
 > **Date**: 2026-05-30
-> **Framework**: harness-methodology v2.4.0
+> **Framework**: harness-methodology v2.7.0
 > **Phase**: 1 - Requirements Specification
 > **Status**: Full version (including Phase 1 detailed tasks)
 > **Mode**: Dynamic (load-context at execution time)
@@ -86,7 +86,7 @@ are not re-opened. This bounds backtracking to a single step.
 **Agent A**: REQUIREMENTS_ENGINEER
 **Agent B**: BUSINESS_ANALYST
 
-**A/B Work** (HR-01: A≠B · HR-04: HybridWorkflow ON · HR-10: log required):
+**A/B Work** (HR-04: HybridWorkflow ON — Agent A authors, a separate Agent B sub-agent reviews):
 - [ ] **[A-1]** Agent A (REQUIREMENTS_ENGINEER): Elicit requirements → write FRs/NFRs in SRS.md (### FR-XX: format) → validate completeness
   - FORBIDDEN: vague/non-testable acceptance criteria
 - [ ] **[A-2]** Agent A returns `{status, files, confidence, citations, summary}`
@@ -138,7 +138,7 @@ are not re-opened. This bounds backtracking to a single step.
 
   > ⚠️ **BLOCKING**: Do NOT start the next Sub-Task until this sub-task's current
   > round is fully APPROVED (including any required round 2).
-  > AgentSpawner auto-logs round-2 re-dispatch to `.methodology/sessions_spawn.log` (HR-10).
+  > AgentSpawner records dispatches to `.methodology/sessions_spawn.log` (non-blocking debug trail).
 
   > fr_id uses P1 as phase-level placeholder; replace with FR-XX for FR-specific plans.
 
@@ -148,7 +148,7 @@ are not re-opened. This bounds backtracking to a single step.
 **Agent A**: REQUIREMENTS_ENGINEER
 **Agent B**: BUSINESS_ANALYST
 
-**A/B Work** (HR-01: A≠B · HR-04: HybridWorkflow ON · HR-10: log required):
+**A/B Work** (HR-04: HybridWorkflow ON — Agent A authors, a separate Agent B sub-agent reviews):
 - [ ] **[A-1]** Agent A (REQUIREMENTS_ENGINEER): Build spec tracking matrix from SRS.md FRs → assign status/owner per FR → validate completeness
   - FORBIDDEN: vague/non-testable acceptance criteria
 - [ ] **[A-2]** Agent A returns `{status, files, confidence, citations, summary}`
@@ -205,7 +205,7 @@ are not re-opened. This bounds backtracking to a single step.
 
   > ⚠️ **BLOCKING**: Do NOT start the next Sub-Task until this sub-task's current
   > round is fully APPROVED (including any required round 2).
-  > AgentSpawner auto-logs round-2 re-dispatch to `.methodology/sessions_spawn.log` (HR-10).
+  > AgentSpawner records dispatches to `.methodology/sessions_spawn.log` (non-blocking debug trail).
 
   > fr_id uses P1 as phase-level placeholder; replace with FR-XX for FR-specific plans.
 
@@ -215,7 +215,7 @@ are not re-opened. This bounds backtracking to a single step.
 **Agent A**: REQUIREMENTS_ENGINEER
 **Agent B**: BUSINESS_ANALYST
 
-**A/B Work** (HR-01: A≠B · HR-04: HybridWorkflow ON · HR-10: log required):
+**A/B Work** (HR-04: HybridWorkflow ON — Agent A authors, a separate Agent B sub-agent reviews):
 - [ ] **[A-1]** Agent A (REQUIREMENTS_ENGINEER): Build bidirectional traceability matrix → link FRs → design elements → test cases → validate coverage
   - FORBIDDEN: vague/non-testable acceptance criteria
 - [ ] **[A-2]** Agent A returns `{status, files, confidence, citations, summary}`
@@ -280,7 +280,7 @@ are not re-opened. This bounds backtracking to a single step.
 
   > ⚠️ **BLOCKING**: Do NOT start the next Sub-Task until this sub-task's current
   > round is fully APPROVED (including any required round 2).
-  > AgentSpawner auto-logs round-2 re-dispatch to `.methodology/sessions_spawn.log` (HR-10).
+  > AgentSpawner records dispatches to `.methodology/sessions_spawn.log` (non-blocking debug trail).
 
   > fr_id uses P1 as phase-level placeholder; replace with FR-XX for FR-specific plans.
 
@@ -290,7 +290,7 @@ are not re-opened. This bounds backtracking to a single step.
 **Agent A**: REQUIREMENTS_ENGINEER
 **Agent B**: BUSINESS_ANALYST
 
-**A/B Work** (HR-01: A≠B · HR-04: HybridWorkflow ON · HR-10: log required):
+**A/B Work** (HR-04: HybridWorkflow ON — Agent A authors, a separate Agent B sub-agent reviews):
 - [ ] **[A-1]** Agent A (REQUIREMENTS_ENGINEER): Generate TEST_INVENTORY.yaml from SRS.md FR acceptance criteria → assign test function names per FR → validate naming convention
   - FORBIDDEN: vague/non-testable acceptance criteria
 - [ ] **[A-2]** Agent A returns `{status, files, confidence, citations, summary}`
@@ -351,7 +351,7 @@ are not re-opened. This bounds backtracking to a single step.
 
   > ⚠️ **BLOCKING**: Do NOT start the next Sub-Task until this sub-task's current
   > round is fully APPROVED (including any required round 2).
-  > AgentSpawner auto-logs round-2 re-dispatch to `.methodology/sessions_spawn.log` (HR-10).
+  > AgentSpawner records dispatches to `.methodology/sessions_spawn.log` (non-blocking debug trail).
 
   > fr_id uses P1 as phase-level placeholder; replace with FR-XX for FR-specific plans.
 
@@ -360,7 +360,7 @@ are not re-opened. This bounds backtracking to a single step.
 - [ ] `SPEC_TRACKING.md` - Spec tracking matrix
 - [ ] `TRACEABILITY_MATRIX.md` - Requirements traceability matrix
 - [ ] `TEST_INVENTORY.yaml` - Test inventory (P1 naming authority — feeds TEST_SPEC.md)
-- [x] `.methodology/sessions_spawn.log` — auto-populated by AgentSpawner (HR-10)
+- [x] `.methodology/sessions_spawn.log` — auto-populated by AgentSpawner (non-blocking debug trail)
 
 
 ### 🔒 CHECKPOINT-1: Agent B Peer Review — Phase 1 Exit

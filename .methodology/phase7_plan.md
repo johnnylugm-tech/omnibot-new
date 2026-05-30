@@ -1,9 +1,9 @@
 # Phase 7 Full Execution Plan -- omnibot-new
 
-> **Version**: v2.4.0 (project plan)
+> **Version**: v2.7.0 (project plan)
 > **Project**: omnibot-new
 > **Date**: 2026-05-30
-> **Framework**: harness-methodology v2.4.0
+> **Framework**: harness-methodology v2.7.0
 > **Phase**: 7 - Risk Management
 > **Status**: Full version (including Phase 7 detailed tasks)
 > **Mode**: Dynamic (load-context at execution time)
@@ -62,6 +62,14 @@ python3 harness_cli.py load-context --phase 7 --project . --json \
 
 ### FR Tasks — Expanded at Execution Time
 
+- [ ] **[ENV-CHECK]** Run ONCE before the FR loop — `GATE1`/`GATE1-DELTA` preflight requires `.sessi-work/env_check_result.json`:
+  ```bash
+  python3 harness_cli.py run-env-check --phase 7 --project .
+  # evaluate inline → write .sessi-work/env_check_result.json →
+  python3 harness_cli.py finalize-env-check --phase 7 --project .
+  ```
+  > Without this, every `run-fr-step --step GATE1-DELTA` blocks on 'env_check_result.json not found'.
+
 > Read `fr_ids` from `.sessi-work/phase7_ctx.json`.
 > For each `{FR-ID}` in the list, execute the template below:
 
@@ -70,6 +78,9 @@ python3 harness_cli.py load-context --phase 7 --project . --json \
 
 - [ ] **[ORCH-GATE1-DELTA]** `run-fr-step --phase 7 --fr-id {FR-ID} --step GATE1-DELTA --project .`
 > Crash recovery: `resume-fr-phase` auto-detects code changes → switches to full TDD if needed.
+> **Auto-skip**: if NO FR's code changed since its last Gate 1 PASS, `advance-phase --completed 7`
+> treats this entire DELTA loop as satisfied automatically — you may skip the per-FR steps.
+> Only FRs whose code actually changed need a re-evaluation.
 >
 > **GATE1-DELTA outcomes:**
 > - CASE 1 PASS:    Gate 1 PASS → continue to next {FR-ID}
@@ -104,7 +115,7 @@ python3 harness_cli.py load-context --phase 7 --project . --json \
 - [ ] `07-risk/RISK_REGISTER.md` - Risk register
 - [ ] `07-risk/RISK_MITIGATION_PLANS.md` - Mitigation plans
 - [ ] `07-risk/RISK_STATUS_REPORT.md` - Risk status report
-- [x] `.methodology/sessions_spawn.log` — auto-populated by AgentSpawner
+- [x] `.methodology/sessions_spawn.log` — auto-populated by AgentSpawner (non-blocking debug trail)
 - [ ] Gate 1 PASS for every FR
 
 #### ASPICE Traceability Requirements (enforced by postflight)

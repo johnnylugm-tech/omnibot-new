@@ -1,9 +1,9 @@
 # Phase 4 Full Execution Plan -- omnibot-new
 
-> **Version**: v2.4.0 (project plan)
+> **Version**: v2.7.0 (project plan)
 > **Project**: omnibot-new
 > **Date**: 2026-05-30
-> **Framework**: harness-methodology v2.4.0
+> **Framework**: harness-methodology v2.7.0
 > **Phase**: 4 - Testing
 > **Status**: Full version (including Phase 4 detailed tasks)
 > **Mode**: Dynamic (load-context at execution time)
@@ -75,6 +75,14 @@ python3 harness_cli.py load-context --phase 4 --project . --json \
 - [ ] **[TP-DONE]** TEST_PLAN.md written: all FRs have ≥1 test case, NFRs addressed
 
 ### FR Tasks — Expanded at Execution Time
+
+- [ ] **[ENV-CHECK]** Run ONCE before the FR loop — `GATE1`/`GATE1-DELTA` preflight requires `.sessi-work/env_check_result.json`:
+  ```bash
+  python3 harness_cli.py run-env-check --phase 4 --project .
+  # evaluate inline → write .sessi-work/env_check_result.json →
+  python3 harness_cli.py finalize-env-check --phase 4 --project .
+  ```
+  > Without this, every `run-fr-step --step GATE1` blocks on 'env_check_result.json not found'.
 
 > Read `fr_ids` from `.sessi-work/phase4_ctx.json`.
 > For each `{FR-ID}` in the list, execute the template below:
@@ -180,7 +188,7 @@ python3 harness_cli.py load-context --phase 4 --project . --json \
 - [ ] `TEST_PLAN.md` - Test plan
 - [ ] `TEST_RESULTS.md` - Test results (pass rate summary + ≥3 TC/TR refs required)
 - [ ] `COVERAGE_REPORT.md` - Coverage report
-- [x] `.methodology/sessions_spawn.log` — auto-populated by AgentSpawner
+- [x] `.methodology/sessions_spawn.log` — auto-populated by AgentSpawner (non-blocking debug trail)
 - [ ] Gate 1 PASS for every FR
 - [ ] Gate 3 PASS (phase exit, composite ≥ 80, 14 dims)
 
