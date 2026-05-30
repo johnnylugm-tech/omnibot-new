@@ -118,12 +118,6 @@ python3 harness_cli.py load-context --phase 5 --project . --json \
 - [x] `.methodology/sessions_spawn.log` — auto-populated by AgentSpawner (non-blocking debug trail)
 - [ ] Gate 1 PASS for every FR
 
-#### ASPICE Traceability Requirements (enforced by postflight)
-
-- [ ] **[ASPICE]** Artifact for Phase 5 MUST reference `04-testing/TEST_PLAN.md` by filename keyword `TEST_PLAN` (ASPICE traceability — `postflight_artifact_links()` enforces this)
-- [ ] **[ASPICE]** Artifact for Phase 5 MUST reference `04-testing/TEST_RESULTS.md` by filename keyword `TEST_RESULTS` (ASPICE traceability — `postflight_artifact_links()` enforces this)
-
-
 ### Phase 5 → Phase 6: Quality Assurance
 
 - [ ] Confirm ALL checkpoints in this plan are ✓  (no skips — HR-03)

@@ -1,12 +1,12 @@
 {
   "summary": {
-    "total": 2277,
+    "total": 2275,
     "missing": 0,
     "incomplete": 0,
-    "orphaned": 2277,
+    "orphaned": 2275,
     "critical": 0,
     "major": 0,
-    "minor": 2277
+    "minor": 2275
   },
   "gaps": [
     {
@@ -7692,12 +7692,6 @@
     {
       "type": "ORPHANED",
       "severity": "minor",
-      "reason": "'ReviewerSpec' has no corresponding specification in SPEC.md",
-      "action": "Add spec for ReviewerSpec or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
       "reason": "'SubTask' has no corresponding specification in SPEC.md",
       "action": "Add spec for SubTask or remove if unnecessary"
     },
@@ -7976,12 +7970,6 @@
       "severity": "minor",
       "reason": "'route' has no corresponding specification in SPEC.md",
       "action": "Add spec for route or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'build_gemini_prompt' has no corresponding specification in SPEC.md",
-      "action": "Add spec for build_gemini_prompt or remove if unnecessary"
     },
     {
       "type": "ORPHANED",

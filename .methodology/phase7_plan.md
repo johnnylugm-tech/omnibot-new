@@ -118,11 +118,6 @@ python3 harness_cli.py load-context --phase 7 --project . --json \
 - [x] `.methodology/sessions_spawn.log` — auto-populated by AgentSpawner (non-blocking debug trail)
 - [ ] Gate 1 PASS for every FR
 
-#### ASPICE Traceability Requirements (enforced by postflight)
-
-- [ ] **[ASPICE]** Artifact for Phase 7 MUST reference `06-quality/QUALITY_REPORT.md` by filename keyword `QUALITY_REPORT` (ASPICE traceability — `postflight_artifact_links()` enforces this)
-
-
 ### Phase 7 → Phase 8: Configuration Management
 
 - [ ] Confirm ALL checkpoints in this plan are ✓  (no skips — HR-03)

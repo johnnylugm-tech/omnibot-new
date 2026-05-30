@@ -61,24 +61,9 @@ python3 harness_cli.py load-context --phase 6 --project . --json \
 - [ ] Confirm all FRs are merged to main branch
 - [ ] Confirm no open critical or high issues from Gate 3
 
-### Gate 4 Result JSON — Required Fields (A2–A5)
+### Gate 4 Result JSON — Required Fields
 
-> `finalize-gate --gate 4` validates these fields **before** scoring.
-> Missing any field → `[BLOCKED]` with a specific error message.
-
-- [ ] **[A2] `model_used`** — record which model evaluated each dimension (audit trail):
-  ```json
-  "model_used": {
-    "linting": "claude", "type_safety": "claude",
-    "test_coverage": "claude", "security": "claude",
-    "secrets_scanning": "claude", "license_compliance": "claude",
-    "mutation_testing": "claude", "integration_coverage": "claude",
-    "test_assertion_quality": "claude",
-    "architecture": "claude", "readability": "claude",
-    "error_handling": "claude", "documentation": "claude", "performance": "claude"
-  }
-  ```
-  > All dims use the Claude sub-agent (no external MCP backend required).
+> `finalize-gate --gate 4` validates A3 **before** scoring. Missing/insufficient → `[BLOCKED]`.
 
 - [ ] **[A3] `devil_advocate`** + **`devil_advocate_evidence`** — artifact-backed DA challenge for all Tier 3 dims:
   ```json
@@ -101,11 +86,12 @@ python3 harness_cli.py load-context --phase 6 --project . --json \
   > score threshold — the waiver also requires the `devil_advocate_evidence.architecture` artifact.
   > See `harness/ssi/prompts/evaluate_dimension.md` §Orchestrator.
 
-- [ ] **[A5] `issue_registry_path`** — path to the populated issue registry:
+- [ ] **[A5] `issue_registry_path`** (advisory — no longer blocks) — path to the issue registry:
   ```json
   "issue_registry_path": ".sessi-work/issue_registry.json"
   ```
-  > Must be non-empty. Populate via `issue_tracker.py add` during G4b dimension evaluation.
+  > Advisory only: the registry is agent-written, so its presence never verified anything.
+  > Populate via `issue_tracker.py add` during G4b for a useful audit trail.
 
 
 ### 🔒 CHECKPOINT-1: Gate 4 — Phase 6 Exit
@@ -163,7 +149,7 @@ python3 harness_cli.py load-context --phase 6 --project . --json \
 - [ ] **G4f** Generate Final Sign-Off:
   Create `FINAL_SIGN_OFF.md` at project root.
   Include: project name, completion date, Gate 4 composite score, sign-off statement.
-  Must reference `BASELINE.md` and `VERIFICATION_REPORT.md` (ASPICE traceability).
+  Must reference `BASELINE.md` and `VERIFICATION_REPORT.md` (verification provenance).
 
 - [ ] **[PHASE-TRUTH]** Phase Truth ≥ 90% (HR-11) — verified by advance-phase
 
@@ -173,12 +159,6 @@ python3 harness_cli.py load-context --phase 6 --project . --json \
 - [ ] `RELEASE_NOTES.md` - Release notes
 - [ ] `FINAL_SIGN_OFF.md` - Final sign-off
 - [x] `.methodology/sessions_spawn.log` — auto-populated by AgentSpawner (non-blocking debug trail)
-
-#### ASPICE Traceability Requirements (enforced by postflight)
-
-- [ ] **[ASPICE]** Artifact for Phase 6 MUST reference `05-verification/BASELINE.md` by filename keyword `BASELINE` (ASPICE traceability — `postflight_artifact_links()` enforces this)
-- [ ] **[ASPICE]** Artifact for Phase 6 MUST reference `05-verification/VERIFICATION_REPORT.md` by filename keyword `VERIFICATION_REPORT` (ASPICE traceability — `postflight_artifact_links()` enforces this)
-
 
 ### Phase 6 → Phase 7: Risk Management
 

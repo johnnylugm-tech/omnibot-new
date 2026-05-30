@@ -123,12 +123,6 @@ python3 harness_cli.py load-context --phase 8 --project . --json \
 - [x] `.methodology/sessions_spawn.log` — auto-populated by AgentSpawner (non-blocking debug trail)
 - [ ] Gate 1 PASS for every FR
 
-#### ASPICE Traceability Requirements (enforced by postflight)
-
-- [ ] **[ASPICE]** Artifact for Phase 8 MUST reference `07-risk/RISK_STATUS_REPORT.md` by filename keyword `RISK_STATUS_REPORT` (ASPICE traceability — `postflight_artifact_links()` enforces this)
-- [ ] **[ASPICE]** Artifact for Phase 8 MUST reference `07-risk/RISK_REGISTER.md` by filename keyword `RISK_REGISTER` (ASPICE traceability — `postflight_artifact_links()` enforces this)
-
-
 - [ ] **[PHASE-TRUTH]** Phase Truth ≥ 90% (HR-11) — verified by advance-phase
 
 ### 🎉 Pipeline Complete

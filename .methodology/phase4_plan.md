@@ -128,11 +128,11 @@ python3 harness_cli.py load-context --phase 4 --project . --json \
   ```
   > Last stable snapshot before Gate 3 evaluation. HANDOVER.md + push.
 
-### TEST_RESULTS.md Summary (required for C5 P4 audit)
+### TEST_RESULTS.md Summary
 
 - [ ] **[TEST-RESULTS-SUMMARY]** Finalize `04-testing/TEST_RESULTS.md` before milestone push:
-  - Add execution summary line: `N passed, M failed` or `Pass Rate: N%` (required — C5 P4 audit checks for pass rate pattern)
-  - Ensure ≥3 TC-XX or TR-XX references appear across the document (C5 P4 audit requires tc_refs + tr_refs ≥ 3)
+  - Summarise test execution: test cases run, pass/fail outcome, any deferred issues
+  - Real test execution is enforced by advance-phase TDD-PRECHECK (`pytest --cov-fail-under=100`), not by string-matching this document
 
 
 ### 🔒 CHECKPOINT-1: Gate 3 — Phase 4 Exit
@@ -186,17 +186,11 @@ python3 harness_cli.py load-context --phase 4 --project . --json \
 
 ### Phase 4 Deliverables
 - [ ] `TEST_PLAN.md` - Test plan
-- [ ] `TEST_RESULTS.md` - Test results (pass rate summary + ≥3 TC/TR refs required)
+- [ ] `TEST_RESULTS.md` - Test results (test execution summary)
 - [ ] `COVERAGE_REPORT.md` - Coverage report
 - [x] `.methodology/sessions_spawn.log` — auto-populated by AgentSpawner (non-blocking debug trail)
 - [ ] Gate 1 PASS for every FR
 - [ ] Gate 3 PASS (phase exit, composite ≥ 80, 14 dims)
-
-#### ASPICE Traceability Requirements (enforced by postflight)
-
-- [ ] **[ASPICE]** Artifact for Phase 4 MUST reference `03-development/src` by filename keyword `src` (ASPICE traceability — `postflight_artifact_links()` enforces this)
-- [ ] **[ASPICE]** Artifact for Phase 4 MUST reference `03-development/tests/` by filename keyword `tests` (ASPICE traceability — `postflight_artifact_links()` enforces this)
-
 
 ### Phase 4 → Phase 5: Verification & Delivery
 
