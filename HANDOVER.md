@@ -2,7 +2,7 @@
 
 **Checkpoint**: `P8-exit-20260531`  
 **Phase**: P8 — Config & Records  
-**Generated**: 2026-05-31T07:18:52Z
+**Generated**: 2026-05-31T07:24:03Z
 
 > ⚠️  **開始下一個工作階段前，請先執行 `/compact` 壓縮上下文**，再從「接下來的工作」繼續。
 
@@ -14,9 +14,9 @@
 # 1. Clone (if working directory cleared)
 git clone --recurse-submodules https://github.com/johnnylugm-tech/omnibot-new && cd omnibot-new
 
-# 2. Read plan and start Phase 9
-cat .methodology/phase9_plan.md
-# Follow SKILL.md §0.1 Phase 9 entry check, then execute
+# 2. Read plan and continue Phase 8
+cat .methodology/phase8_plan.md
+# Follow the active plan and continue from where you left off
 ```
 
 ---
@@ -34,7 +34,7 @@ git log --oneline -3
 cat .methodology/state.json   # expected: phase=8 state=RUNNING last_gate=1 last_fr=FR-22
 
 # Read active plan
-cat .methodology/phase9_plan.md
+cat .methodology/phase8_plan.md
 ```
 
 | 欄位 | 值 |
@@ -42,13 +42,13 @@ cat .methodology/phase9_plan.md
 | Remote | `https://github.com/johnnylugm-tech/omnibot-new` |
 | Branch | `main` |
 | State | `phase=8 state=RUNNING last_gate=1 last_fr=FR-22` |
-| Plan | `.methodology/phase9_plan.md` |
+| Plan | `.methodology/phase8_plan.md` |
 
 ---
 
 ## 任務背景
 
-P8 Config & Records: pipeline fully complete.
+P8 Config& Records: pipeline fully complete.
 
 ## 目前執行狀況
 
