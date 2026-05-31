@@ -1,22 +1,20 @@
 # Harness Methodology — Session Handover
 
-**Checkpoint**: `P8-exit-20260529`  
+**Checkpoint**: `P8-exit-20260531`  
 **Phase**: P8 — Config & Records  
-**Generated**: 2026-05-29T17:50:20Z
+**Generated**: 2026-05-31T07:18:52Z
 
 > ⚠️  **開始下一個工作階段前，請先執行 `/compact` 壓縮上下文**，再從「接下來的工作」繼續。
 
 ---
 
-## ▶ 立即開始（三步）
+## ▶ 立即開始（兩步）
 
 ```bash
 # 1. Clone (if working directory cleared)
 git clone --recurse-submodules https://github.com/johnnylugm-tech/omnibot-new && cd omnibot-new
 
-# 2. Set env vars (all optional)
-
-# 3. Read plan and start Phase 9
+# 2. Read plan and start Phase 9
 cat .methodology/phase9_plan.md
 # Follow SKILL.md §0.1 Phase 9 entry check, then execute
 ```

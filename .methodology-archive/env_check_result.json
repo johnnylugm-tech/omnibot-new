@@ -1,0 +1,16 @@
+{
+  "ready": false,
+  "checked_at": "2026-05-31T07:17:04Z",
+  "env_vars": {
+    "required": [ {"name":"TELEGRAM_BOT_TOKEN","present":false,"fix":"export TELEGRAM_BOT_TOKEN=<value>"},{"name":"LINE_CHANNEL_ACCESS_TOKEN","present":false,"fix":"export LINE_CHANNEL_ACCESS_TOKEN=<value>"},{"name":"LINE_CHANNEL_SECRET","present":false,"fix":"export LINE_CHANNEL_SECRET=<value>"},{"name":"DATABASE_URL","present":false,"fix":"export DATABASE_URL=<value>"},{"name":"REDIS_URL","present":false,"fix":"export REDIS_URL=<value>"}],
+    "optional_missing": ["TELEGRAM_WEBHOOK_SECRET","RATE_LIMIT_CAPACITY","RATE_LIMIT_REFILL_RATE","SERVICE_NAME","IP_WHITELIST_CIDRS"]
+  },
+  "cli_tools": {
+    "required": [{"name":"python3","present":true,"version":"3.9.6"},{"name":"docker","present":true},{"name":"docker-compose","present":true},{"name":"curl","present":true},{"name":"ruff","present":true},{"name":"radon","present":true},{"name":"pytest","present":true},{"name":"node","present":true},{"name":"npm","present":true},{"name":"git","present":true},{"name":"psql","present":false,"fix":"brew install postgresql"},{"name":"pg_isready","present":false,"fix":"brew install postgresql"},{"name":"redis-cli","present":false,"fix":"brew install redis"},{"name":"k6","present":false,"fix":"brew install k6"}]
+  },
+  "infra_services": {
+    "required": [{"name":"postgres","type":"container","reachable":false,"checked_via":"docker ps","fix":"docker compose up -d postgres"},{"name":"redis","type":"container","reachable":false,"checked_via":"docker ps","fix":"docker compose up -d redis"},{"name":"omnibot-api","type":"container","reachable":false,"checked_via":"docker ps","fix":"docker compose up -d omnibot-api"}],
+    "docker_compose_services": ["postgres","redis","omnibot-api"]
+  },
+  "summary": "Environment readiness check complete. Missing required env vars: TELEGRAM_BOT_TOKEN LINE_CHANNEL_ACCESS_TOKEN LINE_CHANNEL_SECRET DATABASE_URL REDIS_URL. Missing CLI tools: psql pg_isready redis-cli k6. "
+}

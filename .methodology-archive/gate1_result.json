@@ -1,0 +1,28 @@
+{
+  "gate": 1,
+  "phase": 8,
+  "fr_id": "FR-22",
+  "overall_score": 91.65,
+  "quality_complete": true,
+  "rounds_used": 2,
+  "breakdown": {
+    "linting": {
+      "score": 100,
+      "threshold": 90,
+      "tool_evidence": "All checks passed!"
+    },
+    "type_safety": {
+      "score": 95,
+      "threshold": 85,
+      "tool_evidence": "{\"version\":\"1.1.409\",\"time\":1780076871171,\"generalDiagnostics\":[{\"file\":\"/Users/johnny/projects/omnibot-new/03-development/src/app/api/webhooks.py\",\"severity\":\"error\",\"message\":\"Import \\\"fastapi\\\" could not be resolved\",\"range\":{\"start\":{\"line\":15,\"character\":5},\"end\":{\"line\":15,\"character\":12}},\"rule\":\"reportMissingImports\"}],\"summary\":{\"filesAnalyzed\":29,\"errorCount\":1,\"warningCount\":0,\"informationCount\":0,\"timeInSec\":0.578}}"
+    },
+    "test_coverage": {
+      "score": 80,
+      "threshold": 80,
+      "tests_passed": 72,
+      "tests_failed": 0,
+      "tests_skipped": 1,
+      "tool_evidence": "Coverage: 80% on 313 statements (64 missing). Spec: 43/43 (100%). Score = min(80, 100) = 80. Missing lines: config.py:61-91, health.py:55-58, logger.py:21,25, pii.py:19,28-30,39-42, pipeline.py:27,31-34,70-75,82-85,92,99,112-114,127,132-139,144, sanitizer.py:12, rate_limiter.py:46-47, verifiers.py:43-45."
+    }
+  }
+}

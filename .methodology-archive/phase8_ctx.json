@@ -1,0 +1,410 @@
+{
+  "phase": 8,
+  "project_name": "omnibot-new",
+  "fr_ids": [
+    "FR-01",
+    "FR-02",
+    "FR-03",
+    "FR-04",
+    "FR-05",
+    "FR-06",
+    "FR-07",
+    "FR-08",
+    "FR-09",
+    "FR-10",
+    "FR-11",
+    "FR-12",
+    "FR-13",
+    "FR-14",
+    "FR-15",
+    "FR-16",
+    "FR-17",
+    "FR-18",
+    "FR-19",
+    "FR-20",
+    "FR-21",
+    "FR-22"
+  ],
+  "fr_details": {
+    "FR-01": {
+      "title": "FR-01: Create complete PostgreSQL schema with all core tables (`users`, `conversations`",
+      "desc": "Create complete PostgreSQL schema with all core tables (`users`, `conversations`, `messages`, `knowledge_base`, `platform_configs`, `escalation_queue`, `user_feedback`, `security_logs`) plus indexe...",
+      "acceptance": []
+    },
+    "FR-02": {
+      "title": "FR-02: Accept Telegram Bot API webhook POST requests, parse the platform-specific paylo",
+      "desc": "Accept Telegram Bot API webhook POST requests, parse the platform-specific payload, and produce an immutable `UnifiedMessage` dataclass instance per SPEC.md \u00a7Unified Message Format. Must extract `p...",
+      "acceptance": []
+    },
+    "FR-03": {
+      "title": "FR-03: Accept LINE Messaging API webhook POST requests, parse the platform-specific pay",
+      "desc": "Accept LINE Messaging API webhook POST requests, parse the platform-specific payload, and produce an immutable `UnifiedMessage` dataclass instance. Must extract `reply_token` from LINE events.",
+      "acceptance": []
+    },
+    "FR-04": {
+      "title": "FR-04: Verify Telegram webhook request authenticity using HMAC-SHA256 over the secret k",
+      "desc": "Verify Telegram webhook request authenticity using HMAC-SHA256 over the secret key derived from `bot_token`. Reject with `AUTH_INVALID_SIGNATURE` (401) if verification fails. Per SPEC.md \u00a7Webhook S...",
+      "acceptance": []
+    },
+    "FR-05": {
+      "title": "FR-05: Verify LINE webhook request authenticity using HMAC-SHA256 over `channel_secret`",
+      "desc": "Verify LINE webhook request authenticity using HMAC-SHA256 over `channel_secret` with Base64-encoded digest comparison. Reject with `AUTH_INVALID_SIGNATURE` (401) if verification fails. Per SPEC.md...",
+      "acceptance": []
+    },
+    "FR-06": {
+      "title": "FR-06: Define and enforce the immutable `UnifiedMessage` dataclass with all required fi",
+      "desc": "Define and enforce the immutable `UnifiedMessage` dataclass with all required fields (`platform`, `platform_user_id`, `unified_user_id`, `message_type`, `content`, `raw_payload`, `received_at`, `re...",
+      "acceptance": []
+    },
+    "FR-07": {
+      "title": "FR-07: Define the generic `ApiResponse[T]` and `PaginatedResponse[T]` dataclasses per S",
+      "desc": "Define the generic `ApiResponse[T]` and `PaginatedResponse[T]` dataclasses per SPEC.md \u00a7API Design \u2014 Unified Response Format. `ApiResponse` must carry `success`, `data`, `error`, `error_code`. `Pag...",
+      "acceptance": []
+    },
+    "FR-08": {
+      "title": "FR-08: Normalize all inbound message text using Unicode NFKC normalization, strip non-p",
+      "desc": "Normalize all inbound message text using Unicode NFKC normalization, strip non-printable characters (except `\\n` and `\\t`), and trim whitespace. Per SPEC.md \u00a7Security Layer \u2014 Input Sanitizer L2. Mu...",
+      "acceptance": []
+    },
+    "FR-09": {
+      "title": "FR-09: Detect and mask PII patterns in message text: phone numbers (Taiwan formats `\\d{",
+      "desc": "Detect and mask PII patterns in message text: phone numbers (Taiwan formats `\\d{4}-\\d{3,4}-\\d{3,4}` and `\\d{10,11}`), email addresses, and Taiwan-formatted addresses (city/county + road/street/lane...",
+      "acceptance": []
+    },
+    "FR-10": {
+      "title": "FR-10: Enforce per-platform per-user rate limiting using the Token Bucket algorithm. De",
+      "desc": "Enforce per-platform per-user rate limiting using the Token Bucket algorithm. Default capacity and refill rate of 100 tokens/second. Requests exceeding the limit receive HTTP 429 with `RATE_LIMIT_E...",
+      "acceptance": []
+    },
+    "FR-11": {
+      "title": "FR-11: Query `knowledge_base` table for matching answers using SQL `ILIKE` on question ",
+      "desc": "Query `knowledge_base` table for matching answers using SQL `ILIKE` on question text and `= ANY(keywords)` array match. Return a `KnowledgeResult` with `source=\"rule\"`, confidence 0.95 for exact su...",
+      "acceptance": []
+    },
+    "FR-12": {
+      "title": "FR-12: When no rule match is found (Layer 1 returns None), create an escalation record ",
+      "desc": "When no rule match is found (Layer 1 returns None), create an escalation record in `escalation_queue` with `reason=\"no_rule_match\"` or `\"out_of_scope\"`, priority=0 (normal), and return a `Knowledge...",
+      "acceptance": []
+    },
+    "FR-13": {
+      "title": "FR-13: Emit all log entries as single-line JSON objects with fields: `timestamp` (ISO 8",
+      "desc": "Emit all log entries as single-line JSON objects with fields: `timestamp` (ISO 8601 UTC), `level` (DEBUG/INFO/WARN/ERROR/CRITICAL), `service` (configurable, default \"omnibot\"), `message`, and arbit...",
+      "acceptance": []
+    },
+    "FR-14": {
+      "title": "FR-14: Expose `GET /api/v1/health` returning JSON `{\"status\": \"healthy",
+      "desc": "Expose `GET /api/v1/health` returning JSON `{\"status\": \"healthy",
+      "acceptance": []
+    },
+    "FR-15": {
+      "title": "FR-15: Provide a `docker-compose.yml` with services: `omnibot-api` (build from ., port ",
+      "desc": "Provide a `docker-compose.yml` with services: `omnibot-api` (build from ., port 8000, healthcheck via `/api/v1/health`, depends on postgres+redis with `condition: service_healthy`), `postgres` (pgv...",
+      "acceptance": []
+    },
+    "FR-16": {
+      "title": "FR-16: Provide SQL query scripts for Phase 1 ODD metrics: (a) FCR rate calculation over",
+      "desc": "Provide SQL query scripts for Phase 1 ODD metrics: (a) FCR rate calculation over 30-day window for `scope_type='in_scope'` conversations with non-null `first_contact_resolution`, (b) average and p9...",
+      "acceptance": []
+    },
+    "FR-17": {
+      "title": "FR-17: Define and use standardized error codes for Phase 1: `AUTH_INVALID_SIGNATURE` (4",
+      "desc": "Define and use standardized error codes for Phase 1: `AUTH_INVALID_SIGNATURE` (401), `RATE_LIMIT_EXCEEDED` (429), `KNOWLEDGE_NOT_FOUND` (404), `VALIDATION_ERROR` (422), `INTERNAL_ERROR` (500). Each...",
+      "acceptance": []
+    },
+    "FR-18": {
+      "title": "FR-18: All Phase 1 Python code must follow constitution \u00a74 naming conventions: `snake_c",
+      "desc": "All Phase 1 Python code must follow constitution \u00a74 naming conventions: `snake_case` for variables/functions, `PascalCase` for classes, `UPPER_SNAKE` for constants; all public functions must have d...",
+      "acceptance": []
+    },
+    "FR-19": {
+      "title": "FR-19: Implement the core message processing pipeline that orchestrates each inbound re",
+      "desc": "Implement the core message processing pipeline that orchestrates each inbound request end-to-end: (1) IP Whitelist interception \u2192 (2) webhook signature verification \u2192 (3) platform adapter parse \u2192 (...",
+      "acceptance": []
+    },
+    "FR-20": {
+      "title": "FR-20: Define the immutable `UnifiedResponse` dataclass representing the system reply w",
+      "desc": "Define the immutable `UnifiedResponse` dataclass representing the system reply with fields: `platform`, `user_id`, `content` (the text to send back), `source` (KnowledgeSource enum: `rule`/`escalat...",
+      "acceptance": []
+    },
+    "FR-21": {
+      "title": "FR-21: Load and manage configuration from environment variables and/or a `config.yaml` ",
+      "desc": "Load and manage configuration from environment variables and/or a `config.yaml` file: bot tokens (`TELEGRAM_BOT_TOKEN`, `LINE_CHANNEL_ACCESS_TOKEN`), channel secrets (`TELEGRAM_WEBHOOK_SECRET`, `LI...",
+      "acceptance": []
+    },
+    "FR-22": {
+      "title": "FR-22: Implement IP Whitelist interception to filter out requests from unofficial IPs b",
+      "desc": "Implement IP Whitelist interception to filter out requests from unofficial IPs before computing HMAC signature. Unofficial IPs must be rejected with HTTP 403. Missing or empty IPs must be rejected ...",
+      "acceptance": []
+    }
+  },
+  "modules": {
+    "FR-01": {
+      "module": "models",
+      "file": "03-development/src/app/models.py"
+    },
+    "FR-02": {
+      "module": "telegram_adapter",
+      "file": "03-development/src/app/adapters/telegram_adapter.py"
+    },
+    "FR-03": {
+      "module": "line_adapter",
+      "file": "03-development/src/app/adapters/line_adapter.py"
+    },
+    "FR-04": {
+      "module": "signature",
+      "file": "03-development/src/app/security/signature.py"
+    },
+    "FR-05": {
+      "module": "signature",
+      "file": "03-development/src/app/security/signature.py"
+    },
+    "FR-06": {
+      "module": "unified",
+      "file": "03-development/src/app/adapters/unified.py"
+    },
+    "FR-07": {
+      "module": "unified",
+      "file": "03-development/src/app/adapters/unified.py"
+    },
+    "FR-08": {
+      "module": "sanitizer",
+      "file": "03-development/src/app/processing/sanitizer.py"
+    },
+    "FR-09": {
+      "module": "pii_masker",
+      "file": "03-development/src/app/processing/pii_masker.py"
+    },
+    "FR-10": {
+      "module": "rate_limiter",
+      "file": "03-development/src/app/security/rate_limiter.py"
+    },
+    "FR-11": {
+      "module": "matcher",
+      "file": "03-development/src/app/knowledge/matcher.py"
+    },
+    "FR-12": {
+      "module": "escalation",
+      "file": "03-development/src/app/knowledge/escalation.py"
+    },
+    "FR-13": {
+      "module": "logger",
+      "file": "03-development/src/app/infrastructure/logger.py"
+    },
+    "FR-14": {
+      "module": "health",
+      "file": "03-development/src/app/infrastructure/health.py"
+    },
+    "FR-15": {
+      "module": "yml",
+      "file": "03-development/src/docker-compose/yml.py"
+    },
+    "FR-16": {
+      "module": "queries/",
+      "file": "03-development/src/queries/.py"
+    },
+    "FR-17": {
+      "module": "errors",
+      "file": "03-development/src/app/infrastructure/errors.py"
+    },
+    "FR-18": {
+      "module": "radon enforcement)",
+      "file": "03-development/src/radon enforcement).py"
+    },
+    "FR-19": {
+      "module": "pipeline",
+      "file": "03-development/src/app/processing/pipeline.py"
+    },
+    "FR-20": {
+      "module": "unified",
+      "file": "03-development/src/app/adapters/unified.py"
+    },
+    "FR-21": {
+      "module": "config",
+      "file": "03-development/src/app/infrastructure/config.py"
+    },
+    "FR-22": {
+      "module": "ip_whitelist",
+      "file": "03-development/src/app/security/ip_whitelist.py"
+    }
+  },
+  "gate_results": {
+    "gate1": {
+      "FR-01": {
+        "score": 100.0,
+        "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-07": {
+        "score": 100.0,
+        "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-05": {
+        "score": 92.16,
+        "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-02": {
+        "score": 100.0,
+        "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-03": {
+        "score": 100.0,
+        "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-04": {
+        "score": 92.17,
+        "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-06": {
+        "score": 100.0,
+        "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-08": {
+        "score": 100.0,
+        "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-09": {
+        "score": 100.0,
+        "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-10": {
+        "score": 100.0,
+        "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-11": {
+        "score": 100.0,
+        "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-12": {
+        "score": 100.0,
+        "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-13": {
+        "score": 100.0,
+        "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-14": {
+        "score": 100.0,
+        "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-15": {
+        "score": 100.0,
+        "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-17": {
+        "score": 100.0,
+        "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-16": {
+        "score": 100.0,
+        "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-18": {
+        "score": 100.0,
+        "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-20": {
+        "score": 100.0,
+        "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-19": {
+        "score": 99.0810810810811,
+        "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-21": {
+        "score": 100.0,
+        "quality_complete": true,
+        "rounds_used": 1,
+        "open_critical": 0,
+        "open_high": 0
+      },
+      "FR-22": {
+        "score": 91.65,
+        "quality_complete": true,
+        "rounds_used": 2,
+        "open_critical": 0,
+        "open_high": 0
+      }
+    },
+    "gate2": {
+      "score": 91.3,
+      "quality_complete": true,
+      "rounds_used": 3,
+      "open_critical": 0,
+      "open_high": 0
+    },
+    "gate3": {
+      "score": 100.0,
+      "quality_complete": true,
+      "rounds_used": 1,
+      "open_critical": 0,
+      "open_high": 0
+    },
+    "gate4": {
+      "score": 96.45000000000002,
+      "quality_complete": true,
+      "rounds_used": 1,
+      "open_critical": 0,
+      "open_high": 0
+    }
+  },
+  "current_phase": 8
+}

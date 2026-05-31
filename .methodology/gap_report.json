@@ -1,12 +1,12 @@
 {
   "summary": {
-    "total": 2279,
+    "total": 2278,
     "missing": 0,
     "incomplete": 0,
-    "orphaned": 2279,
+    "orphaned": 2278,
     "critical": 0,
     "major": 0,
-    "minor": 2279
+    "minor": 2278
   },
   "gaps": [
     {
@@ -5396,12 +5396,6 @@
       "severity": "minor",
       "reason": "'dimension_keywords_for_phase' has no corresponding specification in SPEC.md",
       "action": "Add spec for dimension_keywords_for_phase or remove if unnecessary"
-    },
-    {
-      "type": "ORPHANED",
-      "severity": "minor",
-      "reason": "'secret_patterns' has no corresponding specification in SPEC.md",
-      "action": "Add spec for secret_patterns or remove if unnecessary"
     },
     {
       "type": "ORPHANED",
