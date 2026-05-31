@@ -89,12 +89,9 @@ python3 harness_cli.py load-context --phase 6 --project . --json \
   > score threshold — the waiver also requires the `devil_advocate_evidence.architecture` artifact.
   > See `harness/ssi/prompts/evaluate_dimension.md` §Orchestrator.
 
-- [ ] **[A5] `issue_registry_path`** (advisory — no longer blocks) — path to the issue registry:
-  ```json
-  "issue_registry_path": ".sessi-work/issue_registry.json"
-  ```
-  > Advisory only: the registry is agent-written, so its presence never verified anything.
-  > Populate via `issue_tracker.py add` during G4b for a useful audit trail.
+  > _Optional (not a gate step)_ — **[A5]** `issue_registry`: for a useful audit
+  > trail, populate `.sessi-work/issue_registry.json` via `issue_tracker.py add`
+  > during G4b. Advisory only — agent-written, so it never blocks or verifies anything.
 
 
 ### 🔒 CHECKPOINT-GATE-4: Phase 6 Exit
