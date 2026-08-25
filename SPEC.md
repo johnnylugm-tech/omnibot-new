@@ -91,7 +91,7 @@
 | **Tier 1: 規則匹配** | PostgreSQL | SQL 精確匹配 / 關鍵字 | 40% | （FCR 在每個 Tier 的計算細節見各章節）
 | **Tier 2: RAG 向量檢索** | pgvector | 語義向量 + RRF k=60 | 40% |
 | **Tier 3: LLM 生成** | LLM Context | 多輪對話 + DST | 10% |
-| **Tier 4: 人工轉接** | 轉接佇列 | SLA 追蹤 | 10% | （轉接 SLA 見 line 2420 人工轉接章節）
+| **Tier 4: 人工轉接** | 轉接佇列 | SLA 追蹤 | 10% | （轉接 SLA 詳見 FR-19 人工轉接與 SLA 優先佇列章節）
 
 ### CSAT 量化指標
 
@@ -377,7 +377,7 @@ class LLMJudge:
 
     def __init__(self, primary_model: str = "gpt-4o-mini", secondary_model: str = "claude-3-5-haiku"):
         self.primary = primary_model
-        self.secondary = secondary_model # （黃金集校準流程見 line 124）
+        self.secondary = secondary_model  # （黃金集校準流程見 §校準流程 章節）
 
     async def evaluate(self, bot_response: str, knowledge_sources: list[str], conversation_context: str) -> dict:
         # Parallel judge calls
@@ -1425,7 +1425,7 @@ import unicodedata
 
 class InputSanitizer:
     """
-    PALADIN Layer 1: 輸入清理。（L2/L3 詳見 line 972，L4 詳見 line 1054）
+    PALADIN Layer 1: 輸入清理。（L2/L3 詳見 FR-04/FR-05，L4 詳見 FR-06）
     字元正規化 + confusables 替換（基礎的 Homoglyph 替換處理）。
     """
 
@@ -1653,7 +1653,7 @@ class SemanticClassifyResult:
 class SemanticInjectionClassifier:
     """
     PALADIN Layer 4: LLM-based 語意層分類器。
-    （見 L1-L3 線 939+972，觸發策略見 line 1206）
+    （見 L1-L3 章節，觸發策略見 L4 平行化策略章節）
     
     Layer 2 (regex) 無法偵測的語意層攻擊（如多語言、改寫、社會工程），
     由輕量 LLM classifier 處理。這是 OWASP LLM01:2025 建議的關鍵防線。
@@ -2680,7 +2680,7 @@ class LLMTimeoutError(Exception): pass
 class LLMRateLimitError(Exception): pass
 
 class HybridKnowledge:
-    # （對應 tier 流程見 line 34 FCR 分層表）
+    # （對應 tier 流程見 §FCR 分層量化表）
     # 規格書默認以 OpenAI text-embedding-3-small (1536維) 為標準。
     # 若需更換模型，請參閱 GroundingChecker 中的模型對照表，
     # 並同步變更 EMBEDDING_DIM 及 knowledge_chunks.embeddings vector(N) 維度。
@@ -3564,7 +3564,7 @@ class EscalationManager:
 - **速率/負載限制 (Throttling / 429)**: 連續權限探測與密碼錯誤觸發帳號鎖定 (HTTP 429 / 403)
 - **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 傳入不存在的角色或無效權限標識 (HTTP 422 VALIDATION_ERROR)
 
-（6 個角色定義見 line 2484，Enforcement 見 line 2531）
+（7 大法定角色定義與 Middleware Enforcement 詳見本節與 FR-18 規範）
 
 ### 權限定義
 
@@ -3703,7 +3703,7 @@ rbac = RBACEnforcer()
 - **速率/負載限制 (Throttling / 429)**: 實驗管理 API 頻率限制 (HTTP 429)
 - **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 實驗權重配置總和不等於 100% 時拋出驗證錯誤 (HTTP 422)
 
-（與 Response Generator 銜接見 line 2735 _apply_ab_variant）
+（與 Response Generator 銜接見 Response Generator 章節 `_apply_ab_variant` 方法）
 
 ```python
 import hashlib
@@ -3865,7 +3865,7 @@ class ResponseTemplate:
 
 class ResponseGenerator:
     """回覆產生器：將 KnowledgeResult 轉換為 UnifiedResponse"""
-    # （Template 來源見 line 2695，情緒整合見 line 2746）
+    # （Template 來源與情緒整合詳見 Response Generator 內部定義）
 
     DEFAULT_TEMPLATES: dict[str, ResponseTemplate] = {
         "rule_default": ResponseTemplate(
@@ -5639,7 +5639,7 @@ model_dependency_matrix:
     local_alternative: BAAI/bge-m3 on CPU (< 50ms p95, 無外部依賴)
   primary_llm:
     purpose: Tier 3 客服回覆
-    fallback: 備援模型（透過 FALLBACK_LLM_MODEL 環境變數配置，預設 gemini-2.5-flash）
+    fallback: 備援模型（透過 FALLBACK_LLM_MODEL 環境變數配置，預設 gemini-1.5-flash）
     recovery: level_3_to_2
     note: 備援模型名稱不應 hard-code，應透過配置管理。規格書中的 'gemini-1.5-flash' 為歷史示例。
   classifier_api:
@@ -5892,65 +5892,44 @@ e2e_scenarios:
 
 ---
 
-## 覆蓋檢查矩陣
+## 覆蓋檢查矩陣 (Traceability & Coverage Matrix)
 
-| 模組 | 涵蓋 |
-|------|------|
-| **UnifiedMessage / UnifiedResponse** | Y |
-| **統一回應格式 ApiResponse / PaginatedResponse** | Y |
-| **Webhook 簽名驗證（4 平台）** | Y |
-| **API 設計（端點 + 錯誤碼 + RBAC 保護）** | Y |
-| **輸入清理 L2** | Y |
-| **PII L4（含 Luhn 校驗）** | Y |
-| **Rate Limiter** | Y |
-| **IP 白名單** | Y |
-| **規則匹配 Tier 1** | Y |
-| **RAG + RRF Tier 2 (1536維 + HNSW 索引)** | Y |
-| **RAG 文本切分與層級檢索 (Parent-Child)** | Y |
-| **LLM 生成 Tier 3 (Sandwich 防護)** | Y |
-| **雙 LLM 自動備份降級 (Fallback Mechanism)** | Y |
-| **Agentic Tool Calling (Function Calling 執行器)** | Y |
-| **人工轉接 + SLA** | Y |
-| **DST 對話狀態機** | Y |
-| **統一情緒模組** | Y |
-| **Prompt Injection L3 (PALADIN L2+L3)** | Y |
-| **Semantic Injection Classifier L4 (PALADIN L4)** | Y |
-| **Grounding Checks L5 (PALADIN L5)** | Y |
-| **結構化日誌** | Y |
-| **Prometheus Metrics** | Y |
-| **OpenTelemetry Tracing** | Y |
-| **Grafana + 告警** | Y |
-| **RBAC + Enforcement** | Y |
-| **A/B Testing** | Y |
-| **Redis Streams 異步** | Y |
-| **指數退避重試** | Y |
-| **TDE + Redis 安全** | Y |
-| **Docker Compose（完整）** | Y |
-| **Kubernetes** | Y |
-| **備份 / Rollback / 降級** | Y |
-| **負載測試** | Y |
-| **成本模型** | Y |
-| **Schema 遷移管理** | Y |
-| **i18n 擴充指引** | Y |
-| **黃金數據集指引** | Y |
-| **環境分離** | Y |
-| **SLA 定義** | Y |
-| **CSAT 量化指標** | Y |
-| **知識管理 WebUI / RAG Debugger** | Y |
-| **SLA 運維與 FCR 看板** | Y |
-| **客服 Agent Portal / 情緒紅色警報** | Y |
-| **LLM-as-a-Judge 評測框架 (Ensemble Judge + Rubric)** | Y |
-| **異步任務系統 (SAQ Worker, Embedding Job)** | Y |
-| **WebSocket 即時推送 (/ws/agent, /ws/user)** | Y |
-| **A2A 雙向協議 (Client + Server Agent Card)** | Y |
-| **使用者管理 API + M2M Token 管理** | Y |
-| **多媒體訊息處理路徑 (IMAGE/FILE/LOCATION/STICKER)** | Y |
-| **GDPR / 資料生命週期管理** | Y |
-| **對話 Context Window 管理** | Y |
-| **Response Generator (Template + Emotion Tone + Platform Adapter)** | Y |
-| **E2E 整合測試策略** | Y |
-| **ToolDefinition 統一定義 (AEE + DST 共用)** | Y |
-| **分散式 Rate Limiter (Redis ZSET + Lua)** | Y |
+| 需求 ID | 功能 / 模組名稱 | 歸屬模組 (P2) | SAB 法定 NFR 關聯 | 4類邊界測試 | 涵蓋狀態 |
+|---------|----------------|--------------|-------------------|-------------|----------|
+| **FR-01** | 多通路訊息接入與正規化 (UnifiedMessage) | `adapters.ingress` | `performance`, `usability` | 200, 401, 429, 422 | **Y (100%)** |
+| **FR-02** | Webhook 簽名驗證與認證 (HMAC/M2M) | `security.auth` | `security`, `reliability` | 200, 401, 429, 400 | **Y (100%)** |
+| **FR-03** | PALADIN L1 輸入清理與字元正規化 (NFKC) | `security.paladin.l1` | `security`, `performance` | 200, 403, 429, 400 | **Y (100%)** |
+| **FR-04** | PALADIN L2 規則過濾與特徵比對 | `security.paladin.l2` | `security`, `performance` | 200, 403, 429, 400 | **Y (100%)** |
+| **FR-05** | PALADIN L3 指令層次與三明治防護 | `security.paladin.l3` | `security`, `performance` | 200, 403, 429, 422 | **Y (100%)** |
+| **FR-06** | PALADIN L4 語義注入分類器與平行化管線 | `security.paladin.l4` | `security`, `performance` | 200, 403, 429, 504 | **Y (100%)** |
+| **FR-07** | PALADIN L5 Grounding 知識對齊檢驗 | `security.paladin.l5` | `security`, `testability` | 200, 403, 429, 422 | **Y (100%)** |
+| **FR-08** | PII 偵測、去識別化與 Luhn 校驗 | `security.pii` | `security`, `usability` | 200, 403, 429, 422 | **Y (100%)** |
+| **FR-09** | 分散式速率限制 (Redis Sliding Window) | `gateway.ratelimit` | `performance`, `reliability` | 200, 401, 429, 500 | **Y (100%)** |
+| **FR-10** | CIDR 格式 IP 白名單檢查 | `gateway.ipfilter` | `security`, `performance` | 200, 403, 429, 400 | **Y (100%)** |
+| **FR-11** | 多輪情緒分析與時間衰減模型 | `nlp.emotion` | `usability`, `reliability` | 200, 401, 429, 422 | **Y (100%)** |
+| **FR-12** | 對話狀態追蹤 DST 與意圖路由 (8-State FSM) | `dialogue.dst` | `maintainability`, `reliability` | 200, 401, 429, 422 | **Y (100%)** |
+| **FR-13** | 知識檢索 Tier 1 (PostgreSQL 規則匹配) | `knowledge.tier1` | `performance`, `scalability` | 200, 401, 429, 404 | **Y (100%)** |
+| **FR-14** | 知識檢索 Tier 2 (pgvector HNSW + RRF k=60) | `knowledge.tier2` | `performance`, `scalability` | 200, 401, 429, 500 | **Y (100%)** |
+| **FR-15** | 知識檢索 Tier 3 (LLM 生成與多模型備援) | `knowledge.tier3` | `reliability`, `usability` | 200, 401, 429, 504 | **Y (100%)** |
+| **FR-16** | 動作執行引擎 (Agentic Action Execution) | `action.engine` | `security`, `reliability` | 200, 403, 429, 504 | **Y (100%)** |
+| **FR-17** | 回覆生成與語氣調適 (Response Generator) | `response.generator` | `usability`, `maintainability` | 200, 401, 429, 422 | **Y (100%)** |
+| **FR-18** | 7 大角色 RBAC 權限管理 (Enforcement) | `security.rbac` | `security`, `maintainability` | 200, 401, 403, 422 | **Y (100%)** |
+| **FR-19** | 人工轉接與 SLA 優先佇列 (WebSocket) | `escalation.queue` | `reliability`, `usability` | 200, 401, 429, 500 | **Y (100%)** |
+| **FR-20** | LLM-as-a-Judge 自動評測框架 | `eval.judge` | `testability`, `maintainability` | 200, 401, 429, 504 | **Y (100%)** |
+| **FR-21** | 結構化可觀測性與分散式追蹤 | `observability` | `maintainability`, `reliability` | 200, 401, 429, 500 | **Y (100%)** |
+| **FR-22** | 異步背景任務系統 (SAQ Worker) | `background.saq` | `performance`, `scalability` | 200, 401, 429, 500 | **Y (100%)** |
+| **FR-23** | GDPR 資料生命週期與合規管理 | `compliance.gdpr` | `security`, `maintainability` | 200, 401, 403, 404 | **Y (100%)** |
+| **FR-24** | A/B Testing 實驗框架 (SHA-256 分流) | `experiment.ab` | `testability`, `maintainability` | 200, 401, 403, 422 | **Y (100%)** |
+| **FR-25** | 多媒體訊息處理與處置策略 | `adapters.media` | `reliability`, `usability` | 200, 401, 429, 422 | **Y (100%)** |
+| **FR-26** | 使用者與 M2M Token 管理 API | `security.user_m2m` | `security`, `maintainability` | 200, 401, 403, 422 | **Y (100%)** |
+| **FR-27** | 對話上下文視窗管理 (Sliding Window) | `dialogue.context` | `performance`, `reliability` | 200, 401, 429, 422 | **Y (100%)** |
+| **FR-28** | 高可用性、Redis 異步流與故障隔離 | `core.ha` | `reliability`, `deployability` | 200, 401, 429, 500 | **Y (100%)** |
+| **FR-29-def** | 原生多模態視覺理解 (Vision QA) | `deferred.vision` | `performance`, `scalability` | 依 v9.0 規格規劃 | **Deferred (已標記)** |
+| **FR-30-def** | 檔案與文件 OCR/AI 解析 | `deferred.document` | `performance`, `usability` | 依 v9.1 規格規劃 | **Deferred (已標記)** |
+| **FR-31-def** | 即時語音與音訊串流處理 | `deferred.voice` | `performance`, `reliability` | 依語音專案規劃 | **Deferred (已標記)** |
+| **FR-32-def** | 繁中與英文以外之多語系支援 | `deferred.i18n` | `usability`, `maintainability` | 依國際化專案規劃 | **Deferred (已標記)** |
+| **FR-33-def** | 自建 In-house LLM 微調管線 | `deferred.finetune` | `performance`, `scalability` | 依成本效益規劃 | **Deferred (已標記)** |
+| **FR-34-def** | 原生行動端 App (iOS / Android) | `deferred.mobile` | `deployability`, `usability` | 依托各平台原生 SDK | **Deferred (已標記)** |
 
 ---
 
