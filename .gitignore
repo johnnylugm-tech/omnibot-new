@@ -46,3 +46,17 @@ logs/
 tmp/
 temp/
 .tmp/
+
+# harness-methodology runtime (auto-added by git_strategy)
+.sessi-work/
+.methodology/last_block.md
+.methodology/heartbeat.json
+.methodology/steering_history.json
+.methodology/trace/attestation.latest.json
+.methodology/sessions_spawn.log
+.methodology/sessions_spawn.log.lock
+.methodology/.mutation_exclusive.lock
+.harness/traces/
+.mutmut-cache/
+.code-review-graph/
+.claude/worktrees/
