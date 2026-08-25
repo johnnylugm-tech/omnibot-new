@@ -1,5 +1,7 @@
 # PROJECT_BRIEF — OmniBot
 
+canonical_spec: SPEC.md
+
 > **Source spec**: SPEC.md v8.2 (2026-08-25)
 > **Brief date**: 2026-08-25
 > **Language**: Python 3.11
@@ -113,44 +115,44 @@ flowchart TD
 
 | FR ID | 功能名稱 | 核心描述與技術實現 | 模組歸屬 (P2) | 4 類測試邊界 | STRIDE 威脅 |
 |-------|---------|-------------------|--------------|-------------|------------|
-| **FR-01** | 多通路訊息接入與正規化 | 支援 Telegram, LINE, Messenger, WhatsApp, Web, A2A 六大通路，統一轉換為 `UnifiedMessage` | `adapters.ingress` | 200 (正規化成功), 401 (未知通路), 429 (通路過載), 422 (格式異常) | Spoofing, Tampering |
-| **FR-02** | Webhook 簽名驗證與認證 | HMAC-SHA256 驗證 (4 平台)、Web JWT Bearer、A2A M2M OAuth2 Token 驗證 | `security.auth` | 200 (驗簽通過), 401 (簽名無效/過期), 429 (暴力碰撞), 400 (缺少 Header) | Spoofing, Elevation of Privilege |
-| **FR-03** | PALADIN L1 輸入清理與字元正規化 | Unicode NFKC 正規化、控制字元移除、Homoglyph 偽裝字元映射替換 (延遲 < 2ms) | `security.paladin.l1` | 200 (清理完成), 403 (無效編碼), 429 (N/A), 400 (格式畸變) | Tampering |
-| **FR-04** | PALADIN L2 規則過濾與特徵比對 | 正則與已知 Injection Pattern 比對，高危特徵直接阻斷 (延遲 < 3ms) | `security.paladin.l2` | 200 (無威脅), 403 (命中黑名單模式), 429 (N/A), 400 (超長輸入) | Tampering, Injection |
-| **FR-05** | PALADIN L3 指令層次與三明治防護 | Sandwich Prompt 防禦、Spotlighting 標記、系統指令最高優先級隔離 (L1~L3 總延遲 < 5ms) | `security.paladin.l3` | 200 (封裝成功), 403 (越權指令), 429 (N/A), 422 (Context 溢出) | Elevation of Privilege |
-| **FR-06** | PALADIN L4 語義注入分類器 | 基於輕量 LLM 的語義檢測，中風險請求非阻塞平行化異步審查 (< 200ms) | `security.paladin.l4` | 200 (分類安全), 403 (語義攻擊阻斷), 429 (評測超載降級), 504 (超時 Fail-open) | Prompt Injection, DoS |
-| **FR-07** | PALADIN L5 Grounding 知識對齊檢驗 | 驗證生成的答案與檢索 Context 之語義相似度 (Cosine 相似度 ≥ 0.75) | `security.paladin.l5` | 200 (相似度≥0.75), 403 (幻覺攔截), 429 (N/A), 422 (無檢索 Context) | Information Disclosure |
-| **FR-08** | PII 偵測、去識別化與 Luhn 校驗 | 偵測電話、Email、台灣地址、信用卡 (Luhn 演算法)，敏感字詞自動遮蔽與轉接 | `security.pii` | 200 (遮蔽成功), 403 (解密未授權), 429 (N/A), 422 (格式不合) | Information Disclosure |
-| **FR-09** | 分散式速率限制 (Rate Limiting) | Redis Sliding Window + Lua 腳本；依通路設定 10~100 req/s；Redis 故障時 Fail-open | `gateway.ratelimit` | 200 (配額內), 401 (N/A), 429 (超額阻斷), 500 (Redis 斷線降級) | Denial of Service |
-| **FR-10** | CIDR 格式 IP 白名單檢查 | 支援最多 100 組 CIDR 區段比對；先於簽名驗證執行；不匹配回傳 403 Fail-secure | `gateway.ipfilter` | 200 (白名單內), 403 (非允許 IP), 429 (N/A), 400 (Header 畸形) | Spoofing, DoS |
-| **FR-11** | 多輪情緒分析與衰減模型 | 正/中/負情緒評分 (0~1)；24 小時半衰期衰減；連續 3 輪負面自動升級轉接 (AGENT 通路 Bypass) | `nlp.emotion` | 200 (分析完成), 401 (N/A), 429 (N/A), 422 (空文本) | Repudiation |
-| **FR-12** | 對話狀態追蹤 (DST) 與意圖路由 | 8 狀態有限狀態機 (FSM)；槽位填充 (Slot-filling)；信心度 < 0.65 或 3 次未填滿自動轉接 | `dialogue.dst` | 200 (狀態轉移成功), 401 (N/A), 429 (N/A), 422 (意圖無法解析) | Repudiation |
-| **FR-13** | 知識檢索 Tier 1 (PostgreSQL 規則匹配) | ILIKE 精確關鍵字比對；目標覆蓋率 40%；信心度閾值 ≥ 0.80 | `knowledge.tier1` | 200 (命中回傳), 401 (N/A), 429 (N/A), 404 (未命中轉 Tier 2) | Information Disclosure |
-| **FR-14** | 知識檢索 Tier 2 (pgvector HNSW + RRF) | 1536 維向量搜尋 (m=16, ef=64) + RRF k=60 融合 + Parent-Child 階層切分 (150t/500t) | `knowledge.tier2` | 200 (檢索成功), 401 (N/A), 429 (N/A), 500 (向量庫降級 tsvector) | Information Disclosure |
-| **FR-15** | 知識檢索 Tier 3 (LLM 生成與多模型備援) | 主模型 gpt-4o 生成，發生異常於 < 500ms 內自動降級切換至 gemini-1.5-flash | `knowledge.tier3` | 200 (生成成功), 401 (Key 錯誤), 429 (LLM 限流降級), 504 (超時轉接) | Repudiation |
-| **FR-16** | 動作執行引擎 (Agentic Action Execution) | 插件註冊表與 MCP Client (外部工具), A2A Client (對等 Agent, 2s 逾時), CLI Adapter (沙箱腳本) | `action.engine` | 200 (工具執行成功), 403 (工具權限不足), 429 (工具速率上限), 504 (工具超時) | Elevation of Privilege |
-| **FR-17** | 回覆生成與語氣調適 | 依情緒評分與通路特性動態調整 Prompt 語氣 (如 zh-TW 敬語、Quick Replies) | `response.generator`| 200 (渲染成功), 401 (N/A), 429 (N/A), 422 (模板變數缺失) | Tampering |
-| **FR-18** | 7 大角色 RBAC 權限管理 | anonymous, customer, agent, editor, admin, auditor, dpo 角色與裝飾器中介層防護 | `security.rbac` | 200 (授權成功), 401 (未登入), 403 (權限不足), 422 (角色無效) | Elevation of Privilege |
-| **FR-19** | 人工轉接與 SLA 優先佇列 | 緊急 (5min)、高 (15min)、一般 (30min) 佇列；WebSocket `/ws/agent` 與 `/ws/user` 即時同步 | `escalation.queue` | 200 (入隊/接管成功), 401 (WebSocket 無憑證), 429 (佇列滿載), 500 (連線中斷) | Denial of Service |
-| **FR-20** | LLM-as-a-Judge 評測框架 | Ensemble Judge (gpt-4o-mini + claude-3-5-haiku, Temp 0.0)；Politeness (max) / Accuracy (min) | `eval.judge` | 200 (評測完成), 401 (N/A), 429 (抽樣評測限流), 504 (Judge 超時重試) | Repudiation |
-| **FR-21** | 結構化可觀測性與分散式追蹤 | JSON 結構化日誌、Prometheus 指標、OpenTelemetry Trace Context、Grafana 儀表板與告警 | `observability` | 200 (指標輸出正常), 401 (Metrics 端點保護), 429 (日誌採樣), 500 (監控斷線) | Repudiation |
-| **FR-22** | 異步背景任務系統 (SAQ Worker) | SAQ 分散式佇列處理 Embedding 生成 (p95 < 30s)；知識寫入時同步首 Chunk 消除搜尋黑暗期 | `background.saq` | 200 (任務完成), 401 (N/A), 429 (任務堆疊告警), 500 (重試 3 次入死信) | Denial of Service |
-| **FR-23** | GDPR 資料生命週期與合規管理 | 支援用戶資料匯出 (`GET /users/{id}/data`)、刪除 (`DELETE /users/{id}/data`)、180天/2年冷存檔與匿名化 | `compliance.gdpr` | 200 (匯出/刪除成功), 401 (Token 無效), 403 (非 DPO/本人), 404 (用戶不存在) | Information Disclosure |
-| **FR-24** | A/B Testing 實驗框架 | 基於 SHA-256 確定性雜湊分流；流量分配控制；實驗指標自動收集 | `experiment.ab` | 200 (分流成功), 401 (管理端保護), 403 (未授權), 422 (分流參數錯誤) | Tampering |
-| **FR-25** | 多媒體訊息處理與處置策略 | 文字走標準管線；圖片/檔案自動觸發轉接；貼圖親和引導；地理位置解析坐標注入 Context | `adapters.media` | 200 (處置成功), 401 (驗簽失敗), 429 (檔案過大), 422 (未知格式) | Denial of Service |
-| **FR-26** | 使用者與 M2M Token 管理 API | JWT 簽發/輪替/撤銷；後台使用者 CRUD；M2M Client Credentials 發行 (A2A 專用) | `security.user_m2m` | 200 (簽發/查詢成功), 401 (憑證無效), 403 (非 Admin), 422 (密碼強度不足) | Elevation of Privilege |
-| **FR-27** | 對話上下文視窗管理 | 滑動視窗 (Sliding Window) + 長對話自動摘要 (Summarization)，防止超出 Token 上限 | `dialogue.context` | 200 (裁剪/摘要成功), 401 (N/A), 429 (N/A), 422 (序列化失敗) | Denial of Service |
-| **FR-28** | 高可用性、Redis 異步流與故障隔離 | Redis Streams 異步解耦；Circuit Breaker 熔斷機制；指數退避重試 (Max 3 次) | `core.ha` | 200 (處理正常), 401 (N/A), 429 (熔斷開啟降級), 500 (依賴隔離) | Denial of Service |
+| FR-01 | 多通路訊息接入與正規化 | 支援 Telegram, LINE, Messenger, WhatsApp, Web, A2A 六大通路，統一轉換為 `UnifiedMessage` | `adapters.ingress` | 200 (正規化成功), 401 (未知通路), 429 (通路過載), 422 (格式異常) | Spoofing, Tampering |
+| FR-02 | Webhook 簽名驗證與認證 | HMAC-SHA256 驗證 (4 平台)、Web JWT Bearer、A2A M2M OAuth2 Token 驗證 | `security.auth` | 200 (驗簽通過), 401 (簽名無效/過期), 429 (暴力碰撞), 400 (缺少 Header) | Spoofing, Elevation of Privilege |
+| FR-03 | PALADIN L1 輸入清理與字元正規化 | Unicode NFKC 正規化、控制字元移除、Homoglyph 偽裝字元映射替換 (延遲 < 2ms) | `security.paladin.l1` | 200 (清理完成), 403 (無效編碼), 429 (N/A), 400 (格式畸變) | Tampering |
+| FR-04 | PALADIN L2 規則過濾與特徵比對 | 正則與已知 Injection Pattern 比對，高危特徵直接阻斷 (延遲 < 3ms) | `security.paladin.l2` | 200 (無威脅), 403 (命中黑名單模式), 429 (N/A), 400 (超長輸入) | Tampering, Injection |
+| FR-05 | PALADIN L3 指令層次與三明治防護 | Sandwich Prompt 防禦、Spotlighting 標記、系統指令最高優先級隔離 (L1~L3 總延遲 < 5ms) | `security.paladin.l3` | 200 (封裝成功), 403 (越權指令), 429 (N/A), 422 (Context 溢出) | Elevation of Privilege |
+| FR-06 | PALADIN L4 語義注入分類器 | 基於輕量 LLM 的語義檢測，中風險請求非阻塞平行化異步審查 (< 200ms) | `security.paladin.l4` | 200 (分類安全), 403 (語義攻擊阻斷), 429 (評測超載降級), 504 (超時 Fail-open) | Prompt Injection, DoS |
+| FR-07 | PALADIN L5 Grounding 知識對齊檢驗 | 驗證生成的答案與檢索 Context 之語義相似度 (Cosine 相似度 ≥ 0.75) | `security.paladin.l5` | 200 (相似度≥0.75), 403 (幻覺攔截), 429 (N/A), 422 (無檢索 Context) | Information Disclosure |
+| FR-08 | PII 偵測、去識別化與 Luhn 校驗 | 偵測電話、Email、台灣地址、信用卡 (Luhn 演算法)，敏感字詞自動遮蔽與轉接 | `security.pii` | 200 (遮蔽成功), 403 (解密未授權), 429 (N/A), 422 (格式不合) | Information Disclosure |
+| FR-09 | 分散式速率限制 (Rate Limiting) | Redis Sliding Window + Lua 腳本；依通路設定 10~100 req/s；Redis 故障時 Fail-open | `gateway.ratelimit` | 200 (配額內), 401 (N/A), 429 (超額阻斷), 500 (Redis 斷線降級) | Denial of Service |
+| FR-10 | CIDR 格式 IP 白名單檢查 | 支援最多 100 組 CIDR 區段比對；先於簽名驗證執行；不匹配回傳 403 Fail-secure | `gateway.ipfilter` | 200 (白名單內), 403 (非允許 IP), 429 (N/A), 400 (Header 畸形) | Spoofing, DoS |
+| FR-11 | 多輪情緒分析與衰減模型 | 正/中/負情緒評分 (0~1)；24 小時半衰期衰減；連續 3 輪負面自動升級轉接 (AGENT 通路 Bypass) | `nlp.emotion` | 200 (分析完成), 401 (N/A), 429 (N/A), 422 (空文本) | Repudiation |
+| FR-12 | 對話狀態追蹤 (DST) 與意圖路由 | 8 狀態有限狀態機 (FSM)；槽位填充 (Slot-filling)；信心度 < 0.65 或 3 次未填滿自動轉接 | `dialogue.dst` | 200 (狀態轉移成功), 401 (N/A), 429 (N/A), 422 (意圖無法解析) | Repudiation |
+| FR-13 | 知識檢索 Tier 1 (PostgreSQL 規則匹配) | ILIKE 精確關鍵字比對；目標覆蓋率 40%；信心度閾值 ≥ 0.80 | `knowledge.tier1` | 200 (命中回傳), 401 (N/A), 429 (N/A), 404 (未命中轉 Tier 2) | Information Disclosure |
+| FR-14 | 知識檢索 Tier 2 (pgvector HNSW + RRF) | 1536 維向量搜尋 (m=16, ef=64) + RRF k=60 融合 + Parent-Child 階層切分 (150t/500t) | `knowledge.tier2` | 200 (檢索成功), 401 (N/A), 429 (N/A), 500 (向量庫降級 tsvector) | Information Disclosure |
+| FR-15 | 知識檢索 Tier 3 (LLM 生成與多模型備援) | 主模型 gpt-4o 生成，發生異常於 < 500ms 內自動降級切換至 gemini-1.5-flash | `knowledge.tier3` | 200 (生成成功), 401 (Key 錯誤), 429 (LLM 限流降級), 504 (超時轉接) | Repudiation |
+| FR-16 | 動作執行引擎 (Agentic Action Execution) | 插件註冊表與 MCP Client (外部工具), A2A Client (對等 Agent, 2s 逾時), CLI Adapter (沙箱腳本) | `action.engine` | 200 (工具執行成功), 403 (工具權限不足), 429 (工具速率上限), 504 (工具超時) | Elevation of Privilege |
+| FR-17 | 回覆生成與語氣調適 | 依情緒評分與通路特性動態調整 Prompt 語氣 (如 zh-TW 敬語、Quick Replies) | `response.generator`| 200 (渲染成功), 401 (N/A), 429 (N/A), 422 (模板變數缺失) | Tampering |
+| FR-18 | 7 大角色 RBAC 權限管理 | anonymous, customer, agent, editor, admin, auditor, dpo 角色與裝飾器中介層防護 | `security.rbac` | 200 (授權成功), 401 (未登入), 403 (權限不足), 422 (角色無效) | Elevation of Privilege |
+| FR-19 | 人工轉接與 SLA 優先佇列 | 緊急 (5min)、高 (15min)、一般 (30min) 佇列；WebSocket `/ws/agent` 與 `/ws/user` 即時同步 | `escalation.queue` | 200 (入隊/接管成功), 401 (WebSocket 無憑證), 429 (佇列滿載), 500 (連線中斷) | Denial of Service |
+| FR-20 | LLM-as-a-Judge 評測框架 | Ensemble Judge (gpt-4o-mini + claude-3-5-haiku, Temp 0.0)；Politeness (max) / Accuracy (min) | `eval.judge` | 200 (評測完成), 401 (N/A), 429 (抽樣評測限流), 504 (Judge 超時重試) | Repudiation |
+| FR-21 | 結構化可觀測性與分散式追蹤 | JSON 結構化日誌、Prometheus 指標、OpenTelemetry Trace Context、Grafana 儀表板與告警 | `observability` | 200 (指標輸出正常), 401 (Metrics 端點保護), 429 (日誌採樣), 500 (監控斷線) | Repudiation |
+| FR-22 | 異步背景任務系統 (SAQ Worker) | SAQ 分散式佇列處理 Embedding 生成 (p95 < 30s)；知識寫入時同步首 Chunk 消除搜尋黑暗期 | `background.saq` | 200 (任務完成), 401 (N/A), 429 (任務堆疊告警), 500 (重試 3 次入死信) | Denial of Service |
+| FR-23 | GDPR 資料生命週期與合規管理 | 支援用戶資料匯出 (`GET /users/{id}/data`)、刪除 (`DELETE /users/{id}/data`)、180天/2年冷存檔與匿名化 | `compliance.gdpr` | 200 (匯出/刪除成功), 401 (Token 無效), 403 (非 DPO/本人), 404 (用戶不存在) | Information Disclosure |
+| FR-24 | A/B Testing 實驗框架 | 基於 SHA-256 確定性雜湊分流；流量分配控制；實驗指標自動收集 | `experiment.ab` | 200 (分流成功), 401 (管理端保護), 403 (未授權), 422 (分流參數錯誤) | Tampering |
+| FR-25 | 多媒體訊息處理與處置策略 | 文字走標準管線；圖片/檔案自動觸發轉接；貼圖親和引導；地理位置解析坐標注入 Context | `adapters.media` | 200 (處置成功), 401 (驗簽失敗), 429 (檔案過大), 422 (未知格式) | Denial of Service |
+| FR-26 | 使用者與 M2M Token 管理 API | JWT 簽發/輪替/撤銷；後台使用者 CRUD；M2M Client Credentials 發行 (A2A 專用) | `security.user_m2m` | 200 (簽發/查詢成功), 401 (憑證無效), 403 (非 Admin), 422 (密碼強度不足) | Elevation of Privilege |
+| FR-27 | 對話上下文視窗管理 | 滑動視窗 (Sliding Window) + 長對話自動摘要 (Summarization)，防止超出 Token 上限 | `dialogue.context` | 200 (裁剪/摘要成功), 401 (N/A), 429 (N/A), 422 (序列化失敗) | Denial of Service |
+| FR-28 | 高可用性、Redis 異步流與故障隔離 | Redis Streams 異步解耦；Circuit Breaker 熔斷機制；指數退避重試 (Max 3 次) | `core.ha` | 200 (處理正常), 401 (N/A), 429 (熔斷開啟降級), 500 (依賴隔離) | Denial of Service |
 
 ### 延遲需求清單 (Deferred Requirements)
 | FR ID | 需求名稱 | 延遲原因與未來規劃 |
 |-------|---------|------------------|
-| `FR-29-deferred` | 原生多模態視覺理解 (Vision QA) | 需待多模態專用 GPU 推理成本降低後於 v9.0 引入 (GPT-4V / Claude Vision) |
-| `FR-30-deferred` | 檔案與文件 OCR/AI 解析 | 現階段由人工客服介入處理，預計於 v9.1 引入 Document AI 模組 |
-| `FR-31-deferred` | 即時語音與音訊串流處理 | 避免端到端延遲突破 1.0s 門檻，保留至未來語音專用通道專案 |
-| `FR-32-deferred` | 繁中與英文以外之多語系支援 | 目前業務專注於台灣與英語系用戶，其他語系納入國際化階段評估 |
-| `FR-33-deferred` | 自建 In-house LLM 微調管線 | 目前專注於 Prompt Engineering + RAG + Judge 校準，微調成本效益尚待評估 |
-| `FR-34-deferred` | 原生行動端 App (iOS / Android) | 依託 Telegram / LINE / WhatsApp / Messenger / Web 原生介面，不另行開發 App |
+| FR-29-deferred | 原生多模態視覺理解 (Vision QA) | 需待多模態專用 GPU 推理成本降低後於 v9.0 引入 (GPT-4V / Claude Vision) |
+| FR-30-deferred | 檔案與文件 OCR/AI 解析 | 現階段由人工客服介入處理，預計於 v9.1 引入 Document AI 模組 |
+| FR-31-deferred | 即時語音與音訊串流處理 | 避免端到端延遲突破 1.0s 門檻，保留至未來語音專用通道專案 |
+| FR-32-deferred | 繁中與英文以外之多語系支援 | 目前業務專注於台灣與英語系用戶，其他語系納入國際化階段評估 |
+| FR-33-deferred | 自建 In-house LLM 微調管線 | 目前專注於 Prompt Engineering + RAG + Judge 校準，微調成本效益尚待評估 |
+| FR-34-deferred | 原生行動端 App (iOS / Android) | 依託 Telegram / LINE / WhatsApp / Messenger / Web 原生介面，不另行開發 App |
 
 ---
 
