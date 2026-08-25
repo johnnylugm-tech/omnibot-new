@@ -4,7 +4,13 @@
 
 ## Changelog
 
-- **v8.1**: 修復 19 項規格書缺陷（包含 RBAC 角色擴充、OpenAPI Schema 補齊、K8s 部署完善、評測基準明確化等）。
+- **v8.2 (2026-08-25)**: 全面升級為 PRD/SRS 規範合規版本。
+  - 建立 **FR-01 ~ FR-28** 結構化標識與機器可讀 JSON 區塊，標記 **FR-29-deferred ~ FR-34-deferred**。
+  - 收斂至 **SAB 8 大法定 NFR 分類**（performance, security, maintainability, reliability, testability, deployability, scalability, usability）並設定定量門檻。
+  - 落實 **防過度規格化** 原則，標註邊界測量與 `DERIVED:` 衍生依據。
+  - 每個 FR 補齊 **4 類基本邊界測試路徑** (2xx, 401/403, 429, 400/422/5xx) 與 **STRIDE-lite 威脅模型**。
+  - 建立 **P1～P8 流程穿透與合規矩陣** (Phase Penetration Matrix) 與品質門禁要求。
+- **v8.1 (2026-06-06)**: 修復 19 項規格書缺陷（包含 RBAC 角色擴充、OpenAPI Schema 補齊、K8s 部署完善、評測基準明確化等）。
 - **v8.0**: 新增 Unicode homoglyph 標準化與編碼繞道偵測。
 
 ---
@@ -12,18 +18,42 @@
 ## 目錄 (Table of Contents)
 
 1. [專案概述](#專案概述)
-2. [商業目標](#商業目標)
-3. [LLM-as-a-Judge 評測框架](#llm-as-a-judge-評測框架)
-4. [系統架構](#系統架構完整版)
-5. [安全層（PALADIN 防禦縱深架構）](#安全層paladin-防禦縱深架構)
-6. [Hybrid Knowledge Layer](#hybrid-knowledge-layer)
-7. [RBAC 權限管理](#rbac-權限管理)
-8. [API 設計](#api-設計)
-9. [資料庫設計](#資料庫設計)
-10. [Kubernetes 部署](#kubernetes-部署)
-11. [負載測試](#負載測試)
-12. [開發任務](#開發任務完整版)
-13. [驗收標準](#驗收標準完整版)
+2. [商業目標與定量指標](#商業目標)
+3. [PRD 定性與定量合規規範](#prd-定性與定量合規規範)
+4. [P1～P8 流程穿透與合規矩陣](#p1p8-流程穿透與合規矩陣)
+5. [SAB 法定 8 大 NFR 規格與門檻](#sab-法定-8-大-nfr-規格與門檻)
+6. [LLM-as-a-Judge 評測框架 (FR-20)](#llm-as-a-judge-評測框架)
+7. [系統架構（完整版）](#系統架構完整版)
+8. [程式碼慣例](#程式碼慣例)
+9. [API 設計 (FR-01, FR-02, FR-18, FR-26)](#api-設計)
+10. [統一消息格式 (FR-01, FR-25)](#統一消息格式)
+11. [Webhook 簽名驗證 (FR-02)](#webhook-簽名驗證)
+12. [安全層（PALADIN 防禦縱深架構 FR-03~FR-10, FR-23）](#安全層paladin-防禦縱深架構)
+13. [知識層 (Hybrid Knowledge Layer FR-13~FR-15)](#知識層)
+14. [對話狀態追蹤 DST 與意圖路由 (FR-12, FR-27)](#對話狀態追蹤-dst)
+15. [動作執行引擎 (Agentic Action Execution FR-16)](#動作執行引擎)
+16. [統一情緒模組 (FR-11)](#統一情緒模組)
+17. [人工轉接與 SLA (FR-19)](#人工轉接)
+18. [RBAC 權限管理 (FR-18)](#rbac-權限管理)
+19. [A/B Testing 框架 (FR-24)](#ab-testing-框架)
+20. [Response Generator (FR-17)](#response-generator回覆產生器)
+21. [可觀測性層 (FR-21)](#可觀測性層)
+22. [異步任務系統 (FR-22)](#異步任務系統-background-job-system)
+23. [高可用性與故障隔離 (FR-28)](#高可用性)
+24. [i18n 擴充指引](#i18n-擴充指引)
+25. [資料庫 Schema（完整版）](#資料庫-schema完整版)
+26. [ODD 驗證 SQL（完整版）](#odd-驗證-sql完整版)
+27. [黃金數據集建立指引](#黃金數據集建立指引)
+28. [客服後台與知識管理 UI/UX 規格](#客服後台與知識管理-uiux-規格)
+29. [部署架構](#部署架構)
+30. [災備與 Rollback 策略](#災備與-rollback-策略)
+31. [負載測試](#負載測試)
+32. [測試策略](#測試策略)
+33. [開發任務（完整版）](#開發任務完整版)
+34. [驗收標準（完整版）](#驗收標準完整版)
+35. [覆蓋檢查矩陣](#覆蓋檢查矩陣)
+36. [延遲與未納入範圍需求清單 (FR-29-deferred ~ FR-34-deferred)](#延遲與未納入範圍需求清單)
+37. [版本資訊](#版本資訊)
 
 ---
 
@@ -97,7 +127,174 @@
 
 ---
 
+
+
+---
+
+## PRD 定性與定量合規規範
+
+一份能合規且能具體實現的 PRD，必須在定性規範與定量指標上滿足以下條件，並在 P1～P8 各階段具備穿透能力：
+
+### 3.1 定性參考規範 (Qualitative Requirements)
+
+1. **結構化標識（Structural Identification）** `[Fact]`
+   - 每個功能需求具備結構化標題或表格列，格式符合正則匹配：`### FR-XX: <名稱>`、`| FR-XX | ... |` 及機器可讀 JSON 區塊（`"id": "FR-XX"`）。
+   - 延遲需求明確標記為 `FR-XX-deferred`，避免 front-edge 檢查誤判。
+2. **SAB 法定 NFR 分類收斂（SAB NFR Taxonomy）** `[Fact]`
+   - 非功能需求型別嚴格限定於 SAB 定義的 8 大法定類別：
+     - `performance`（效能）
+     - `security`（安全）
+     - `maintainability`（可維護性）
+     - `reliability`（可靠性）
+     - `testability`（可測試性）
+     - `deployability`（可部署性 — advisory）
+     - `scalability`（擴展性 — advisory）
+     - `usability`（可用性 — advisory）
+3. **防過度規格化原則（Anti-over-specification / R-CANONICAL-INTERP-001）** `[Fact]`
+   - 描述「行為與驗收邊界（What/Boundary）」，避免在未經 P2 架構推導前鎖死底層私有類別或內部變數名稱（How）。
+   - 包含模糊語意時，在驗收條件中標註測量邊界；任何衍生解釋明確標記 `DERIVED: <line> — <rationale>`。
+4. **驗收條件具備原子性與可測試性（Testability & Gherkin/ODD-Ready）** `[Inference]`
+   - 每個 FR 必須包含 4 類基本邊界測試路徑：
+     - 正常流程（Happy Path / 2xx）
+     - 認證/授權邊界（401/403）
+     - 速率/負載限制（429/Throttling）
+     - 異常與資料驗證失敗（400/422/Degradation）
+5. **STRIDE 安全與威脅模型前置（STRIDE-lite Ready）** `[Inference]`
+   - 涉及敏感資料、外部輸入或權限操作的 FR，明列威脅防禦要求（Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege），以便在 P2 直接轉化為 SAD §6 的 threats[] 與 P4 的紅隊測試。
+
+### 3.2 定量參考指標 (Quantitative Metrics & Thresholds)
+
+| 維度類別 | 具體指標 | 定量門檻 | 對應階段與門禁 |
+|---------|---------|---------|--------------|
+| **追溯覆蓋 (Traceability)** | 需求追溯完整度 (TH-13 / TH-14) | = 100%（無 Orphan / 無 Dropped） | P1 (verify-spec), P5 (4a/4b/4c) `[Fact]` |
+| | 架構映射率 (Code-to-SAD / TH-16) | = 100% | P2 / P3 Gate 2 `[Fact]` |
+| | 測試規格覆蓋率 (D4_SpecCoverage) | Gate 1 ≥ 40%, Gate 2 ≥ 60%, Gate 3 ≥ 80%, Gate 4 ≥ 90% | P3~P6 Gate 1~4 `[Fact]` |
+| **可實現性代碼約束** | 模組函式長度上限 | ≤ 50 行 | P3 實作期 (Constitution §1.2) `[Fact]` |
+| | 循環複雜度 (Cyclomatic Complexity) | ≤ 10 | P3 / P6 Gate 4 (radon-mi) `[Fact]` |
+| **測試與品質門禁** | 單元測試行覆蓋率 (Line Coverage) | P3 ≥ 70% (TH-11), P4+ ≥ 80% (TH-12) | P3 Gate 2, P4 Gate 3 `[Fact]` |
+| | 突變測試存活率 (Mutation Testing) | ≥ 70% (mutmut score) | P3 Gate 2, P4 Gate 3 `[Fact]` |
+| | 靜態分析與型別檢查 | Ruff ≥ 90, Pyright ≥ 85 | P3 Gate 1 (per-FR), Gate 2~4 `[Fact]` |
+| **NFR 定量 SLA 要求** | 效能指標 (Performance SLA) | P95 Latency ≤ 1.0 s, QPS ≥ 500 (2000 TPS sustained) | P4 Gate 3, P6 Gate 4 `[Fact]` |
+| | 可靠性指標 (Reliability SLA) | Timeout ≤ 2.0 s, Max Retries = 3 (指數退避) | P3 Gate 1, P4 Gate 3 `[Fact]` |
+| | 安全合規掃描 | Gitleaks = 100 (零洩漏), Bandit ≥ 80 | P3 Gate 2, P4 Gate 3, P6 Gate 4 `[Fact]` |
+
+---
+
+## P1～P8 流程穿透與合規矩陣
+
+```mermaid
+flowchart TD
+    PRD["PRD (Canonical Spec)"] --> P1["P1: Requirements (SRS.md JSON)"]
+    P1 -->|FR-to-Module Mapping| P2["P2: Architecture (SAD.md / SAB)"]
+    P2 -->|Atomic TDD Workspaces| P3["P3: Implementation (Gate 1 & Gate 2)"]
+    P3 -->|D4_SpecCoverage & Mutmut| P4["P4: Testing (Gate 3 & Red Team)"]
+    P4 -->|4a/4b/4c Trace Closed Loop| P5["P5: Verification (Attestation / BASELINE)"]
+    P5 -->|14-Dimension Full Audit| P6["P6: Quality Assurance (Gate 4 ≥ 85)"]
+    P6 -->|STRIDE Threat Verification| P7["P7: Risk Management (RISK_REGISTER)"]
+    P7 -->|Env & Release Records| P8["P8: Config Management (CONFIG / HANDOVER)"]
+```
+
+1. **P1（需求規格化）**：PRD 的文字經由 `spec_alignment` 驗證，所有 FR-01 ~ FR-28 完整進入 `SRS.md` 的 JSON 區塊，Agent B 審查通過（100% 覆蓋率）。
+2. **P2（架構設計）**：每個 FR-XX 必須被分配到特定 Module；每個 NFR 被解析進 SAB YAML，自動衍生對應維度的最低分數門檻（`gate_score_overrides`）。
+3. **P3（實作段）**：每個 FR 獨立分派工作區，透過 Atomic TDD 實作並通過 Gate 1（Ruff ≥ 90, Pyright ≥ 85, Coverage ≥ 70%），出口達 Gate 2（≥ 75 分，函式 ≤ 50 行，CC ≤ 10）。
+4. **P4（測試驗證）**：依 PRD 驗收條件執行整合測試、壓力測試（2000 TPS）與紅隊威脅滲透，通過 Gate 3（≥ 80 分，Adversarial Bug-hunt 零 Critical/High 漏洞，Mutmut ≥ 70%）。
+5. **P5（交付驗證）**：執行 4a（代碼追溯 100%）、4b（測試追溯 100%）、4c（NFR 追溯 100%）閉環驗證，產出 `attestation.json` 鎖定 `git_sha`，Phase Truth ≥ 90%。
+6. **P6（品質保證）**：Gate 4 進行全專案 14 維度綜合評審（≥ 85 分）。
+7. **P7（風險管理）**：PRD 定義的異常邊界與安全威脅在 `RISK_REGISTER.md` 關聯並驗證緩解方案。
+8. **P8（配置管理）**：PRD 提及的相依環境變數、配置項與版本號歸檔至 `CONFIG_RECORDS.md` 與 `BASELINE.md`。
+
+---
+
+## SAB 法定 8 大 NFR 規格與門檻
+
+```yaml
+nfr_specifications:
+  performance:
+    p95_e2e_latency: "<= 1.0s under 2000 TPS sustained load"
+    paladin_l1_l3_latency: "<= 5ms combined budget"
+    paladin_l4_async_latency: "<= 200ms non-blocking classifier"
+    knowledge_search_p95: "<= 150ms (PostgreSQL + pgvector)"
+    embedding_api_latency: "<= 100ms"
+    admin_ui_latency: "<= 1.5s page load"
+  security:
+    owasp_llm_top10: "100% compliant with OWASP LLM01:2025"
+    secret_scanning: "Gitleaks score = 100 (0 secrets detected in codebase or git log)"
+    static_vulnerability_scan: "Bandit score >= 80 (0 high/critical issues)"
+    data_protection: "PostgreSQL TDE at rest + TLS 1.3 in transit + Redis TLS/AUTH/ACL"
+    rbac_authorization: "7 distinct roles enforced at gateway & endpoint level"
+    prompt_injection_defense: "PALADIN 5-layer defence (Block rate >= 95%)"
+  maintainability:
+    max_function_length: "<= 50 lines per function (Constitution §1.2)"
+    cyclomatic_complexity: "<= 10 per function (radon-mi)"
+    static_lint_quality: "Ruff >= 90"
+    type_checker_quality: "Pyright >= 85"
+    db_migrations: "Alembic automated versioned migrations with rollback scripts"
+    documentation_coupling: "Code-to-SAD architecture mapping rate = 100%"
+  reliability:
+    system_availability: ">= 99.9% monthly uptime"
+    service_timeout: "<= 2.0s for external tool / A2A RPC calls"
+    retry_policy: "Max 3 retries with exponential backoff and jitter"
+    failover_recovery: "LLM fallback switch time < 500ms; Redis fail-open"
+    disaster_recovery_mttr: "< 5 minutes MTTR"
+  testability:
+    unit_line_coverage: "P3 >= 70% (TH-11), P4+ >= 80% (TH-12)"
+    mutation_testing_score: ">= 70% mutmut survival score"
+    spec_coverage_d4: "Gate 1 >= 40%, Gate 2 >= 60%, Gate 3 >= 80%, Gate 4 >= 90%"
+    golden_dataset: ">= 500 samples with Cohen's Kappa >= 0.7 human calibration"
+    boundary_path_coverage: "100% FRs cover 4 boundary paths (2xx, 401/403, 429, 400/422/5xx)"
+  deployability: # advisory
+    containerization: "Docker Compose (dev) + Kubernetes Deployment/Service/HPA (prod)"
+    autoscaling_triggers: "HPA scaling on CPU > 70% or Memory > 80%"
+    zero_downtime_rollout: "Kubernetes RollingUpdate with maxSurge=25%, maxUnavailable=0"
+    rollback_execution: "Automated rollback command executable within 5 minutes"
+  scalability: # advisory
+    sustained_throughput: "2000 TPS sustained under 4 k6 load test scenarios"
+    vector_scalability: "pgvector HNSW index (m=16, ef_construction=64) up to 10M chunks"
+    distributed_caching: "Redis Cluster ready with connection pooling"
+  usability: # advisory
+    csat_score: ">= 4.8 / 5.0 (+50% improvement vs 2025Q4 3.2 baseline)"
+    language_politeness: "LLM-as-a-Judge Politeness >= 4.5/5.0 with zh-TW empathy"
+    solution_accuracy: "LLM-as-a-Judge Accuracy 100% knowledge alignment"
+    operator_experience: "Admin/Agent portal responsive with real-time WebSocket sync"
+```
+
 ## LLM-as-a-Judge 評測框架
+
+### FR-20: LLM-as-a-Judge 自動評測框架 (LLM-as-a-Judge Evaluation Framework)
+
+```json
+{
+  "id": "FR-20",
+  "name": "LLM-as-a-Judge 自動評測框架",
+  "name_en": "LLM-as-a-Judge Evaluation Framework",
+  "module": "eval.judge",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-20",
+    "p2_sad": "eval.judge",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Repudiation: 評測結果缺乏依據或遭篡改", "Tampering: 惡意樣本操縱 CSAT 得分", "Information Disclosure: 評測日誌洩漏對話敏感詞"],
+  "acceptance_paths": {
+    "happy_path_2xx": "Ensemble Judge 正確計算 Politeness 與 Accuracy 並輸出加權 CSAT (HTTP 200 / 0-5 分)",
+    "auth_boundary_401_403": "非授權內部服務禁止觸發評測回歸 API (HTTP 401 / 403)",
+    "throttling_429": "評測 API 採樣率超出或隊列積壓時自動限流 (HTTP 429)",
+    "degradation_error_400_422_5xx": "評測模型異常或超時時啟用降級規則或重試 (HTTP 504 / 500 Retry & Log)"
+  }
+}
+```
+
+> **DERIVED**: line 100 — 評測 CSAT 採 20% 抽樣與雙模型 Ensemble 取 max/min 降低單一偏差
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: Ensemble Judge 正確計算 Politeness 與 Accuracy 並輸出加權 CSAT (HTTP 200 / 0-5 分)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: 非授權內部服務禁止觸發評測回歸 API (HTTP 401 / 403)
+- **速率/負載限制 (Throttling / 429)**: 評測 API 採樣率超出或隊列積壓時自動限流 (HTTP 429)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 評測模型異常或超時時啟用降級規則或重試 (HTTP 504 / 500 Retry & Log)
 
 > 參考：OpenAI Evals (2025)、DeepEval 開源框架 (2025)、"When AIs Judge AIs" (arXiv 2508.02994, 2025)、"Evaluating LLM-as-a-judge Bias" (arXiv 2510.12462, 2025)。
 
@@ -747,6 +944,42 @@ class PaginatedResponse(ApiResponse[List[T]], Generic[T]):
 | `AUTH_TOKEN_EXPIRED` | 401 | Bearer Token 過期 |
 | `AUTHZ_INSUFFICIENT_ROLE` | 403 | RBAC 權限不足 |
 
+### FR-26: 使用者與 M2M Token 管理 API (User Management & M2M Token Lifecycle API)
+
+```json
+{
+  "id": "FR-26",
+  "name": "使用者與 M2M Token 管理 API",
+  "name_en": "User Management & M2M Token Lifecycle API",
+  "module": "security.user_m2m",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-26",
+    "p2_sad": "security.user_m2m",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Spoofing: 暴力破解後台使用者密碼或偽造 M2M Client 憑證", "Elevation of Privilege: 越權為自己指派 Admin 角色"],
+  "acceptance_paths": {
+    "happy_path_2xx": "使用者登入換發 Access/Refresh Token；M2M Client Credentials 發行與輪替正常 (HTTP 200)",
+    "auth_boundary_401_403": "密碼錯誤、Token 過期或非 Admin 嘗試新增使用者 (HTTP 401 / 403)",
+    "throttling_429": "登入端點連續失敗 5 次觸發 IP 限流 (HTTP 429)",
+    "degradation_error_400_422_5xx": "密碼長度不足 8 碼或缺少必要欄位 (HTTP 422 VALIDATION_ERROR)"
+  }
+}
+```
+
+> **DERIVED**: line 750 / 805 — M2M Token 支援定期輪替 (Rotation) 與即時撤銷 (Revocation)
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 使用者登入換發 Access/Refresh Token；M2M Client Credentials 發行與輪替正常 (HTTP 200)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: 密碼錯誤、Token 過期或非 Admin 嘗試新增使用者 (HTTP 401 / 403)
+- **速率/負載限制 (Throttling / 429)**: 登入端點連續失敗 5 次觸發 IP 限流 (HTTP 429)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 密碼長度不足 8 碼或缺少必要欄位 (HTTP 422 VALIDATION_ERROR)
+
 ### 使用者管理 API
 
 ```yaml
@@ -858,6 +1091,42 @@ paths:
 
 ## 統一消息格式
 
+### FR-01: 多通路訊息接入與正規化 (Multi-Platform Ingress & Normalization)
+
+```json
+{
+  "id": "FR-01",
+  "name": "多通路訊息接入與正規化",
+  "name_en": "Multi-Platform Ingress & Normalization",
+  "module": "adapters.ingress",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-01",
+    "p2_sad": "adapters.ingress",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Spoofing: 未授權平台或偽造來源請求", "Tampering: 訊息內容於傳輸中遭篡改", "Denial of Service: 畸形封包癱瘓解析模組"],
+  "acceptance_paths": {
+    "happy_path_2xx": "6 大通路 (Telegram, LINE, Meta, WA, Web, A2A) 訊息正確轉換為 UnifiedMessage (HTTP 200)",
+    "auth_boundary_401_403": "未知通路標識或偽造 platform 欄位拒絕處理 (HTTP 401 / 403 Invalid Platform)",
+    "throttling_429": "通路流入請求超出限流配額時拒絕並通知重試 (HTTP 429 Rate Limit)",
+    "degradation_error_400_422_5xx": "Payload 遺漏必要欄位或結構破損回傳驗證錯誤 (HTTP 422 Unprocessable Entity)"
+  }
+}
+```
+
+> **DERIVED**: line 859 — 統一跨通路欄位映射規範，保障下游模組無歧義消費
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 6 大通路 (Telegram, LINE, Meta, WA, Web, A2A) 訊息正確轉換為 UnifiedMessage (HTTP 200)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: 未知通路標識或偽造 platform 欄位拒絕處理 (HTTP 401 / 403 Invalid Platform)
+- **速率/負載限制 (Throttling / 429)**: 通路流入請求超出限流配額時拒絕並通知重試 (HTTP 429 Rate Limit)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: Payload 遺漏必要欄位或結構破損回傳驗證錯誤 (HTTP 422 Unprocessable Entity)
+
 ```python
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -902,6 +1171,42 @@ class UnifiedResponse:
     quick_replies: list[dict] = field(default_factory=list)
 ```
 
+### FR-25: 多媒體訊息處理與處置策略 (Multimedia Message Handling & Escalation Path)
+
+```json
+{
+  "id": "FR-25",
+  "name": "多媒體訊息處理與處置策略",
+  "name_en": "Multimedia Message Handling & Escalation Path",
+  "module": "adapters.media",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-25",
+    "p2_sad": "adapters.media",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Denial of Service: 惡意超大檔案或多媒體炸彈癱瘓網路頻寬", "Tampering: 偽造多媒體 MIME 類型繞過安全檢查"],
+  "acceptance_paths": {
+    "happy_path_2xx": "文字走標準管線、貼圖友善回應、位置提取經緯度注入 Context (HTTP 200)",
+    "auth_boundary_401_403": "未授權用戶發送多媒體訊息阻斷 (HTTP 401 / 403)",
+    "throttling_429": "高頻連續發送多媒體訊息觸發限流 (HTTP 429 Too Many Requests)",
+    "degradation_error_400_422_5xx": "圖片/檔案訊息自動觸發轉接客服 (HTTP 200 + Transfer to Human / 422 Bad Format)"
+  }
+}
+```
+
+> **DERIVED**: line 905 — 現階段不進行雲端 OCR 與 Vision 深度解析，採自動轉接保護體驗
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 文字走標準管線、貼圖友善回應、位置提取經緯度注入 Context (HTTP 200)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: 未授權用戶發送多媒體訊息阻斷 (HTTP 401 / 403)
+- **速率/負載限制 (Throttling / 429)**: 高頻連續發送多媒體訊息觸發限流 (HTTP 429 Too Many Requests)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 圖片/檔案訊息自動觸發轉接客服 (HTTP 200 + Transfer to Human / 422 Bad Format)
+
 ### 多媒體訊息處理路徑
 
 > `MessageType` 定義了 TEXT / IMAGE / STICKER / LOCATION / FILE，但目前安全層和知識層只處理 `content: str`。本節定義多媒體訊息的最小處理路徑。
@@ -942,6 +1247,42 @@ media_handling:
 ---
 
 ## Webhook 簽名驗證
+
+### FR-02: Webhook 簽名驗證與認證 (Webhook Signature Verification & M2M Authentication)
+
+```json
+{
+  "id": "FR-02",
+  "name": "Webhook 簽名驗證與認證",
+  "name_en": "Webhook Signature Verification & M2M Authentication",
+  "module": "security.auth",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-02",
+    "p2_sad": "security.auth",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Spoofing: 偽造 Webhook 發送者身分發動中間人攻擊", "Elevation of Privilege: 越權存取內部管理與事件端點"],
+  "acceptance_paths": {
+    "happy_path_2xx": "HMAC-SHA256 簽名比對成功或合法 M2M Token 驗證通過 (HTTP 200)",
+    "auth_boundary_401_403": "簽名計算不符、密鑰過期或 Token 無效 (HTTP 401 AUTH_INVALID_SIGNATURE)",
+    "throttling_429": "暴力重放或高頻碰撞簽名觸發防護 (HTTP 429 Too Many Requests)",
+    "degradation_error_400_422_5xx": "缺少 X-Signature Header 或 Body 為空 (HTTP 400 Bad Request)"
+  }
+}
+```
+
+> **DERIVED**: line 944 — 簽名演算法採常數時間比對 hmac.compare_digest 防止 Timing Attack
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: HMAC-SHA256 簽名比對成功或合法 M2M Token 驗證通過 (HTTP 200)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: 簽名計算不符、密鑰過期或 Token 無效 (HTTP 401 AUTH_INVALID_SIGNATURE)
+- **速率/負載限制 (Throttling / 429)**: 暴力重放或高頻碰撞簽名觸發防護 (HTTP 429 Too Many Requests)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 缺少 X-Signature Header 或 Body 為空 (HTTP 400 Bad Request)
 
 ```python
 import hmac
@@ -1041,6 +1382,42 @@ Layer 5: Output Validation   → Grounding Check 輸出知識對齊驗證
 
 > **重要**：OWASP LLM01:2025 明確指出 regex-only filtering 為 insufficient defense。PALADIN 的 L4 (Semantic Classifier) 是補 regex 盲區的關鍵層。L1-L3 處理快速攔截（< 5ms），L4 處理語意分析（~100ms），L5 處理輸出驗證。
 
+### FR-03: PALADIN L1 輸入清理與字元正規化 (Input Sanitization & Homoglyph Normalization)
+
+```json
+{
+  "id": "FR-03",
+  "name": "PALADIN L1 輸入清理與字元正規化",
+  "name_en": "Input Sanitization & Homoglyph Normalization",
+  "module": "security.paladin.l1",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-03",
+    "p2_sad": "security.paladin.l1",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Tampering: 插入不可見控制字元或同形異義 Unicode 繞過關鍵字過濾", "Denial of Service: 畸形編碼破壞解析器"],
+  "acceptance_paths": {
+    "happy_path_2xx": "Unicode NFKC 標準化、控制字元移除、Homoglyph 偽裝字元映射替換成功 (HTTP 200 / cleaned text)",
+    "auth_boundary_401_403": "N/A (管線內部前置模組)",
+    "throttling_429": "N/A (L1 延遲預算 < 2ms)",
+    "degradation_error_400_422_5xx": "輸入含有無法解析的二進制非文字資料或超長畸形字串 (HTTP 400 / 422)"
+  }
+}
+```
+
+> **DERIVED**: line 1044 — 於最前端統一替換混淆字符，確保後續 L2-L5 規則與檢索精確
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: Unicode NFKC 標準化、控制字元移除、Homoglyph 偽裝字元映射替換成功 (HTTP 200 / cleaned text)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: N/A (管線內部前置模組)
+- **速率/負載限制 (Throttling / 429)**: N/A (L1 延遲預算 < 2ms)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 輸入含有無法解析的二進制非文字資料或超長畸形字串 (HTTP 400 / 422)
+
 ### 輸入清理 L2（PALADIN Layer 1）
 
 ```python
@@ -1075,6 +1452,78 @@ class InputSanitizer:
 ```
 
 ### Prompt Injection 防護 L3（PALADIN Layer 2 + 3）
+
+### FR-04: PALADIN L2 規則過濾與特徵比對 (Pattern Detection & Anti-Prompt Injection)
+
+```json
+{
+  "id": "FR-04",
+  "name": "PALADIN L2 規則過濾與特徵比對",
+  "name_en": "Pattern Detection & Anti-Prompt Injection",
+  "module": "security.paladin.l2",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-04",
+    "p2_sad": "security.paladin.l2",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Tampering: 注入越獄指令（Ignore previous instructions 等）", "Elevation of Privilege: 試圖獲取系統 System Prompt"],
+  "acceptance_paths": {
+    "happy_path_2xx": "輸入未命中可疑特徵，安全放行至下一層級 (HTTP 200 / pass)",
+    "auth_boundary_401_403": "命中高危惡意指令模式直接拒絕並記錄審計 (HTTP 403 Forbidden / Injection Blocked)",
+    "throttling_429": "單一來源頻繁發送注入測試觸發安全限流 (HTTP 429)",
+    "degradation_error_400_422_5xx": "正規表達式解析超時或輸入長度超過上限 (HTTP 400 Bad Request)"
+  }
+}
+```
+
+> **DERIVED**: line 1077 — 正則黑名單庫涵蓋中英文已知越獄 Prompt 關鍵詞，延遲控制在 < 3ms
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 輸入未命中可疑特徵，安全放行至下一層級 (HTTP 200 / pass)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: 命中高危惡意指令模式直接拒絕並記錄審計 (HTTP 403 Forbidden / Injection Blocked)
+- **速率/負載限制 (Throttling / 429)**: 單一來源頻繁發送注入測試觸發安全限流 (HTTP 429)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 正規表達式解析超時或輸入長度超過上限 (HTTP 400 Bad Request)
+
+### FR-05: PALADIN L3 指令層次與三明治防護 (Instruction Hierarchy & Sandwich Defense)
+
+```json
+{
+  "id": "FR-05",
+  "name": "PALADIN L3 指令層次與三明治防護",
+  "name_en": "Instruction Hierarchy & Sandwich Defense",
+  "module": "security.paladin.l3",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-05",
+    "p2_sad": "security.paladin.l3",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Elevation of Privilege: 越權覆寫系統核心原則與業務邊界", "Tampering: 假冒系統指令污染 Prompt 上下文"],
+  "acceptance_paths": {
+    "happy_path_2xx": "用戶輸入安全封裝於 Spotlighting 標籤與前後系統約束夾層中 (HTTP 200 / prompt constructed)",
+    "auth_boundary_401_403": "檢測到指令層級越權衝突時拒絕生成 (HTTP 403)",
+    "throttling_429": "N/A (L1~L3 總體延遲 < 5ms)",
+    "degradation_error_400_422_5xx": "封裝後 Token 長度突破模型視窗上限時自動截斷並告警 (HTTP 422)"
+  }
+}
+```
+
+> **DERIVED**: line 1115 — 系統 Prompt 聲明最高優先級，用戶輸入被降級為不可信數據資料
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 用戶輸入安全封裝於 Spotlighting 標籤與前後系統約束夾層中 (HTTP 200 / prompt constructed)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: 檢測到指令層級越權衝突時拒絕生成 (HTTP 403)
+- **速率/負載限制 (Throttling / 429)**: N/A (L1~L3 總體延遲 < 5ms)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 封裝後 Token 長度突破模型視窗上限時自動截斷並告警 (HTTP 422)
 
 ```python
 from dataclasses import dataclass
@@ -1157,6 +1606,42 @@ class PromptInjectionDefense:
 ```
 
 ### 語意層 Injection 分類器 L4（PALADIN Layer 4）
+
+### FR-06: PALADIN L4 語義注入分類器與平行化管線 (Semantic Injection Classifier & Async Pipeline)
+
+```json
+{
+  "id": "FR-06",
+  "name": "PALADIN L4 語義注入分類器與平行化管線",
+  "name_en": "Semantic Injection Classifier & Async Pipeline",
+  "module": "security.paladin.l4",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-06",
+    "p2_sad": "security.paladin.l4",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Prompt Injection: 語義隱藏型、多輪誘導型越獄攻擊", "Denial of Service: 惡意觸發大量 LLM 分類請求消耗 Token"],
+  "acceptance_paths": {
+    "happy_path_2xx": "語義分類判定為 safe 或平行異步非阻塞驗證通過 (HTTP 200)",
+    "auth_boundary_401_403": "中高風險請求被分類器判定為 injection 觸發攔截或事後撤回 (HTTP 403 / revoked)",
+    "throttling_429": "評測並行度超標時自動對 low-risk 請求降級為 L3 防護 (HTTP 200 degraded)",
+    "degradation_error_400_422_5xx": "分類器 LLM 呼叫超時時觸發 Fail-open 機制並記錄審計日誌 (HTTP 200 / Timeout Fail-open)"
+  }
+}
+```
+
+> **DERIVED**: line 1159 — 平行化策略保證 p95 < 1.0s 延遲 SLA，僅 < 5% 流量觸發同步評測
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 語義分類判定為 safe 或平行異步非阻塞驗證通過 (HTTP 200)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: 中高風險請求被分類器判定為 injection 觸發攔截或事後撤回 (HTTP 403 / revoked)
+- **速率/負載限制 (Throttling / 429)**: 評測並行度超標時自動對 low-risk 請求降級為 L3 防護 (HTTP 200 degraded)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 分類器 LLM 呼叫超時時觸發 Fail-open 機制並記錄審計日誌 (HTTP 200 / Timeout Fail-open)
 
 ```python
 @dataclass
@@ -1330,6 +1815,42 @@ l4_trigger_policy:
 
 ---
 
+### FR-08: PII 偵測、去識別化與 Luhn 校驗 (PII Masking & Luhn Credit Card Validation)
+
+```json
+{
+  "id": "FR-08",
+  "name": "PII 偵測、去識別化與 Luhn 校驗",
+  "name_en": "PII Masking & Luhn Credit Card Validation",
+  "module": "security.pii",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-08",
+    "p2_sad": "security.pii",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Information Disclosure: 用戶個人隱私、身分證、電話、信用卡號外洩至日誌或 LLM", "Repudiation: 敏感資料未留存存取軌跡"],
+  "acceptance_paths": {
+    "happy_path_2xx": "偵測電話、Email、地址、信用卡 (Luhn 檢核) 並自動遮蔽，替換為標籤 (HTTP 200)",
+    "auth_boundary_401_403": "非 DPO 角色請求解密還原真實 PII 資料拒絕存取 (HTTP 403 Forbidden)",
+    "throttling_429": "N/A (正則與演算法延遲 < 2ms)",
+    "degradation_error_400_422_5xx": "偵測到高危關鍵字 (密碼、OTP 等) 自動中斷對話並升級人工介入 (HTTP 200 + Escalate)"
+  }
+}
+```
+
+> **DERIVED**: line 1333 — 信用卡採 Luhn 演算法雙重校驗，避免誤判非卡號數字串
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 偵測電話、Email、地址、信用卡 (Luhn 檢核) 並自動遮蔽，替換為標籤 (HTTP 200)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: 非 DPO 角色請求解密還原真實 PII 資料拒絕存取 (HTTP 403 Forbidden)
+- **速率/負載限制 (Throttling / 429)**: N/A (正則與演算法延遲 < 2ms)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 偵測到高危關鍵字 (密碼、OTP 等) 自動中斷對話並升級人工介入 (HTTP 200 + Escalate)
+
 ### PII 去識別化 L4
 
 ```python
@@ -1405,6 +1926,42 @@ class PIIMasking:
         return checksum % 10 == 0
 ```
 
+### FR-23: GDPR 資料生命週期與合規管理 (GDPR Data Lifecycle, Export & Deletion)
+
+```json
+{
+  "id": "FR-23",
+  "name": "GDPR 資料生命週期與合規管理",
+  "name_en": "GDPR Data Lifecycle, Export & Deletion",
+  "module": "compliance.gdpr",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-23",
+    "p2_sad": "compliance.gdpr",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Information Disclosure: 超期保存的個資遭到未授權存取", "Repudiation: 個資刪除與匯出操作無不可篡改審計軌跡"],
+  "acceptance_paths": {
+    "happy_path_2xx": "支援用戶資料匯出 (`GET /users/{id}/data`) 與 30 天內物理清除 (`DELETE /users/{id}/data`) (HTTP 200)",
+    "auth_boundary_401_403": "非本人或非 DPO 角色發起匯出/刪除操作拒絕執行 (HTTP 401 / 403)",
+    "throttling_429": "大批量匯出請求觸發頻率限制 (HTTP 429)",
+    "degradation_error_400_422_5xx": "指定用戶查無資料或已完成刪除 (HTTP 404 Not Found)"
+  }
+}
+```
+
+> **DERIVED**: line 1408 — 對話 180 天轉冷存檔，2 年徹底清除；PII 審計記錄 90 天自動去識別化
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 支援用戶資料匯出 (`GET /users/{id}/data`) 與 30 天內物理清除 (`DELETE /users/{id}/data`) (HTTP 200)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: 非本人或非 DPO 角色發起匯出/刪除操作拒絕執行 (HTTP 401 / 403)
+- **速率/負載限制 (Throttling / 429)**: 大批量匯出請求觸發頻率限制 (HTTP 429)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 指定用戶查無資料或已完成刪除 (HTTP 404 Not Found)
+
 ### 資料生命週期與合規 (GDPR)
 
 | 資料類型 | 保留期限 | 到期動作 | 法規依據 |
@@ -1445,6 +2002,42 @@ async def execute_data_deletion(unified_user_id: str, db):
 ```
 
 ---
+
+### FR-09: 分散式速率限制 (Distributed Rate Limiting with Redis & Lua)
+
+```json
+{
+  "id": "FR-09",
+  "name": "分散式速率限制",
+  "name_en": "Distributed Rate Limiting with Redis & Lua",
+  "module": "gateway.ratelimit",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-09",
+    "p2_sad": "gateway.ratelimit",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Denial of Service: 惡意高頻請求耗盡系統運算資源與 LLM API 配額", "Tampering: 嘗試並發競爭繞過計數器"],
+  "acceptance_paths": {
+    "happy_path_2xx": "請求頻率在平台配額內 (Telegram/LINE 30 req/s, Web 10 req/s, Agent 100 req/s) 順利放行 (HTTP 200)",
+    "auth_boundary_401_403": "N/A (由 Gateway 層前置執行)",
+    "throttling_429": "請求頻率超出滑動視窗配額時直接阻斷並回傳 Retry-After (HTTP 429 RATE_LIMIT_EXCEEDED)",
+    "degradation_error_400_422_5xx": "Redis 服務不可用時自動切換為 Fail-open 模式並觸發運維告警 (HTTP 200 degraded)"
+  }
+}
+```
+
+> **DERIVED**: line 1449 — 採用 Redis ZSET + Lua 原子腳本實現精密滑動視窗限流
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 請求頻率在平台配額內 (Telegram/LINE 30 req/s, Web 10 req/s, Agent 100 req/s) 順利放行 (HTTP 200)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: N/A (由 Gateway 層前置執行)
+- **速率/負載限制 (Throttling / 429)**: 請求頻率超出滑動視窗配額時直接阻斷並回傳 Retry-After (HTTP 429 RATE_LIMIT_EXCEEDED)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: Redis 服務不可用時自動切換為 Fail-open 模式並觸發運維告警 (HTTP 200 degraded)
 
 ### 基礎速率限制
 
@@ -1552,6 +2145,42 @@ class RateLimiter:
 ```
 
 ### IP 白名單
+
+### FR-10: CIDR 格式 IP 白名單檢查 (CIDR-based IP Whitelist Enforcement)
+
+```json
+{
+  "id": "FR-10",
+  "name": "CIDR 格式 IP 白名單檢查",
+  "name_en": "CIDR-based IP Whitelist Enforcement",
+  "module": "gateway.ipfilter",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-10",
+    "p2_sad": "gateway.ipfilter",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Spoofing: 偽造來源 IP 發起管理端點或 Webhook 攻擊", "Denial of Service: 外部未授權 IP 掃描探測"],
+  "acceptance_paths": {
+    "happy_path_2xx": "客戶端來源 IP 命中已配置之 CIDR 白名單區段 (最多 100 組) 放行 (HTTP 200)",
+    "auth_boundary_401_403": "來源 IP 未在白名單中執行 Fail-secure 攔截 (HTTP 403 Forbidden)",
+    "throttling_429": "N/A (記憶體 CIDR 比對延遲 < 0.1ms)",
+    "degradation_error_400_422_5xx": "白名單為空或 X-Forwarded-For 標頭格式畸變回傳錯誤 (HTTP 400 Bad Request)"
+  }
+}
+```
+
+> **DERIVED**: line 1554 — 執行順序置於 Webhook 簽名驗證之前，快速過濾非授權流量
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 客戶端來源 IP 命中已配置之 CIDR 白名單區段 (最多 100 組) 放行 (HTTP 200)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: 來源 IP 未在白名單中執行 Fail-secure 攔截 (HTTP 403 Forbidden)
+- **速率/負載限制 (Throttling / 429)**: N/A (記憶體 CIDR 比對延遲 < 0.1ms)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 白名單為空或 X-Forwarded-For 標頭格式畸變回傳錯誤 (HTTP 400 Bad Request)
 
 #### 功能定義
 API Gateway 需支援來源 IP 白名單過濾，僅允許已登記的 IP 區塊發送請求。
@@ -1760,6 +2389,42 @@ class A2AAdapter(ActionAdapter):
 - 在安全的 Sandbox 或容器內執行本地 Python/Bash 腳本。
 - 適用情境：輕量級、一次性的本機維運任務。
 
+### FR-07: PALADIN L5 Grounding 知識對齊檢驗 (Grounding Check & Hallucination Mitigation)
+
+```json
+{
+  "id": "FR-07",
+  "name": "PALADIN L5 Grounding 知識對齊檢驗",
+  "name_en": "Grounding Check & Hallucination Mitigation",
+  "module": "security.paladin.l5",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-07",
+    "p2_sad": "security.paladin.l5",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Information Disclosure: LLM 產生未授權幻覺或外洩訓練數據", "Tampering: 生成與事實知識庫矛盾之錯誤業務指引"],
+  "acceptance_paths": {
+    "happy_path_2xx": "生成答案與檢索 Context 之 Cosine 相似度 ≥ 0.75 順利放行 (HTTP 200)",
+    "auth_boundary_401_403": "相似度 < 0.75 判定為幻覺，阻斷輸出並自動轉接或觸發兜底回覆 (HTTP 200 + Fallback Notice)",
+    "throttling_429": "N/A (向量內積計算延遲 < 5ms)",
+    "degradation_error_400_422_5xx": "無檢索 Context 可供對齊比對時觸發保守策略 (HTTP 422 / Fallback)"
+  }
+}
+```
+
+> **DERIVED**: line 1795 — 僅針對 QA 查詢生效，Task/Tool-calling 類訊息由執行結果自我驗證
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 生成答案與檢索 Context 之 Cosine 相似度 ≥ 0.75 順利放行 (HTTP 200)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: 相似度 < 0.75 判定為幻覺，阻斷輸出並自動轉接或觸發兜底回覆 (HTTP 200 + Fallback Notice)
+- **速率/負載限制 (Throttling / 429)**: N/A (向量內積計算延遲 < 5ms)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 無檢索 Context 可供對齊比對時觸發保守策略 (HTTP 422 / Fallback)
+
 ### Grounding Checks L5
 
 ```python
@@ -1855,6 +2520,116 @@ class GroundingChecker:
 ---
 
 ## 知識層
+
+### FR-13: 知識檢索 Tier 1 (PostgreSQL 精確與關鍵字匹配) (PostgreSQL Exact & Keyword Rule Matching)
+
+```json
+{
+  "id": "FR-13",
+  "name": "知識檢索 Tier 1 (PostgreSQL 精確與關鍵字匹配)",
+  "name_en": "PostgreSQL Exact & Keyword Rule Matching",
+  "module": "knowledge.tier1",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-13",
+    "p2_sad": "knowledge.tier1",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Information Disclosure: 知識庫越權洩漏未公開條目", "Denial of Service: 惡意長關鍵字 SQL 注入與資料庫重負載"],
+  "acceptance_paths": {
+    "happy_path_2xx": "精確匹配或 ILIKE 關鍵字命中，信心度 ≥ 0.80，直接回傳預設答案 (HTTP 200 / Tier 1 命中)",
+    "auth_boundary_401_403": "N/A",
+    "throttling_429": "N/A (資料庫查詢延遲 < 10ms)",
+    "degradation_error_400_422_5xx": "未命中規則 (KnowledgeResult.id = -1) 自動無縫穿透至 Tier 2 RAG 檢索"
+  }
+}
+```
+
+> **DERIVED**: line 1857 — 承擔 40% 業務常見標準問答，0 Token 成本支出
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 精確匹配或 ILIKE 關鍵字命中，信心度 ≥ 0.80，直接回傳預設答案 (HTTP 200 / Tier 1 命中)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: N/A
+- **速率/負載限制 (Throttling / 429)**: N/A (資料庫查詢延遲 < 10ms)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 未命中規則 (KnowledgeResult.id = -1) 自動無縫穿透至 Tier 2 RAG 檢索
+
+
+### FR-14: 知識檢索 Tier 2 (pgvector HNSW + RRF k=60 & Parent-Child) (pgvector HNSW Vector Search & RRF)
+
+```json
+{
+  "id": "FR-14",
+  "name": "知識檢索 Tier 2 (pgvector HNSW + RRF k=60 & Parent-Child)",
+  "name_en": "pgvector HNSW Vector Search & RRF",
+  "module": "knowledge.tier2",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-14",
+    "p2_sad": "knowledge.tier2",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Information Disclosure: 向量檢索召回跨租戶/未授權敏感文件", "Denial of Service: 高維向量計算耗盡資料庫記憶體"],
+  "acceptance_paths": {
+    "happy_path_2xx": "1536 維向量 HNSW 搜尋 + RRF k=60 融合，召回高相關 Parent Chunk (HTTP 200 / Recall@3 >= 92%)",
+    "auth_boundary_401_403": "N/A",
+    "throttling_429": "向量檢索排隊超過 150ms 觸發降級評估 (HTTP 200)",
+    "degradation_error_400_422_5xx": "向量資料庫連線失敗時自動降級至 PostgreSQL tsvector 全文檢索 (HTTP 200 degraded)"
+  }
+}
+```
+
+> **DERIVED**: line 1900 — 採用 150-token 子切塊索引 + 500-token 父切塊上下文召回架構
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 1536 維向量 HNSW 搜尋 + RRF k=60 融合，召回高相關 Parent Chunk (HTTP 200 / Recall@3 >= 92%)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: N/A
+- **速率/負載限制 (Throttling / 429)**: 向量檢索排隊超過 150ms 觸發降級評估 (HTTP 200)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 向量資料庫連線失敗時自動降級至 PostgreSQL tsvector 全文檢索 (HTTP 200 degraded)
+
+
+### FR-15: 知識檢索 Tier 3 (LLM 生成與多模型備援) (LLM Generation & Multi-Model Automated Fallback)
+
+```json
+{
+  "id": "FR-15",
+  "name": "知識檢索 Tier 3 (LLM 生成與多模型備援)",
+  "name_en": "LLM Generation & Multi-Model Automated Fallback",
+  "module": "knowledge.tier3",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-15",
+    "p2_sad": "knowledge.tier3",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Repudiation: 生成非受控內容且無日誌軌跡", "Denial of Service: 上游 LLM 服務中斷導致服務停擺"],
+  "acceptance_paths": {
+    "happy_path_2xx": "基於 Tier 2 上下文由 gpt-4o 主模型生成精確回答 (HTTP 200)",
+    "auth_boundary_401_403": "LLM API Key 憑證失效時告警 (HTTP 500)",
+    "throttling_429": "LLM 觸發 Rate Limit (429) 時立即在 < 500ms 內切換至 gemini-1.5-flash (HTTP 200 degraded)",
+    "degradation_error_400_422_5xx": "主備模型均超時或生成失敗時無縫轉接至 Tier 4 人工佇列 (HTTP 200 + Escalate)"
+  }
+}
+```
+
+> **DERIVED**: line 2085 — 承擔 10% 複雜多輪問答，雙供應商容錯確保 99.9% 可用性
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 基於 Tier 2 上下文由 gpt-4o 主模型生成精確回答 (HTTP 200)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: LLM API Key 憑證失效時告警 (HTTP 500)
+- **速率/負載限制 (Throttling / 429)**: LLM 觸發 Rate Limit (429) 時立即在 < 500ms 內切換至 gemini-1.5-flash (HTTP 200 degraded)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 主備模型均超時或生成失敗時無縫轉接至 Tier 4 人工佇列 (HTTP 200 + Escalate)
 
 ### RAG 文本切分與層級檢索策略
 
@@ -2163,6 +2938,42 @@ class HybridKnowledge:
 
 ## 對話狀態追蹤 DST
 
+### FR-12: 對話狀態追蹤 DST 與意圖路由 (Dialogue State Tracking & Intent Router FSM)
+
+```json
+{
+  "id": "FR-12",
+  "name": "對話狀態追蹤 DST 與意圖路由",
+  "name_en": "Dialogue State Tracking & Intent Router FSM",
+  "module": "dialogue.dst",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-12",
+    "p2_sad": "dialogue.dst",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Repudiation: 對話狀態機轉移異常導致任務上下文遺失", "Tampering: 惡意多輪輸入篡改已填充之槽位變數"],
+  "acceptance_paths": {
+    "happy_path_2xx": "8 狀態 FSM 精確轉移、槽位填充成功並觸發 QA 或 Task 分流 (HTTP 200)",
+    "auth_boundary_401_403": "N/A",
+    "throttling_429": "N/A (狀態推導在記憶體/Redis 完成，延遲 < 5ms)",
+    "degradation_error_400_422_5xx": "槽位 3 輪未填滿或意圖信心度 < 0.65 時自動流轉至 ESCALATED 轉接狀態 (HTTP 200 + Escalate)"
+  }
+}
+```
+
+> **DERIVED**: line 2164 — 嚴格限制 FSM 轉移路徑，防止非法狀態跳躍
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 8 狀態 FSM 精確轉移、槽位填充成功並觸發 QA 或 Task 分流 (HTTP 200)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: N/A
+- **速率/負載限制 (Throttling / 429)**: N/A (狀態推導在記憶體/Redis 完成，延遲 < 5ms)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 槽位 3 輪未填滿或意圖信心度 < 0.65 時自動流轉至 ESCALATED 轉接狀態 (HTTP 200 + Escalate)
+
 ```python
 from dataclasses import dataclass, field
 from enum import Enum
@@ -2238,6 +3049,42 @@ class DialogueState:
 
 
 # ============================================================
+### FR-16: 動作執行引擎 (Agentic Action Execution) (Action Execution Engine with MCP, A2A & CLI)
+
+```json
+{
+  "id": "FR-16",
+  "name": "動作執行引擎 (Agentic Action Execution)",
+  "name_en": "Action Execution Engine with MCP, A2A & CLI",
+  "module": "action.engine",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-16",
+    "p2_sad": "action.engine",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Elevation of Privilege: 惡意構造參數執行未授權系統工具或越權調用外部 API", "Denial of Service: 外部工具超時阻斷工作執行緒"],
+  "acceptance_paths": {
+    "happy_path_2xx": "工具調用成功執行 (MCP, A2A, CLI) 並回傳標準化 ToolExecutionResult (HTTP 200 / Success >= 95%)",
+    "auth_boundary_401_403": "未授權角色或非法 Agent Token 嘗試調用工具阻斷 (HTTP 403 Forbidden)",
+    "throttling_429": "下游工具達到調用速率上限時依策略排隊或重試 (HTTP 429)",
+    "degradation_error_400_422_5xx": "A2A 或 MCP 工具調用超過 2.0s 逾時強制中斷並執行補償/轉接 (HTTP 504 Gateway Timeout)"
+  }
+}
+```
+
+> **DERIVED**: line 2240 — 統一 ToolDefinition 與 Pydantic 參數校驗，A2A 支援 300s TTL Agent Card 快取
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 工具調用成功執行 (MCP, A2A, CLI) 並回傳標準化 ToolExecutionResult (HTTP 200 / Success >= 95%)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: 未授權角色或非法 Agent Token 嘗試調用工具阻斷 (HTTP 403 Forbidden)
+- **速率/負載限制 (Throttling / 429)**: 下游工具達到調用速率上限時依策略排隊或重試 (HTTP 429)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: A2A 或 MCP 工具調用超過 2.0s 逾時強制中斷並執行補償/轉接 (HTTP 504 Gateway Timeout)
+
 # Agentic Tool Calling (主動代理人工具呼叫架構)
 # ============================================================
 # 使用 AEE 段定義的統一 ToolDefinition 和 ToolExecutionResult
@@ -2371,6 +3218,42 @@ PROCESSING ──[置信度 < 0.65]──> ESCALATED
 ESCALATED ──[人工介入]──> RESOLVED
 ```
 
+### FR-27: 對話上下文視窗管理 (Conversation Context Window Management)
+
+```json
+{
+  "id": "FR-27",
+  "name": "對話上下文視窗管理",
+  "name_en": "Conversation Context Window Management",
+  "module": "dialogue.context",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-27",
+    "p2_sad": "dialogue.context",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Denial of Service: 無限制增長之歷史對話撐爆 LLM Token 視窗與記憶體"],
+  "acceptance_paths": {
+    "happy_path_2xx": "滑動視窗保留最近輪次，超出 8192 token 閾值時自動觸發非同步摘要壓縮 (HTTP 200)",
+    "auth_boundary_401_403": "N/A",
+    "throttling_429": "N/A",
+    "degradation_error_400_422_5xx": "歷史對話解析異常時僅保留當前回合確保對話不中斷 (HTTP 200 degraded)"
+  }
+}
+```
+
+> **DERIVED**: line 2190 — 保證端到端 Token 數量穩定，壓低推論成本與延遲
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 滑動視窗保留最近輪次，超出 8192 token 閾值時自動觸發非同步摘要壓縮 (HTTP 200)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: N/A
+- **速率/負載限制 (Throttling / 429)**: N/A
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 歷史對話解析異常時僅保留當前回合確保對話不中斷 (HTTP 200 degraded)
+
 ### 對話上下文視窗管理
 
 > LLM 有 context window 上限。多輪對話累積的 messages 可能超過 token 限制，需定義 overflow 處理策略。
@@ -2433,6 +3316,42 @@ class ContextWindowManager:
 
 ## 統一情緒模組
 
+### FR-11: 多輪情緒分析與時間衰減模型 (Multi-turn Emotion Analyzer & Half-Life Decay)
+
+```json
+{
+  "id": "FR-11",
+  "name": "多輪情緒分析與時間衰減模型",
+  "name_en": "Multi-turn Emotion Analyzer & Half-Life Decay",
+  "module": "nlp.emotion",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-11",
+    "p2_sad": "nlp.emotion",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Repudiation: 忽略用戶憤怒情緒導致投訴升級與公關危機", "Tampering: 惡意刷情緒分數干擾客服佇列優先級"],
+  "acceptance_paths": {
+    "happy_path_2xx": "即時判定情緒 (正/中/負) 與強度 (0-1)，以 24hr 半衰期計算歷史衰減情緒分 (HTTP 200)",
+    "auth_boundary_401_403": "AGENT 外部對等調用通路自動 Bypass 情緒分析節省延遲 (HTTP 200 bypass)",
+    "throttling_429": "N/A (正則與輕量分析延遲 < 5ms)",
+    "degradation_error_400_422_5xx": "連續 3 輪負面情緒立即發出紅色警報並提升轉接為 Urgent (SLA < 5min)"
+  }
+}
+```
+
+> **DERIVED**: line 2434 — 特殊語氣詞（吼、咧、嘛）優先判定為急躁情緒，啟動安撫策略
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 即時判定情緒 (正/中/負) 與強度 (0-1)，以 24hr 半衰期計算歷史衰減情緒分 (HTTP 200)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: AGENT 外部對等調用通路自動 Bypass 情緒分析節省延遲 (HTTP 200 bypass)
+- **速率/負載限制 (Throttling / 429)**: N/A (正則與輕量分析延遲 < 5ms)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 連續 3 輪負面情緒立即發出紅色警報並提升轉接為 Urgent (SLA < 5min)
+
 ```python
 import math
 from dataclasses import dataclass
@@ -2494,6 +3413,42 @@ class EmotionTracker:
 ---
 
 ## 人工轉接
+
+### FR-19: 人工轉接與 SLA 優先佇列 (Human Escalation & Priority Queuing via WebSocket)
+
+```json
+{
+  "id": "FR-19",
+  "name": "人工轉接與 SLA 優先佇列",
+  "name_en": "Human Escalation & Priority Queuing via WebSocket",
+  "module": "escalation.queue",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-19",
+    "p2_sad": "escalation.queue",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Denial of Service: 惡意批量觸發轉接塞滿客服佇列", "Information Disclosure: 客服接管過程中 WebSocket 訊息洩漏給未授權客戶端"],
+  "acceptance_paths": {
+    "happy_path_2xx": "轉接請求按優先級 (Urgent 5m / High 15m / Normal 30m) 排入佇列，WebSocket 即時推送接管 (HTTP 200 / SLA >= 95%)",
+    "auth_boundary_401_403": "WebSocket `/ws/agent` 連線需驗證 Agent 角色 JWT，無效拒絕連線 (HTTP 401 / 403)",
+    "throttling_429": "轉接佇列滿載時啟動忙碌排隊機制並通知用戶等待時間 (HTTP 200 + Queue Notice)",
+    "degradation_error_400_422_5xx": "客服連線中斷時對話自動重新掛回佇列頂端防止漏單 (HTTP 200 recover)"
+  }
+}
+```
+
+> **DERIVED**: line 2496 — WebSocket 支援雙向 heartbeat (30s ping / 10s timeout)
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 轉接請求按優先級 (Urgent 5m / High 15m / Normal 30m) 排入佇列，WebSocket 即時推送接管 (HTTP 200 / SLA >= 95%)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: WebSocket `/ws/agent` 連線需驗證 Agent 角色 JWT，無效拒絕連線 (HTTP 401 / 403)
+- **速率/負載限制 (Throttling / 429)**: 轉接佇列滿載時啟動忙碌排隊機制並通知用戶等待時間 (HTTP 200 + Queue Notice)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 客服連線中斷時對話自動重新掛回佇列頂端防止漏單 (HTTP 200 recover)
 
 ```python
 from dataclasses import dataclass
@@ -2572,6 +3527,42 @@ class EscalationManager:
 ---
 
 ## RBAC 權限管理
+
+### FR-18: 7 大角色 RBAC 權限管理 (Role-Based Access Control & Decorator Middleware)
+
+```json
+{
+  "id": "FR-18",
+  "name": "7 大角色 RBAC 權限管理",
+  "name_en": "Role-Based Access Control & Decorator Middleware",
+  "module": "security.rbac",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-18",
+    "p2_sad": "security.rbac",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Elevation of Privilege: 低權限角色 (customer/editor) 嘗試存取管理端點 (admin/dpo)", "Spoofing: 偽造身份宣告 JWT 權限"],
+  "acceptance_paths": {
+    "happy_path_2xx": "角色權限匹配，裝飾器中介層驗證通過並放行 API 操作 (HTTP 200)",
+    "auth_boundary_401_403": "未攜帶 Bearer Token (HTTP 401) 或角色權限不足 (HTTP 403 AUTHZ_INSUFFICIENT_ROLE)",
+    "throttling_429": "連續權限探測與密碼錯誤觸發帳號鎖定 (HTTP 429 / 403)",
+    "degradation_error_400_422_5xx": "傳入不存在的角色或無效權限標識 (HTTP 422 VALIDATION_ERROR)"
+  }
+}
+```
+
+> **DERIVED**: line 2574 — 嚴格定義 7 角色 (anonymous, customer, agent, editor, admin, auditor, dpo) 權限矩陣
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 角色權限匹配，裝飾器中介層驗證通過並放行 API 操作 (HTTP 200)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: 未攜帶 Bearer Token (HTTP 401) 或角色權限不足 (HTTP 403 AUTHZ_INSUFFICIENT_ROLE)
+- **速率/負載限制 (Throttling / 429)**: 連續權限探測與密碼錯誤觸發帳號鎖定 (HTTP 429 / 403)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 傳入不存在的角色或無效權限標識 (HTTP 422 VALIDATION_ERROR)
 
 （6 個角色定義見 line 2484，Enforcement 見 line 2531）
 
@@ -2676,6 +3667,42 @@ rbac = RBACEnforcer()
 
 ## A/B Testing 框架
 
+### FR-24: A/B Testing 實驗框架 (Deterministic SHA-256 Hash Experimentation Framework)
+
+```json
+{
+  "id": "FR-24",
+  "name": "A/B Testing 實驗框架",
+  "name_en": "Deterministic SHA-256 Hash Experimentation Framework",
+  "module": "experiment.ab",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-24",
+    "p2_sad": "experiment.ab",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Tampering: 篡改分流權重或竄改用戶實驗分組", "Repudiation: 實驗指標未記錄導致評估結果不可復現"],
+  "acceptance_paths": {
+    "happy_path_2xx": "基於 `SHA-256(user_id + experiment_name)` 進行確定性分流，準確分配對照組與實驗組 (HTTP 200 / 準確率 >= 95%)",
+    "auth_boundary_401_403": "實驗建立與開關變更僅限 Admin 角色 (`experiment:write`) 存取 (HTTP 401 / 403)",
+    "throttling_429": "實驗管理 API 頻率限制 (HTTP 429)",
+    "degradation_error_400_422_5xx": "實驗權重配置總和不等於 100% 時拋出驗證錯誤 (HTTP 422)"
+  }
+}
+```
+
+> **DERIVED**: line 2677 — 確定性雜湊保證同用戶在實驗期間體驗一致性
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 基於 `SHA-256(user_id + experiment_name)` 進行確定性分流，準確分配對照組與實驗組 (HTTP 200 / 準確率 >= 95%)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: 實驗建立與開關變更僅限 Admin 角色 (`experiment:write`) 存取 (HTTP 401 / 403)
+- **速率/負載限制 (Throttling / 429)**: 實驗管理 API 頻率限制 (HTTP 429)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 實驗權重配置總和不等於 100% 時拋出驗證錯誤 (HTTP 422)
+
 （與 Response Generator 銜接見 line 2735 _apply_ab_variant）
 
 ```python
@@ -2769,6 +3796,42 @@ class ABTestManager:
 ---
 
 ## Response Generator（回覆產生器）
+
+### FR-17: 回覆生成與語氣調適 (Response Generator & Dynamic Tone Adjustment)
+
+```json
+{
+  "id": "FR-17",
+  "name": "回覆生成與語氣調適",
+  "name_en": "Response Generator & Dynamic Tone Adjustment",
+  "module": "response.generator",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-17",
+    "p2_sad": "response.generator",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Tampering: 回覆模板注入惡意語法或變數污染", "Information Disclosure: 錯誤訊息向用戶端拋出內部程式堆疊"],
+  "acceptance_paths": {
+    "happy_path_2xx": "依據情緒評分動態套用敬語/同理語氣，並轉化為各平台專屬 UI 格式 (Quick Replies, Buttons) (HTTP 200)",
+    "auth_boundary_401_403": "N/A",
+    "throttling_429": "N/A",
+    "degradation_error_400_422_5xx": "模板變數渲染失敗時回退為安全預設字串，嚴禁拋出原始例外 (HTTP 200 fallback)"
+  }
+}
+```
+
+> **DERIVED**: line 2771 — zh-TW 本地化語氣調適，禁止生成冷漠或冒犯性詞彙
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 依據情緒評分動態套用敬語/同理語氣，並轉化為各平台專屬 UI 格式 (Quick Replies, Buttons) (HTTP 200)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: N/A
+- **速率/負載限制 (Throttling / 429)**: N/A
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 模板變數渲染失敗時回退為安全預設字串，嚴禁拋出原始例外 (HTTP 200 fallback)
 
 架構圖中 `Response Generator + A/B Testing Variant 選擇` 是一個獨立節點，本節定義其內部規格。
 
@@ -2896,6 +3959,42 @@ class ResponseGenerator:
 ---
 
 ## 可觀測性層
+
+### FR-21: 結構化可觀測性與分散式追蹤 (Structured Logging, Prometheus Metrics & OpenTelemetry)
+
+```json
+{
+  "id": "FR-21",
+  "name": "結構化可觀測性與分散式追蹤",
+  "name_en": "Structured Logging, Prometheus Metrics & OpenTelemetry",
+  "module": "observability",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-21",
+    "p2_sad": "observability",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Information Disclosure: 日誌中意外列印 PII 或敏感 API Key", "Repudiation: 關鍵業務動作遺失 TraceID 導致無法審計追溯"],
+  "acceptance_paths": {
+    "happy_path_2xx": "所有請求輸出 JSON 結構化日誌、Prometheus Metrics 與 OpenTelemetry Trace Context (HTTP 200)",
+    "auth_boundary_401_403": "Prometheus `/metrics` 端點需受內部網路或 BasicAuth 保護 (HTTP 401 / 403)",
+    "throttling_429": "日誌量激增時自動啟用採樣策略避免磁碟耗盡 (HTTP 200 sampled)",
+    "degradation_error_400_422_5xx": "監控收集端點不可用時本機日誌正常寫入不受阻 (HTTP 200 degraded)"
+  }
+}
+```
+
+> **DERIVED**: line 2898 — 整合 Prometheus 告警閾值（可用性 < 99.95%, p95 > 0.8s, 錯誤率 > 0.5%）
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: 所有請求輸出 JSON 結構化日誌、Prometheus Metrics 與 OpenTelemetry Trace Context (HTTP 200)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: Prometheus `/metrics` 端點需受內部網路或 BasicAuth 保護 (HTTP 401 / 403)
+- **速率/負載限制 (Throttling / 429)**: 日誌量激增時自動啟用採樣策略避免磁碟耗盡 (HTTP 200 sampled)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 監控收集端點不可用時本機日誌正常寫入不受阻 (HTTP 200 degraded)
 
 ### 結構化日誌
 
@@ -3077,6 +4176,42 @@ groups:
 ---
 
 ## 異步任務系統 (Background Job System)
+
+### FR-22: 異步背景任務系統 (Background Job System with SAQ Worker & Embedding Pipeline)
+
+```json
+{
+  "id": "FR-22",
+  "name": "異步背景任務系統",
+  "name_en": "Background Job System with SAQ Worker & Embedding Pipeline",
+  "module": "background.saq",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-22",
+    "p2_sad": "background.saq",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Denial of Service: 惡意大量知識批次匯入造成背景佇列記憶體耗盡", "Tampering: 任務參數在佇列中被竄改"],
+  "acceptance_paths": {
+    "happy_path_2xx": "SAQ Worker 異步處理知識 Embedding 生成 (p95 < 30s)；知識新增時同步首 Chunk 消除搜尋黑暗期 (HTTP 200)",
+    "auth_boundary_401_403": "內部佇列操作受 Redis AUTH / ACL 保護 (HTTP 401 / 403)",
+    "throttling_429": "佇列任務堆積超過告警閾值時自動告警與限流 (HTTP 429)",
+    "degradation_error_400_422_5xx": "任務失敗自動執行指數退避重試 (Max 3 次)，重試耗盡進入 Dead-Letter 佇列 (HTTP 500 Retry/DLQ)"
+  }
+}
+```
+
+> **DERIVED**: line 3079 — 同步首 Chunk 機制確保知識入庫後第一時間可被語義檢索
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: SAQ Worker 異步處理知識 Embedding 生成 (p95 < 30s)；知識新增時同步首 Chunk 消除搜尋黑暗期 (HTTP 200)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: 內部佇列操作受 Redis AUTH / ACL 保護 (HTTP 401 / 403)
+- **速率/負載限制 (Throttling / 429)**: 佇列任務堆積超過告警閾值時自動告警與限流 (HTTP 429)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 任務失敗自動執行指數退避重試 (Max 3 次)，重試耗盡進入 Dead-Letter 佇列 (HTTP 500 Retry/DLQ)
 
 > 參考：Dify 開源架構 (GitHub: langgenius/dify, 70k+ stars) 的 Celery-based async task pattern。
 > OmniBot 採用更輕量的 SAQ (Simple Async Queue, GitHub 2k+ stars) — Redis-only dependency，原生 async/await。
@@ -3329,6 +4464,42 @@ T+5-15s: SAQ Worker 完成其餘 chunks → 全部就緒
 ---
 
 ## 高可用性
+
+### FR-28: 高可用性、Redis 異步流與故障隔離 (High Availability, Redis Streams & Circuit Breaker)
+
+```json
+{
+  "id": "FR-28",
+  "name": "高可用性、Redis 異步流與故障隔離",
+  "name_en": "High Availability, Redis Streams & Circuit Breaker",
+  "module": "core.ha",
+  "p1_p8_penetration": {
+    "p1_srs": "SRS.md#fr-28",
+    "p2_sad": "core.ha",
+    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
+    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
+    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p7_risk": "STRIDE Threats Verified & Mitigated",
+    "p8_config": "CONFIG_RECORDS & BASELINE"
+  },
+  "stride_threats": ["Denial of Service: 單一第三方依賴 (OpenAI / LINE / Meta) 故障引發雪崩效應癱瘓全系統"],
+  "acceptance_paths": {
+    "happy_path_2xx": "Redis Streams 異步解耦高並發流量；故障注入時 Circuit Breaker 自動熔斷並降級 (HTTP 200)",
+    "auth_boundary_401_403": "N/A",
+    "throttling_429": "熔斷開啟狀態下快速回退至備用邏輯，防止資源耗盡 (HTTP 200 degraded)",
+    "degradation_error_400_422_5xx": "外部分析或非關鍵服務離線時核心客服路徑保持可用 (HTTP 200 降級運行)"
+  }
+}
+```
+
+> **DERIVED**: line 3331 — 支援 Multi-model Fallback 矩陣與 Redis Fail-open 設計
+
+#### 四類邊界測試路徑 (Boundary Test Paths)
+- **正常流程 (Happy Path / 2xx)**: Redis Streams 異步解耦高並發流量；故障注入時 Circuit Breaker 自動熔斷並降級 (HTTP 200)
+- **認證/授權邊界 (Auth Boundary / 401/403)**: N/A
+- **速率/負載限制 (Throttling / 429)**: 熔斷開啟狀態下快速回退至備用邏輯，防止資源耗盡 (HTTP 200 degraded)
+- **異常與降級驗證 (Degradation & Error / 400/422/5xx)**: 外部分析或非關鍵服務離線時核心客服路徑保持可用 (HTTP 200 降級運行)
 
 ### Redis Streams 異步處理
 
@@ -4630,104 +5801,94 @@ e2e_scenarios:
 
 ## 開發任務（完整版）
 
-### Milestone 1
+### Milestone 1 (M1: Core Ingress & Knowledge, Weeks 1–3)
+> **品質門禁**: Gate 1 (Ruff ≥ 90, Pyright ≥ 85, Line Coverage ≥ 70%, D4_SpecCoverage ≥ 40%)
 
-- [x] Platform Adapter（Telegram + LINE + Messenger + WhatsApp）
-- [ ] Webhook 簽名驗證（4 平台）
-- [ ] 統一消息格式（UnifiedMessage / UnifiedResponse）
-- [ ] 統一回應格式（ApiResponse / PaginatedResponse）
-- [ ] 輸入清理 L2（字元正規化 + Homoglyph 標準化）
-- [ ] 基礎 PII 去識別化 L4（電話/Email/地址 + 信用卡 Luhn 校驗）
-- [ ] Rate Limiter（Redis-backed Sliding Window + Lua atomic）
-- [ ] IP 白名單
-- [ ] 規則匹配 Knowledge Tier 1
-- [ ] knowledge_chunks 子分塊切割 + Embedding 生成（text-embedding-3-small, 1536維）
-- [ ] knowledge_chunks HNSW 索引建立（m=16, ef_construction=64）
-- [ ] RAG 語義搜尋（含 embedding_model 過濾）
-- [ ] RRF k=60 融合（回傳 KnowledgeResult）
-- [ ] LLM 生成 Tier 3
-- [ ] DST 對話狀態機
+- [x] **FR-01**: 多通路訊息接入（Telegram + LINE + Messenger + WhatsApp）與 `UnifiedMessage` 正規化
+- [ ] **FR-02**: Webhook 簽名驗證（4 平台 HMAC-SHA256 常數時間比較）
+- [ ] **FR-01**: 統一回應格式（`ApiResponse` / `PaginatedResponse`）
+- [ ] **FR-03**: PALADIN L1 輸入清理（NFKC 字元正規化 + Homoglyph 偽裝字元映射）
+- [ ] **FR-08**: PII 去識別化（電話/Email/台灣地址 + 信用卡 Luhn 校驗）
+- [ ] **FR-09**: 分散式 Rate Limiter（Redis-backed Sliding Window + Lua atomic）
+- [ ] **FR-10**: CIDR 格式 IP 白名單檢查（最多 100 組）
+- [ ] **FR-13**: 知識檢索 Tier 1（PostgreSQL ILIKE 精確/關鍵字匹配）
+- [ ] **FR-14**: knowledge_chunks 子分塊切割 + Embedding 生成（1536維）與 HNSW 索引（m=16, ef=64）
+- [ ] **FR-14**: RAG 語義搜尋 + RRF k=60 融合
+- [ ] **FR-15**: 知識檢索 Tier 3（LLM 生成與主備模型定義）
+- [ ] **FR-12**: DST 對話狀態機（8 狀態 FSM + Slot Filling）
 
-### Milestone 2
+### Milestone 2 (M2: Security & Workflow, Weeks 4–6)
+> **品質門禁**: Gate 2 (Score ≥ 75, Mutmut ≥ 70%, 函式長度 ≤ 50 行, CC ≤ 10, D4_SpecCoverage ≥ 60%)
 
-- [ ] 統一情緒模組（含衰減 + 連續偵測）
-- [ ] Prompt Injection 防護 L3（Sandwich Defense）
-- [ ] Grounding Checks L5
-- [ ] 人工轉接 + SLA
-- [ ] 用戶回饋收集
-- [ ] RBAC 權限定義 + Enforcement 中間件
-- [ ] 管理 API 加上 BearerAuth + RBAC 保護
-- [ ] A/B Testing 框架（hashlib 確定性分配）
-- [ ] 結構化日誌（JSON Logger）
-- [ ] Prometheus Metrics
-- [ ] OpenTelemetry Tracing
-- [ ] Grafana Dashboards
-- [ ] 告警規則設定（Prometheus）
-- [ ] Redis Streams 異步處理（classmethod factory）
-- [ ] 指數退避重試機制
+- [ ] **FR-11**: 統一情緒模組（24hr 半衰期衰減 + 連續 3 輪負面紅色警報）
+- [ ] **FR-04**: PALADIN L2 可疑 Pattern 偵測
+- [ ] **FR-05**: PALADIN L3 指令層次與三明治防護 (Sandwich Defense + Spotlighting)
+- [ ] **FR-07**: PALADIN L5 Grounding Checks (Cosine 相似度 ≥ 0.75)
+- [ ] **FR-19**: 人工轉接優先佇列與 SLA 追蹤
+- [ ] **FR-18**: 7 大角色 RBAC 權限定義 + 中介層攔截器
+- [ ] **FR-24**: A/B Testing 框架（SHA-256 確定性分流）
+- [ ] **FR-21**: 結構化 JSON 日誌、Prometheus Metrics 與 OpenTelemetry Tracing
+- [ ] **FR-21**: Grafana Dashboards 與 Prometheus 告警規則
+- [ ] **FR-28**: Redis Streams 異步處理與指數退避重試機制
 
-### Milestone 3
+### Milestone 3 (M3: Reliability & Infra, Weeks 6–8)
+> **品質門禁**: Gate 3 (Score ≥ 80, D4_SpecCoverage ≥ 80%, Line Coverage ≥ 80%, Red Team 零重大漏洞)
 
-- [ ] TDE 加密 + Redis TLS/AUTH/ACL
-- [ ] Docker Compose 開發環境（含 otel + prometheus + grafana）
-- [ ] Kubernetes Deployment + Service
-- [ ] 備份策略（pg_basebackup + WAL + Redis RDB/AOF）
-- [ ] Rollback 策略 + 降級策略
-- [ ] 負載測試（k6, 4 場景, 2000 TPS）
-- [ ] 成本模型 + 月度報告 SQL
-- [ ] Schema 遷移管理（Alembic）
-- [ ] i18n 擴充指引
-- [ ] 黃金數據集初始化（500 筆）
-- [ ] 健康檢查端點
-- [ ] ODD SQL 查詢（完整版）
-- [ ] Semantic Injection Classifier L4 (PALADIN Layer 4)
-- [ ] LLM-as-a-Judge 評測框架（Ensemble Judge + Rubric）
+- [ ] **NFR-Security**: PostgreSQL TDE 加密 + Redis TLS/AUTH/ACL
+- [ ] **NFR-Deployability**: Docker Compose 整合環境 + Kubernetes Deployment/Service/HPA
+- [ ] **NFR-Reliability**: 災備備份策略 (pg_basebackup + WAL) 與 5 分鐘 Rollback
+- [ ] **NFR-Scalability**: k6 負載測試（4 場景, 2000 TPS 壓測驗證）
+- [ ] **NFR-Maintainability**: Alembic 版本化資料庫遷移腳本
+- [ ] **NFR-Testability**: 500 筆黃金數據集建立與校準 (Cohen's Kappa ≥ 0.7)
+- [ ] **FR-06**: PALADIN L4 語義注入分類器 (LLM Classifier)
+- [ ] **FR-20**: LLM-as-a-Judge 評測框架（Ensemble Judge + Politeness/Accuracy Rubric）
 
-### Milestone 4
+### Milestone 4 (M4: Background & Compliance, Weeks 8–11)
+> **品質門禁**: Gate 4 (Score ≥ 85, D4_SpecCoverage ≥ 90%, 4a/4b/4c 追溯閉環 100%, Gitleaks=100, Bandit≥80)
 
-- [ ] Background Job System（SAQ Worker + Embedding Job）
-- [ ] WebSocket 端點（/ws/agent + /ws/user）
-- [ ] M2M Token 管理 API（issuance/rotation/revocation）
-- [ ] 使用者管理 API（/api/v1/auth/* + /api/v1/users/*）
-- [ ] 多媒體訊息處理路徑（IMAGE/FILE/LOCATION/STICKER）
-- [ ] GDPR 資料生命週期管理（查閱/刪除/封存）
-- [ ] 對話 Context Window 管理（sliding window + summarization）
-- [ ] Response Generator（Template + Emotion Tone + Platform Adapter）
-- [ ] E2E 整合測試策略（unit 70% + integration 20% + E2E 10%）
-- [ ] A2AAdapter 雙向實作（Client + Server agent card）
-- [ ] Embedding 降級策略（tsvector fallback + 本地 bge-m3 備援）
-- [ ] L4 Classifier 降級策略（bypass + aggressive L3 mode + 事後補評）
-- [ ] 同步首 Chunk embedding 策略（對抗搜尋黑暗期）
-- [ ] PALADIN L4 平行化管線（非阻塞 medium risk 請求）
+- [ ] **FR-22**: Background Job System (SAQ Worker + Embedding Job)
+- [ ] **FR-19**: WebSocket 端點 (`/ws/agent` + `/ws/user`) 與 Heartbeat
+- [ ] **FR-26**: M2M Token 管理 API (issuance/rotation/revocation)
+- [ ] **FR-26**: 使用者管理 API (`/api/v1/auth/*` + `/api/v1/users/*`)
+- [ ] **FR-25**: 多媒體訊息處置路徑 (IMAGE/FILE/LOCATION/STICKER)
+- [ ] **FR-23**: GDPR 資料生命週期管理 (查閱/刪除/封存/匿名化)
+- [ ] **FR-27**: 對話 Context Window 管理 (Sliding window + Summarization)
+- [ ] **FR-17**: Response Generator (Template + Emotion Tone + Platform Formatters)
+- [ ] **FR-16**: Action Execution Engine 與 A2AAdapter 雙向協議實作
+- [ ] **FR-06**: PALADIN L4 平行化非阻塞管線
+- [ ] **FR-22**: 同步首 Chunk Embedding 策略（對抗搜尋黑暗期）
+- [ ] **P5~P8**: 4a/4b/4c 追溯驗證閉環，產出 `attestation.json`，完成 Release Handover
 
 ---
 
 ## 驗收標準（完整版）
 
-| KPI | 目標 | 測試方法 |
-|-----|------|----------|
-| **FCR (首問解決率)** | >= 90% | ODD SQL 查詢 |
-| **p95 延遲** | < 1.0s | k6 壓力測試 |
-| **平台支援** | 6 個 | 功能測試 |
-| **Webhook 驗證** | 4 平台 | 滲透測試 |
-| **PII 遮蔽** | 電話/Email/地址 + Luhn | 單元測試 |
-| **安全阻擋率** | >= 95% | 紅隊測試 |
-| **Grounding** | 100% 知識對齊 (L5 相似度 >= 0.75) | L5 單元測試 |
-| **Prompt Injection 防禦** | PALADIN L1-L5 全層覆蓋 | 紅隊測試 + OWASP LLM01 checklist |
-| **LLM-as-a-Judge** | Cohen's Kappa >= 0.7 vs 人工標註 | 500 筆黃金集校準 |
-| **Background Job** | Embedding job p95 < 30s | SAQ dashboard |
-| **轉接 SLA** | >= 95% | ODD SQL 查詢 |
-| **黃金數據集** | >= 500 筆 | 數量檢查 |
-| **可用性** | >= 99.9% | 監控儀表板 |
-| **災備復原** | < 5 分鐘 | 演練測試 |
-| **錯誤率** | < 1% | Prometheus |
-| **成本** | < $500/月 | 成本儀表板 |
-| **RBAC** | 4 角色完整 | 功能測試 |
-| **A/B 自動化** | >= 95% 準確率 | 統計分析 |
-| **Agentic Tool 呼叫** | 成功率 >= 95% | 模擬接口集成測試 |
-| **LLM Fallback 切換時間** | < 500ms | 故障注入測試 |
-| **1536維向量召回率 (Recall@3)** | >= 92% | 黃金數據集回歸測試 |
-| **後台與監控看板** | 響應時間 < 1.5s，100% 數據即時連動 | Lighthouse 審計 / 手動驗收 |
+| 關聯 ID / 維度 | 驗收指標 | 定量門檻 | 測試與驗證方法 | 對應階段 |
+|--------------|---------|---------|--------------|---------|
+| **FR-13~15** (業務) | **FCR (首問解決率)** | ≥ 90% | ODD SQL 查詢統計（無人介入完成率） | P1, P5 (4a) |
+| **NFR-Performance** | **p95 端到端延遲** | < 1.0s (2000 TPS) | k6 壓力測試 (4 大場景) | P4 Gate 3, P6 Gate 4 |
+| **FR-01** (通路) | **平台支援度** | 6 通路完整相容 | 整合測試 (Telegram, LINE, Meta, WA, Web, A2A) | P3 Gate 1 |
+| **FR-02** (安全) | **Webhook 簽名驗證** | 100% 常數時間比對 | 簽名碰撞與重放滲透測試 | P3 Gate 1, P4 |
+| **FR-08** (安全) | **PII 去識別化** | 電話/Email/地址 + Luhn 100% 遮蔽 | 單元測試邊界注入 | P3 Gate 1 |
+| **FR-03~06** (安全) | **安全阻擋率 (Security)** | ≥ 95% 阻斷率 | 紅隊滲透 + OWASP LLM01 Checklist | P4 Gate 3 (Red Team) |
+| **FR-07** (知識) | **Grounding 知識對齊** | 100% 對齊 (Cosine ≥ 0.75) | L5 單元測試斷言 | P3 Gate 1 |
+| **FR-20** (評測) | **LLM-as-a-Judge 一致性** | Cohen's Kappa ≥ 0.7 | 500 筆黃金集人工雙盲校準 | P4 Gate 3 |
+| **FR-22** (效能) | **Background Job 延遲** | Embedding p95 < 30s | SAQ 任務耗時統計 | P4 Gate 3 |
+| **FR-19** (SLA) | **轉接 SLA 遵守率** | ≥ 95% (Urgent 5m / High 15m / Normal 30m) | ODD SQL 審查 | P5 (4a/4c) |
+| **NFR-Reliability** | **系統可用性 (Availability)** | ≥ 99.9% / 月 | Prometheus Uptime 監控 | P4, P8 |
+| **NFR-Reliability** | **災備復原時間 (MTTR)** | < 5 分鐘 | DR 故障演練注入 | P4 Gate 3, P8 |
+| **NFR-Reliability** | **系統錯誤率** | < 1% | Prometheus 錯誤指標 | P4, P6 |
+| **NFR-Maintainability** | **代碼複雜度與長度** | 函式 ≤ 50 行, CC ≤ 10 | Radon-mi & AST 檢查 | P3 Gate 2, P6 |
+| **NFR-Maintainability** | **靜態分析與型別** | Ruff ≥ 90, Pyright ≥ 85 | CI 門禁檢查 | P3 Gate 1~Gate 4 |
+| **NFR-Testability** | **單元測試覆蓋率** | P3 ≥ 70%, P4+ ≥ 80% | pytest-cov (Line Coverage) | P3 Gate 2, P4 Gate 3 |
+| **NFR-Testability** | **突變測試存活率** | ≥ 70% | mutmut mutation score | P3 Gate 2, P4 Gate 3 |
+| **NFR-Security** | **機密掃描與安全分析** | Gitleaks = 100, Bandit ≥ 80 | 安全掃描工具集成 | P3 Gate 2, P4, P6 |
+| **FR-18** (權限) | **RBAC 權限覆蓋** | 7 大角色 100% 阻斷越權 | API 授權邊界測試 | P3 Gate 1 |
+| **FR-24** (實驗) | **A/B Testing 準確率** | ≥ 95% 確定性分流 | 統計顯著性檢定 | P3 Gate 2 |
+| **FR-16** (代理) | **Agentic Tool 調用成功率** | ≥ 95% (Timeout ≤ 2.0s) | 模擬介面整合測試 | P3 Gate 1, P4 |
+| **FR-15** (容錯) | **LLM Fallback 切換時間** | < 500ms | 故障注入測試 | P3 Gate 1, P4 |
+| **FR-14** (檢索) | **1536維向量召回率** | Recall@3 ≥ 92% | 黃金數據集回歸測試 | P3 Gate 1, P4 |
+| **NFR-Usability** | **後台與監控看板** | 響應時間 < 1.5s, 100% 即時連動 | Lighthouse 審計 | P4 Gate 3 |
 
 ---
 
@@ -4792,6 +5953,32 @@ e2e_scenarios:
 | **分散式 Rate Limiter (Redis ZSET + Lua)** | Y |
 
 ---
+
+
+
+---
+
+## 延遲與未納入範圍需求清單 (Deferred & Out-of-Scope Requirements)
+
+以下需求已明確標記為 `FR-XX-deferred`，現階段不納入開發範圍，避免 Front-edge 檢查誤判：
+
+### FR-29-deferred: 原生多模態視覺理解 (Native Multimodal Vision QA)
+- **原因與邊界**：圖片與視訊解析計算成本較高，目前採用「收到圖片/視訊自動升級人工轉接 (FR-25)」處置。預計於 v9.0 評估 GPT-4V / Claude Vision 成本效益後規劃。
+
+### FR-30-deferred: 檔案與文件 OCR/AI 解析 (File & Document OCR/AI Parsing)
+- **原因與邊界**：PDF/Word 等文件解析涉及複雜版面分析，現階段由人工客服接管。預計於 v9.1 評估專用 Document AI 模組。
+
+### FR-31-deferred: 即時語音與音訊串流處理 (Real-time Voice & Audio Streaming)
+- **原因與邊界**：語音轉文字 (STT) 與文字轉語音 (TTS) 串流容易突破 p95 < 1.0s 之嚴格延遲門檻，保留至語音專用通道專案獨立開發。
+
+### FR-32-deferred: 繁中與英文以外之多語系支援 (Multi-language Support Beyond zh-TW and English)
+- **原因與邊界**：本專案聚焦於台灣繁體中文 (zh-TW) 與通用英語 (en) 客群，其他語系納入後續國際化擴充評估。
+
+### FR-33-deferred: 自建 In-house LLM 微調管線 (Custom In-house LLM Fine-tuning Pipeline)
+- **原因與邊界**：現有 4-Tier 知識庫與 RAG + Prompt Engineering 架構已達 90% FCR 與 100% 知識對齊，自建微調成本效益尚待評估。
+
+### FR-34-deferred: 原生行動端 App (Native Mobile Applications)
+- **原因與邊界**：OmniBot 依托 Telegram, LINE, WhatsApp, Messenger 與 Web Widget 原生介面，無需維護專屬 iOS/Android App。
 
 ## 版本資訊
 
