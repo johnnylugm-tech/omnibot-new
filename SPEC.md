@@ -288,6 +288,45 @@ nfr_specifications:
 }
 ```
 
+
+#### 驗收條件 AC 編號化 (FR-20 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-20.AC1 ~ AC4`,供下游 `tests/test_fr_20_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-20.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 LLM-as-a-Judge Evaluation Framework 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 LLM-as-a-Judge Evaluation Framework 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-20 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-20.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-20 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-20.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-20 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-20.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-20 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
+```
+
 > **DERIVED**: line 100 — 評測 CSAT 採 20% 抽樣與雙模型 Ensemble 取 max/min 降低單一偏差
 
 #### 四類邊界測試路徑 (Boundary Test Paths)
@@ -972,6 +1011,45 @@ class PaginatedResponse(ApiResponse[List[T]], Generic[T]):
 }
 ```
 
+
+#### 驗收條件 AC 編號化 (FR-26 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-26.AC1 ~ AC4`,供下游 `tests/test_fr_26_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-26.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 User Management & M2M Token Lifecycle API 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 User Management & M2M Token Lifecycle API 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-26 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-26.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-26 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-26.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-26 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-26.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-26 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
+```
+
 > **DERIVED**: line 750 / 805 — M2M Token 支援定期輪替 (Rotation) 與即時撤銷 (Revocation)
 
 #### 四類邊界測試路徑 (Boundary Test Paths)
@@ -1119,6 +1197,45 @@ paths:
 }
 ```
 
+
+#### 驗收條件 AC 編號化 (FR-01 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-01.AC1 ~ AC4`,供下游 `tests/test_fr_01_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-01.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 Multi-Platform Ingress & Normalization 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 Multi-Platform Ingress & Normalization 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-01 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-01.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-01 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-01.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-01 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-01.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-01 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
+```
+
 > **DERIVED**: line 859 — 統一跨通路欄位映射規範，保障下游模組無歧義消費
 
 #### 四類邊界測試路徑 (Boundary Test Paths)
@@ -1199,6 +1316,45 @@ class UnifiedResponse:
 }
 ```
 
+
+#### 驗收條件 AC 編號化 (FR-25 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-25.AC1 ~ AC4`,供下游 `tests/test_fr_25_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-25.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 Multimedia Message Handling & Escalation Path 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 Multimedia Message Handling & Escalation Path 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-25 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-25.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-25 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-25.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-25 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-25.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-25 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
+```
+
 > **DERIVED**: line 905 — 現階段不進行雲端 OCR 與 Vision 深度解析，採自動轉接保護體驗
 
 #### 四類邊界測試路徑 (Boundary Test Paths)
@@ -1274,6 +1430,45 @@ media_handling:
     "degradation_error_400_422_5xx": "缺少 X-Signature Header 或 Body 為空 (HTTP 400 Bad Request)"
   }
 }
+```
+
+
+#### 驗收條件 AC 編號化 (FR-02 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-02.AC1 ~ AC4`,供下游 `tests/test_fr_02_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-02.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 Webhook Signature Verification & M2M Authentication 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 Webhook Signature Verification & M2M Authentication 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-02 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-02.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-02 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-02.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-02 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-02.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-02 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
 ```
 
 > **DERIVED**: line 944 — 簽名演算法採常數時間比對 hmac.compare_digest 防止 Timing Attack
@@ -1410,6 +1605,45 @@ Layer 5: Output Validation   → Grounding Check 輸出知識對齊驗證
 }
 ```
 
+
+#### 驗收條件 AC 編號化 (FR-03 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-03.AC1 ~ AC4`,供下游 `tests/test_fr_03_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-03.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 Input Sanitization & Homoglyph Normalization 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 Input Sanitization & Homoglyph Normalization 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-03 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-03.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-03 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-03.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-03 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-03.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-03 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
+```
+
 > **DERIVED**: line 1044 — 於最前端統一替換混淆字符，確保後續 L2-L5 規則與檢索精確
 
 #### 四類邊界測試路徑 (Boundary Test Paths)
@@ -1481,6 +1715,45 @@ class InputSanitizer:
 }
 ```
 
+
+#### 驗收條件 AC 編號化 (FR-04 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-04.AC1 ~ AC4`,供下游 `tests/test_fr_04_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-04.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 Pattern Detection & Anti-Prompt Injection 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 Pattern Detection & Anti-Prompt Injection 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-04 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-04.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-04 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-04.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-04 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-04.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-04 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
+```
+
 > **DERIVED**: line 1077 — 正則黑名單庫涵蓋中英文已知越獄 Prompt 關鍵詞，延遲控制在 < 3ms
 
 #### 四類邊界測試路徑 (Boundary Test Paths)
@@ -1515,6 +1788,45 @@ class InputSanitizer:
     "degradation_error_400_422_5xx": "封裝後 Token 長度突破模型視窗上限時自動截斷並告警 (HTTP 422)"
   }
 }
+```
+
+
+#### 驗收條件 AC 編號化 (FR-05 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-05.AC1 ~ AC4`,供下游 `tests/test_fr_05_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-05.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 Instruction Hierarchy & Sandwich Defense 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 Instruction Hierarchy & Sandwich Defense 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-05 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-05.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-05 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-05.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-05 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-05.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-05 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
 ```
 
 > **DERIVED**: line 1115 — 系統 Prompt 聲明最高優先級，用戶輸入被降級為不可信數據資料
@@ -1633,6 +1945,45 @@ class PromptInjectionDefense:
     "degradation_error_400_422_5xx": "分類器 LLM 呼叫超時時觸發 Fail-open 機制並記錄審計日誌 (HTTP 200 / Timeout Fail-open)"
   }
 }
+```
+
+
+#### 驗收條件 AC 編號化 (FR-06 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-06.AC1 ~ AC4`,供下游 `tests/test_fr_06_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-06.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 Semantic Injection Classifier & Async Pipeline 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 Semantic Injection Classifier & Async Pipeline 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-06 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-06.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-06 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-06.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-06 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-06.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-06 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
 ```
 
 > **DERIVED**: line 1159 — 平行化策略保證 p95 < 1.0s 延遲 SLA，僅 < 5% 流量觸發同步評測
@@ -1843,6 +2194,45 @@ l4_trigger_policy:
 }
 ```
 
+
+#### 驗收條件 AC 編號化 (FR-08 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-08.AC1 ~ AC4`,供下游 `tests/test_fr_08_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-08.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 PII Masking & Luhn Credit Card Validation 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 PII Masking & Luhn Credit Card Validation 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-08 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-08.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-08 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-08.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-08 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-08.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-08 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
+```
+
 > **DERIVED**: line 1333 — 信用卡採 Luhn 演算法雙重校驗，避免誤判非卡號數字串
 
 #### 四類邊界測試路徑 (Boundary Test Paths)
@@ -1954,6 +2344,45 @@ class PIIMasking:
 }
 ```
 
+
+#### 驗收條件 AC 編號化 (FR-23 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-23.AC1 ~ AC4`,供下游 `tests/test_fr_23_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-23.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 GDPR Data Lifecycle, Export & Deletion 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 GDPR Data Lifecycle, Export & Deletion 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-23 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-23.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-23 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-23.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-23 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-23.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-23 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
+```
+
 > **DERIVED**: line 1408 — 對話 180 天轉冷存檔，2 年徹底清除；PII 審計記錄 90 天自動去識別化
 
 #### 四類邊界測試路徑 (Boundary Test Paths)
@@ -2029,6 +2458,45 @@ async def execute_data_deletion(unified_user_id: str, db):
     "degradation_error_400_422_5xx": "Redis 服務不可用時自動切換為 Fail-open 模式並觸發運維告警 (HTTP 200 degraded)"
   }
 }
+```
+
+
+#### 驗收條件 AC 編號化 (FR-09 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-09.AC1 ~ AC4`,供下游 `tests/test_fr_09_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-09.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 Distributed Rate Limiting with Redis & Lua 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 Distributed Rate Limiting with Redis & Lua 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-09 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-09.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-09 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-09.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-09 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-09.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-09 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
 ```
 
 > **DERIVED**: line 1449 — 採用 Redis ZSET + Lua 原子腳本實現精密滑動視窗限流
@@ -2172,6 +2640,45 @@ class RateLimiter:
     "degradation_error_400_422_5xx": "白名單為空或 X-Forwarded-For 標頭格式畸變回傳錯誤 (HTTP 400 Bad Request)"
   }
 }
+```
+
+
+#### 驗收條件 AC 編號化 (FR-10 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-10.AC1 ~ AC4`,供下游 `tests/test_fr_10_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-10.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 CIDR-based IP Whitelist Enforcement 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 CIDR-based IP Whitelist Enforcement 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-10 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-10.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-10 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-10.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-10 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-10.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-10 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
 ```
 
 > **DERIVED**: line 1554 — 執行順序置於 Webhook 簽名驗證之前，快速過濾非授權流量
@@ -2417,6 +2924,45 @@ class A2AAdapter(ActionAdapter):
 }
 ```
 
+
+#### 驗收條件 AC 編號化 (FR-07 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-07.AC1 ~ AC4`,供下游 `tests/test_fr_07_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-07.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 Grounding Check & Hallucination Mitigation 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 Grounding Check & Hallucination Mitigation 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-07 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-07.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-07 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-07.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-07 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-07.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-07 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
+```
+
 > **DERIVED**: line 1795 — 僅針對 QA 查詢生效，Task/Tool-calling 類訊息由執行結果自我驗證
 
 #### 四類邊界測試路徑 (Boundary Test Paths)
@@ -2549,6 +3095,45 @@ class GroundingChecker:
 }
 ```
 
+
+#### 驗收條件 AC 編號化 (FR-13 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-13.AC1 ~ AC4`,供下游 `tests/test_fr_13_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-13.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 PostgreSQL 精確與關鍵字匹配 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 PostgreSQL 精確與關鍵字匹配 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-13 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-13.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-13 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-13.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-13 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-13.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-13 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
+```
+
 > **DERIVED**: line 1857 — 承擔 40% 業務常見標準問答，0 Token 成本支出
 
 #### 四類邊界測試路徑 (Boundary Test Paths)
@@ -2586,6 +3171,45 @@ class GroundingChecker:
 }
 ```
 
+
+#### 驗收條件 AC 編號化 (FR-14 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-14.AC1 ~ AC4`,供下游 `tests/test_fr_14_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-14.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 pgvector HNSW + RRF k=60 & Parent-Child 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 pgvector HNSW + RRF k=60 & Parent-Child 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-14 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-14.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-14 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-14.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-14 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-14.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-14 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
+```
+
 > **DERIVED**: line 1900 — 採用 150-token 子切塊索引 + 500-token 父切塊上下文召回架構
 
 #### 四類邊界測試路徑 (Boundary Test Paths)
@@ -2621,6 +3245,45 @@ class GroundingChecker:
     "degradation_error_400_422_5xx": "主備模型均超時或生成失敗時無縫轉接至 Tier 4 人工佇列 (HTTP 200 + Escalate)"
   }
 }
+```
+
+
+#### 驗收條件 AC 編號化 (FR-15 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-15.AC1 ~ AC4`,供下游 `tests/test_fr_15_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-15.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 LLM 生成與多模型備援 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 LLM 生成與多模型備援 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-15 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-15.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-15 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-15.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-15 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-15.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-15 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
 ```
 
 > **DERIVED**: line 2085 — 承擔 10% 複雜多輪問答，雙供應商容錯確保 99.9% 可用性
@@ -2966,6 +3629,45 @@ class HybridKnowledge:
 }
 ```
 
+
+#### 驗收條件 AC 編號化 (FR-12 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-12.AC1 ~ AC4`,供下游 `tests/test_fr_12_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-12.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 Dialogue State Tracking & Intent Router FSM 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 Dialogue State Tracking & Intent Router FSM 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-12 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-12.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-12 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-12.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-12 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-12.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-12 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
+```
+
 > **DERIVED**: line 2164 — 嚴格限制 FSM 轉移路徑，防止非法狀態跳躍
 
 #### 四類邊界測試路徑 (Boundary Test Paths)
@@ -3075,6 +3777,45 @@ class DialogueState:
     "degradation_error_400_422_5xx": "A2A 或 MCP 工具調用超過 2.0s 逾時強制中斷並執行補償/轉接 (HTTP 504 Gateway Timeout)"
   }
 }
+```
+
+
+#### 驗收條件 AC 編號化 (FR-16 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-16.AC1 ~ AC4`,供下游 `tests/test_fr_16_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-16.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 Agentic Action Execution 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 Agentic Action Execution 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-16 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-16.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-16 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-16.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-16 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-16.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-16 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
 ```
 
 > **DERIVED**: line 2240 — 統一 ToolDefinition 與 Pydantic 參數校驗，A2A 支援 300s TTL Agent Card 快取
@@ -3246,6 +3987,45 @@ ESCALATED ──[人工介入]──> RESOLVED
 }
 ```
 
+
+#### 驗收條件 AC 編號化 (FR-27 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-27.AC1 ~ AC4`,供下游 `tests/test_fr_27_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-27.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 Conversation Context Window Management 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 Conversation Context Window Management 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-27 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-27.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-27 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-27.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-27 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-27.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-27 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
+```
+
 > **DERIVED**: line 2190 — 保證端到端 Token 數量穩定，壓低推論成本與延遲
 
 #### 四類邊界測試路徑 (Boundary Test Paths)
@@ -3344,6 +4124,45 @@ class ContextWindowManager:
 }
 ```
 
+
+#### 驗收條件 AC 編號化 (FR-11 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-11.AC1 ~ AC4`,供下游 `tests/test_fr_11_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-11.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 Multi-turn Emotion Analyzer & Half-Life Decay 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 Multi-turn Emotion Analyzer & Half-Life Decay 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-11 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-11.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-11 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-11.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-11 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-11.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-11 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
+```
+
 > **DERIVED**: line 2434 — 特殊語氣詞（吼、咧、嘛）優先判定為急躁情緒，啟動安撫策略
 
 #### 四類邊界測試路徑 (Boundary Test Paths)
@@ -3440,6 +4259,45 @@ class EmotionTracker:
     "degradation_error_400_422_5xx": "客服連線中斷時對話自動重新掛回佇列頂端防止漏單 (HTTP 200 recover)"
   }
 }
+```
+
+
+#### 驗收條件 AC 編號化 (FR-19 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-19.AC1 ~ AC4`,供下游 `tests/test_fr_19_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-19.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 Human Escalation & Priority Queuing via WebSocket 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 Human Escalation & Priority Queuing via WebSocket 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-19 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-19.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-19 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-19.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-19 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-19.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-19 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
 ```
 
 > **DERIVED**: line 2496 — WebSocket 支援雙向 heartbeat (30s ping / 10s timeout)
@@ -3554,6 +4412,45 @@ class EscalationManager:
     "degradation_error_400_422_5xx": "傳入不存在的角色或無效權限標識 (HTTP 422 VALIDATION_ERROR)"
   }
 }
+```
+
+
+#### 驗收條件 AC 編號化 (FR-18 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-18.AC1 ~ AC4`,供下游 `tests/test_fr_18_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-18.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 Role-Based Access Control & Decorator Middleware 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 Role-Based Access Control & Decorator Middleware 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-18 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-18.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-18 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-18.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-18 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-18.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-18 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
 ```
 
 > **DERIVED**: line 2574 — 嚴格定義 7 角色 (anonymous, customer, agent, editor, admin, auditor, dpo) 權限矩陣
@@ -3695,6 +4592,45 @@ rbac = RBACEnforcer()
 }
 ```
 
+
+#### 驗收條件 AC 編號化 (FR-24 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-24.AC1 ~ AC4`,供下游 `tests/test_fr_24_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-24.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 Deterministic SHA-256 Hash Experimentation Framework 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 Deterministic SHA-256 Hash Experimentation Framework 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-24 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-24.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-24 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-24.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-24 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-24.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-24 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
+```
+
 > **DERIVED**: line 2677 — 確定性雜湊保證同用戶在實驗期間體驗一致性
 
 #### 四類邊界測試路徑 (Boundary Test Paths)
@@ -3823,6 +4759,45 @@ class ABTestManager:
     "degradation_error_400_422_5xx": "模板變數渲染失敗時回退為安全預設字串，嚴禁拋出原始例外 (HTTP 200 fallback)"
   }
 }
+```
+
+
+#### 驗收條件 AC 編號化 (FR-17 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-17.AC1 ~ AC4`,供下游 `tests/test_fr_17_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-17.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 Response Generator & Dynamic Tone Adjustment 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 Response Generator & Dynamic Tone Adjustment 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-17 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-17.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-17 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-17.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-17 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-17.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-17 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
 ```
 
 > **DERIVED**: line 2771 — zh-TW 本地化語氣調適，禁止生成冷漠或冒犯性詞彙
@@ -3986,6 +4961,45 @@ class ResponseGenerator:
     "degradation_error_400_422_5xx": "監控收集端點不可用時本機日誌正常寫入不受阻 (HTTP 200 degraded)"
   }
 }
+```
+
+
+#### 驗收條件 AC 編號化 (FR-21 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-21.AC1 ~ AC4`,供下游 `tests/test_fr_21_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-21.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 Structured Logging, Prometheus Metrics & OpenTelemetry 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 Structured Logging, Prometheus Metrics & OpenTelemetry 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-21 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-21.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-21 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-21.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-21 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-21.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-21 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
 ```
 
 > **DERIVED**: line 2898 — 整合 Prometheus 告警閾值（可用性 < 99.95%, p95 > 0.8s, 錯誤率 > 0.5%）
@@ -4203,6 +5217,45 @@ groups:
     "degradation_error_400_422_5xx": "任務失敗自動執行指數退避重試 (Max 3 次)，重試耗盡進入 Dead-Letter 佇列 (HTTP 500 Retry/DLQ)"
   }
 }
+```
+
+
+#### 驗收條件 AC 編號化 (FR-22 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-22.AC1 ~ AC4`,供下游 `tests/test_fr_22_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-22.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 Background Job System with SAQ Worker & Embedding Pipeline 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 Background Job System with SAQ Worker & Embedding Pipeline 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-22 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-22.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-22 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-22.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-22 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-22.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-22 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
 ```
 
 > **DERIVED**: line 3079 — 同步首 Chunk 機制確保知識入庫後第一時間可被語義檢索
@@ -4491,6 +5544,45 @@ T+5-15s: SAQ Worker 完成其餘 chunks → 全部就緒
     "degradation_error_400_422_5xx": "外部分析或非關鍵服務離線時核心客服路徑保持可用 (HTTP 200 降級運行)"
   }
 }
+```
+
+
+#### 驗收條件 AC 編號化 (FR-28 Acceptance Criteria)
+
+> 本節將既有「4 類邊界測試路徑」編號化為 `FR-28.AC1 ~ AC4`,供下游 `tests/test_fr_28_*.py` 函式命名 1:1 對齊使用 (參照 C-08 測試命名規範)。
+
+##### FR-28.AC1: Happy Path (2xx) — 正常流程
+```gherkin
+Given: 用戶已透過合法通路認證,平台來源於 IP_WHITELIST_CIDRS 內,訊息 payload 符合 High Availability, Redis Streams & Circuit Breaker 之 schema
+  And: 系統所有依賴 (PostgreSQL / Redis / LLM) 可達且健康
+When: 用戶透過任一支援通路 (Telegram / LINE / Messenger / WhatsApp / Web / A2A) 觸發 High Availability, Redis Streams & Circuit Breaker 之核心流程
+Then: HTTP 200 + 回應結構符合 FR-28 宣告之 schema / 副作用寫入預期資料表
+  And: 結構化日誌輸出 (FR-21) trace_id 與 request_id 完整綁定
+```
+
+##### FR-28.AC2: Auth Boundary (401/403) — 認證/授權邊界
+```gherkin
+Given: 請求來源未通過 FR-02 簽名驗證,或呼叫端點所需 role 權限不足 (FR-18 RBAC)
+When: 嘗試存取 FR-28 之受保護資源或操作
+Then: HTTP 401 (AUTH_INVALID_SIGNATURE / AUTH_TOKEN_EXPIRED) 或 HTTP 403 (AUTHZ_INSUFFICIENT_ROLE)
+  And: audit log (FR-21) 紀錄失敗原因、來源 IP、用戶 ID;rate limit 計數遞增 (FR-09)
+```
+
+##### FR-28.AC3: Throttling (429) — 速率/負載限制
+```gherkin
+Given: 用戶 / IP / platform 三維度鍵在 1 分鐘滑動窗口內已達 RATE_LIMIT_DEFAULT_RPS 上限
+When: FR-28 收到該用戶之新請求
+Then: HTTP 429 + Retry-After header (秒數依滑動窗口重置時間計算)
+  And: Redis Lua atomic 計數遞增並觸發 Prometheus HighRateLimit 告警 (FR-21)
+```
+
+##### FR-28.AC4: Degradation (400/422/5xx) — 異常與降級驗證
+```gherkin
+Given: 輸入 payload 損壞 (缺欄位/型別錯誤) 或下游依賴 (LLM / DB / Redis) 不可用
+When: FR-28 嘗試執行核心流程
+Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR / LLM_TIMEOUT)
+  And: 觸發 FR-28 Circuit Breaker (失敗 ≥ 5 次) 或 fallback 機制 (FR-15 多模型備援)
+  And: 結構化錯誤日誌 + Sentry/OTel exception capture;若可恢復則執行 exponential backoff 重試 (≤ 3 次,with jitter)
 ```
 
 > **DERIVED**: line 3331 — 支援 Multi-model Fallback 矩陣與 Redis Fail-open 設計
@@ -5958,6 +7050,391 @@ e2e_scenarios:
 
 ### FR-34-deferred: 原生行動端 App (Native Mobile Applications)
 - **原因與邊界**：OmniBot 依托 Telegram, LINE, WhatsApp, Messenger 與 Web Widget 原生介面，無需維護專屬 iOS/Android App。
+
+---
+
+## 定性合規補強：環境變數契約、驗證目標、約束、風險註冊與 NFR 編號化
+
+> 本節為 v8.2 規格書依「PRD 定性與定量合規規範」所補強的結構錨點章節。**未刪除任何既有 FR / NFR / 章節內容**，僅在既有素材基礎上新增編號化錨點以利下游 SRS / SAD / TEST_SPEC 建立 1:1 追溯矩陣。
+
+### SAB 法定 8 大 NFR 編號化條目
+
+> SAB YAML 章節 (line 208) 已定義 8 大分類與定量門檻,以下為每個分類賦予之 `### NFR-NN` 編號錨點,供 `02-architecture/ADR.md` 1:1 映射使用。
+
+### NFR-NN: 編號索引表
+
+| NFR-NN | 分類 | 量化門檻(SAB YAML 萃取) | 對應驗證工具 / Gate |
+|--------|------|--------------------------|---------------------|
+| NFR-PERF-01 | Performance | p95 e2e ≤ 1.0s @ 2000 TPS sustained | k6 (Gate 3 / Gate 4) |
+| NFR-SECU-02 | Security | OWASP LLM01:2025 100% / Bandit ≥ 80 / Gitleaks = 100 | bandit + semgrep (Gate 4) |
+| NFR-MAIN-03 | Maintainability | ≤ 50 行/函、CC ≤ 10 / Ruff ≥ 90 / Pyright ≥ 85 | radon-mi + ruff + pyright (Gate 1~4) |
+| NFR-RELY-04 | Reliability | 可用性 ≥ 99.9% / MTTR < 5min / 重試 3 次 with exponential backoff + jitter | Prometheus + DR drill (Gate 3 / Gate 4) |
+| NFR-TEST-05 | Testability | Line Cov P3 ≥ 70%, P4+ ≥ 80% / Mutmut ≥ 70% / D4 Spec Cov Gate 4 ≥ 90% | pytest-cov + mutmut (Gate 1~4) |
+| NFR-DEPL-06 | Deployability | Docker Compose + K8s Deployment/Service/HPA / Rollback < 5min | k8s manifest + GitOps (Gate 3 / P8) |
+| NFR-SCAL-07 | Scalability | 2000 TPS sustained / pgvector HNSW 10M chunks / Redis Cluster ready | k6 + load test (Gate 3) |
+| NFR-USA-08 | Usability | CSAT ≥ 4.8 / LLM-Judge Politeness ≥ 4.5 / Accuracy 100% alignment | LLM-as-a-Judge (Gate 3 / Gate 4) |
+
+### NFR-PERF-01: Performance — 端到端延遲與吞吐量門檻
+
+- **量化指標**: p95 e2e latency ≤ 1.0s @ 2000 TPS sustained; PALADIN L1~L3 ≤ 5ms; PALADIN L4 async ≤ 200ms; 知識搜尋 p95 ≤ 150ms; Embedding API p95 ≤ 100ms; Admin UI page load ≤ 1.5s。
+- **驗證方法**: k6 4 大場景壓測 (Functional / Stress / Spike / Soak) + Prometheus p95 histogram 觀測。
+- **門禁對應**: Gate 3 (P4) — P95 違反達 10% 即阻擋; Gate 4 (P6) — 連續 24h soak 後再次驗證。
+
+### NFR-SECU-02: Security — 縱深防禦與合規
+
+- **量化指標**: OWASP LLM Top 10 (2025) 100% 條款覆蓋;Gitleaks = 100 (codebase + git log 無 secrets);Bandit ≥ 80 分 (0 High/Critical);PALADIN 五層 Block rate ≥ 95%;RBAC 7 角色強制執行;PostgreSQL TDE + TLS 1.3 + Redis TLS/AUTH/ACL。
+- **驗證方法**: `bandit -r src/`、`gitleaks detect`、`semgrep --config p/owasp-top-ten`、red-team prompt injection 套件。
+- **門禁對應**: Gate 1~4 任一發現 High/Critical = 阻擋;Gate 4 必須 0 殘留。
+
+### NFR-MAIN-03: Maintainability — 程式碼品質與文件耦合
+
+- **量化指標**: 函式 ≤ 50 行、CC ≤ 10 (radon-mi);Ruff ≥ 90 分;Pyright ≥ 85 分;Alembic 版本化 migration 雙向 100% roundtrip;Code-to-SAD 對映率 = 100%。
+- **驗證方法**: `radon mi -s src/`、`ruff check`、`pyright src/`、`alembic upgrade head && alembic downgrade -1 && alembic upgrade head`、SAD-module mapping 比對。
+- **門禁對應**: Gate 1 / Gate 2 (Per-FR 100% 模組覆蓋 + 0 lint errors);Gate 4 全 repo ≥ 90% line coverage。
+
+### NFR-RELY-04: Reliability — 可用性、降級與災難復原
+
+- **量化指標**: 月可用性 ≥ 99.9%;外部 tool / A2A RPC timeout ≤ 2.0s;重試 ≤ 3 次 with exponential backoff + jitter;LLM fallback switch time < 500ms;Redis fail-open;MTTR < 5 分鐘。
+- **驗證方法**: Prometheus uptime SLO calculator;DR 故障演練注入 (Chaos Mesh / 人工 kill -9);Circuit Breaker 開源套件單元測試。
+- **門禁對應**: Gate 3 注入故障演練;Gate 4 / P8 上線前最後驗證。
+
+### NFR-TEST-05: Testability — 覆蓋率、突變測試與黃金數據
+
+- **量化指標**: Line coverage P3 ≥ 70%、P4+ ≥ 80%;Mutmut mutation score ≥ 70%;D4 Spec coverage Gate 1 ≥ 40% / Gate 2 ≥ 60% / Gate 3 ≥ 80% / Gate 4 ≥ 90%;黃金數據 ≥ 500 samples、Cohen's Kappa ≥ 0.7;4 boundary paths (2xx/401-403/429/400-422-5xx) 100% FR 覆蓋。
+- **驗證方法**: `pytest --cov=src --cov-branch --cov-fail-under=80`、`mutmut run`、`tests/golden/` 校準流程。
+- **門禁對應**: Gate 1 (Per-FR module 100%) / Gate 2 (全 repo ≥ 90%) / Gate 3 (Mutmut ≥ 70%)。
+
+### NFR-DEPL-06: Deployability — 容器化與零停機部署
+
+- **量化指標**: Docker Compose (dev) + Kubernetes Deployment/Service/HPA (prod);HPA 觸發 CPU > 70% 或 Memory > 80%;RollingUpdate `maxSurge=25%, maxUnavailable=0`;Rollback 可在 5 分鐘內執行。
+- **驗證方法**: `kubectl rollout undo` 演練、`kubectl get hpa` 觀測、Helm chart lint。
+- **門禁對應**: P8 Config Liveness + Git Tag 流程。
+
+### NFR-SCAL-07: Scalability — 持續吞吐量與向量規模
+
+- **量化指標**: 2000 TPS sustained under 4 k6 load scenarios;pgvector HNSW (m=16, ef_construction=64) 支援至 10M chunks;Redis Cluster ready + connection pooling。
+- **驗證方法**: k6 sustained load (≥ 30 min soak)、pgvector benchmark、`redis-cli --cluster create` 演練。
+- **門禁對應**: Gate 3 (壓測通過) + Gate 4 (soak 24h 後再次驗證)。
+
+### NFR-USA-08: Usability — 客戶滿意度與回覆品質
+
+- **量化指標**: CSAT ≥ 4.8/5.0 (vs 2025Q4 baseline 3.2);LLM-Judge Politeness ≥ 4.5/5.0 with zh-TW empathy;Accuracy 100% 知識對齊;Admin/Agent portal WebSocket 即時同步。
+- **驗證方法**: FR-20 LLM-as-a-Judge 自動評測 + 月度真人抽樣校準 (n ≥ 100, Cohen's Kappa ≥ 0.7)。
+- **門禁對應**: Gate 3 / Gate 4 必須通過 LLM-Judge 連續 2 週 ≥ 4.5。
+
+---
+
+## Environment Variables (環境變數契約)
+
+> 本章節為 `Phase 8: Config Management` 的 SSOT (Single Source of Truth)。所有 `os.getenv` / `os.environ` 讀取皆必須對應下表,**0 幽靈變數、0 未宣告變數** 為硬性門檻 (P8 `preflight_config_liveness`)。
+
+| Variable Name | Type | Classification | Default Value | Description |
+|---------------|------|-----------------|---------------|-------------|
+| `DATABASE_URL` | string | mandatory | — (fail-fast) | PostgreSQL 連線字串 (含 pgvector 擴展),格式 `postgresql://user:pass@host:5432/db`。生產環境必須使用 TDE + TLS 1.3。 |
+| `REDIS_URL` | string | mandatory | — (fail-fast) | Redis 連線字串 (含 TLS/AUTH/ACL),格式 `rediss://:pass@host:6380/0`。 |
+| `LLM_API_KEY` | string | mandatory | — (fail-fast) | 主 LLM (OpenAI gpt-4o 等) API 金鑰。需從密鑰管理器注入,禁止 hard-code。 |
+| `LLM_TIMEOUT` | integer | has_default | `2000` (ms) | LLM API 回應逾時,逾時後觸發 Circuit Breaker 並切換 fallback 模型。對應錯誤碼 `LLM_TIMEOUT` (HTTP 504)。 |
+| `FALLBACK_LLM_MODEL` | string | has_default | `gemini-1.5-flash` | LLM 故障時的備援模型名稱 (透過 platform_configs 或本 ENV 覆寫)。 |
+| `EMBEDDING_API_KEY` | string | mandatory | — (fail-fast) | Embedding API 金鑰 (text-embedding-3-small 等)。 |
+| `DB_PASSWORD` | string | mandatory | — (fail-fast) | PostgreSQL 連線密碼,僅 docker-compose / k8s Secret 注入,禁止 commit。 |
+| `POSTGRES_DB` | string | has_default | `omnibot` | PostgreSQL 資料庫名稱 (docker-compose 容器初始化用)。 |
+| `POSTGRES_USER` | string | has_default | `omnibot` | PostgreSQL 使用者名稱 (docker-compose 容器初始化用)。 |
+| `REDIS_PASSWORD` | string | mandatory | — (fail-fast) | Redis `--requirepass` 密碼 + `--tls-port 6380` 設定。 |
+| `IP_WHITELIST_CIDRS` | string (CSV) | has_default | `""` (空 = 拒絕所有) | Webhook 來源 IP 白名單,逗號分隔的 CIDR 字串。空值採 fail-secure。對應 FR-10。 |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | string | has_default | `http://otel-collector:4317` | OpenTelemetry OTLP exporter 端點,提供分散式追蹤匯出。 |
+| `JWT_SECRET` | string | mandatory | — (fail-fast) | M2M Token 簽章用密鑰 (HS256),長度 ≥ 32 bytes。對應 FR-26。 |
+| `JWT_ACCESS_TOKEN_TTL` | integer | has_default | `3600` (sec) | M2M Access Token 存活秒數。 |
+| `JWT_REFRESH_TOKEN_TTL` | integer | has_default | `2592000` (sec, 30d) | M2M Refresh Token 存活秒數。 |
+| `ADMIN_BOOTSTRAP_TOKEN` | string | dev_opt_in | — (僅 dev) | 首次啟動建立超級管理員的 bootstrap token,**僅 dev 環境使用,正式環境禁用**。 |
+| `LOG_LEVEL` | string | has_default | `INFO` | 應用日誌等級 (`DEBUG`/`INFO`/`WARNING`/`ERROR`)。 |
+| `ENVIRONMENT` | string | has_default | `development` | 部署環境標識 (`development`/`staging`/`production`),影響錯誤訊息詳細度與安全策略強度。 |
+| `RATE_LIMIT_DEFAULT_RPS` | integer | has_default | `10` | 每用戶預設每秒請求數上限 (Redis + Lua 分散式計數)。對應 FR-09。 |
+| `CIRCUIT_BREAKER_FAILURE_THRESHOLD` | integer | has_default | `5` | Circuit Breaker 開啟前連續失敗次數。對應 FR-28。 |
+| `CIRCUIT_BREAKER_RESET_TIMEOUT` | integer | has_default | `30000` (ms) | Circuit Breaker 半開狀態重試間隔。 |
+| `PALADIN_L4_BATCH_SIZE` | integer | has_default | `32` | L4 語義注入分類器批次大小 (async pipeline)。對應 FR-06。 |
+| `KAFKA_BOOTSTRAP_SERVERS` | string | dev_opt_in | — | Kafka 連線 (僅事件溯源模式啟用)。 |
+| `STRIPE_SECRET_KEY` | string | dev_opt_in | — | 金流整合密鑰 (僅在啟用付款 FR 時必填)。 |
+
+### ENV 變數分級說明
+
+- **mandatory**: 缺少則啟動 fail-fast (process exit code 1)。對應 P8 `preflight_config_liveness` 0 幽靈變數檢查。
+- **has_default**: 缺少則使用預設值,允許覆寫 (config override)。
+- **dev_opt_in**: 僅開發/測試環境使用,production 環境應移除 (CI 環境變數污染偵測)。
+
+---
+
+## Verification Target (系統驗證進入點)
+
+> 本章節為 P5 / P6 階段的硬性驗證錨點。所有 Gate 4 通過條件必須由 `make verify-system` (或等效 `./scripts/verify-system.sh`) 一次執行完畢並產出 `05-verification/VERIFICATION_REPORT.md` + `gate4_result.json`。
+
+### 主要驗證命令
+
+| Command | Phase | 驗證內容 | 產出文件 |
+|---------|-------|---------|---------|
+| `make verify-system` | P5 | 完整系統級驗證 (DB roundtrip + CLI journey + 全 e2e) | `05-verification/VERIFICATION_REPORT.md` |
+| `./scripts/verify-system.sh` | P5 | 同上 (Makefile 等價殼層版本,供無 make 環境使用) | 同上 |
+| `make test-unit` | P3/P4 | pytest --cov (Per-FR module 100%) | `coverage.xml` |
+| `make test-mutation` | P4 | mutmut run | `mutation_report.json` |
+| `make lint` | P3/P4 | ruff check + pyright src/ | lint log |
+| `make verify-migration-roundtrip` | P5 | alembic upgrade head → downgrade base → upgrade head | `migration_roundtrip.log` |
+| `make cli-smoke` | P5 | CLI journey (註冊 → 對話 → 升級人工) | `cli_smoke.log` |
+| `make verify-config-liveness` | P8 | 比對 SPEC ENV 與 `os.getenv` 實際讀取 | `config_liveness_report.json` |
+
+### verify-system 進入點規範
+
+`make verify-system` 必須依序執行以下步驟且全部 0 失敗:
+
+1. **環境檢查**: `preflight_config_liveness` 確認 0 幽靈 / 0 未宣告 ENV。
+2. **靜態檢查**: `ruff check`, `pyright src/` (0 errors / 0 warnings)。
+3. **資料庫遷移往返**: `alembic upgrade head` → 寫入測試資料 → `alembic downgrade -1` → `alembic upgrade head`,斷言測試資料仍存在且 schema 一致。
+4. **單元與整合測試**: `pytest tests/unit tests/integration --cov=src --cov-fail-under=90`。
+5. **突變測試**: `mutmut run --score 70`,斷言 mutation score ≥ 70% 且核心狀態機 0 存活突變體。
+6. **CLI 冒煙旅程**: 啟動服務 → 註冊測試用戶 → 發送訊息 → 斷言回覆結構 → 觸發升級 → 斷言 WebSocket 推送。
+7. **NFR 閾值驗證**: k6 4 場景壓測,斷言 p95 ≤ 1.0s @ 2000 TPS。
+8. **Audit 與簽核**: 產出 `gate4_result.json` 鎖定 git SHA + 14 維度評分。
+
+### 驗證失敗阻擋規則
+
+- 任一 NFR 量化指標未達 = Gate 4 阻擋,不允許 partial pass。
+- 突變擊殺率 < 70% 或 4 boundary paths 缺失 = Gate 3 阻擋。
+- Migration roundtrip 任何殘留 = Gate 5 阻擋。
+- 0 幽靈 / 0 未宣告 ENV 任一違反 = P8 阻擋。
+
+---
+
+## Constraints (約束條件)
+
+> 不可違反的硬性約束,以 `C-NN` 編號標識。違反任何 C-NN 直接阻擋對應 Gate。
+
+### C-01: 語言與執行環境
+- **約束**: Python 3.11+ 為唯一 runtime,禁止 Go/Node/Rust 引入。
+- **理由**: SPEC §程式碼慣例 + 團隊技術棧一致性。
+- **驗證**: `python --version` 在 CI 內檢查。
+
+### C-02: 框架依賴限制
+- **約束**: Web framework 限定 FastAPI;ORM 限定 SQLAlchemy 2.x (async);LLM client 限定官方 `openai` / `google-generativeai` SDK。
+- **理由**: 統一生態系,避免技術債碎片化。
+- **驗證**: `pyproject.toml` 依賴白名單 + `import-linter` 邊界檢查。
+
+### C-03: 架構分層禁止反向依賴
+- **約束**: 嚴禁 `api → core → adapters → infra` 反向依賴 (例如 adapters 不可 import api)。分層定義為 Foundation (無依賴) / Domain Core / Persistence / Adapters / API Presentation。
+- **理由**: 防止循環依賴與單點故障擴散。
+- **驗證**: `import-linter` 契約 (contracts 定義於 `pyproject.toml` [tool.importlinter])。
+
+### C-04: 無 hard-code 機敏資訊
+- **約束**: 任何 API key / password / token 必須透過 ENV 注入或 Secret Manager 取得,**禁止** hard-code 於程式碼或 config 檔。
+- **理由**: OWASP A02:2021 + GDPR + 安全合規。
+- **驗證**: `gitleaks detect` (Gate 1 / Gate 4) + 人工 code review。
+
+### C-05: 資料庫遷移版本化
+- **約束**: 所有 schema 變更必須透過 Alembic 版本化 migration,禁止直接 `CREATE TABLE` / `ALTER TABLE` 於 production DB。
+- **理由**: 雙向 roundtrip 可重現 + 災難復原保證。
+- **驗證**: `make verify-migration-roundtrip` (P5 / Gate 5)。
+
+### C-06: 函式長度與複雜度上限
+- **約束**: 任何函式 ≤ 50 行、CC ≤ 10。
+- **理由**: Constitution §1.2 可維護性。
+- **驗證**: `radon mi -s -n B src/` (Gate 2 / Gate 4 阻擋)。
+
+### C-07: 型別嚴格模式
+- **約束**: 全部 `src/` 必須通過 `pyright --strict` 0 錯誤。
+- **理由**: NFR-MAIN-03 + SAB §maintainability。
+- **驗證**: `pyright src/` (Gate 1 / Gate 4 阻擋)。
+
+### C-08: 測試命名規範
+- **約束**: JS/TS 測試檔案命名 `test_frNN_xxx` (D4 Spec coverage 對映必須匹配 FR-NN 編號);Python 測試函式命名 `test_fr_NN_xxx_...`。
+- **理由**: D4 維度評分對應 + 自動化追溯。
+- **驗證**: D4 SpecCoverage 評測工具 (Gate 3 / Gate 4)。
+
+### C-09: 日誌結構化
+- **約束**: 全部應用日誌必須為 JSON 格式 (structlog 或同等),禁止 print / f-string 字串日誌。
+- **理由**: Observability + Loki/ELK 查詢友善。
+- **驗證**: logfmt linter (Gate 2)。
+
+### C-10: 跨層相依限制
+- **約束**: 嚴禁 `domain` layer 引入 `api` 或 `persistence` 層級別 (與 C-03 互補);`persistence` 層僅可被 `domain` 與 `api` 引用,不可反向。
+- **理由**: 領域核心純度 + 測試隔離。
+- **驗證**: import-linter contracts。
+
+---
+
+## Risk Register (風險項目 RSK-NN)
+
+> 本章節為 P7 `RISK_REGISTER.md` 的 SSOT。每個 RSK-NN 必須具備:威脅來源、機率/影響評分、緩解策略、verified_by 測試 ID 四要素。
+
+### RSK-NN: 編號索引表
+
+| RSK-NN | 風險類別 | 機率 × 影響 | 對應 STRIDE | verified_by |
+|--------|----------|--------------|--------------|-------------|
+| RSK-01 | Webhook 偽造來源 | M × H | Spoofing | FR-02.AC1, FR-02.AC2 |
+| RSK-02 | Prompt Injection 越獄 | H × H | Tampering | FR-04.AC1, FR-05.AC1, FR-06.AC1 |
+| RSK-03 | PII 洩漏 | M × H | Information Disclosure | FR-08.AC1, FR-08.AC2 |
+| RSK-04 | LLM 服務中斷 | H × M | Denial of Service | FR-15.AC1, FR-28.AC1 |
+| RSK-05 | RBAC 越權 | L × H | Elevation of Privilege | FR-18.AC1, FR-26.AC1 |
+| RSK-06 | 資料庫災難 | L × H | Denial of Service | DR drill (Gate 5) |
+| RSK-07 | Token 外洩 / 重放 | M × H | Spoofing / Repudiation | FR-26.AC2, FR-26.AC3 |
+| RSK-08 | 評測結果遭篡改 | L × M | Tampering / Repudiation | FR-20.AC1, FR-20.AC2 |
+| RSK-09 | GDPR 資料保留過期 | M × M | Information Disclosure | FR-23.AC1, FR-23.AC2 |
+| RSK-10 | 速率限制繞過 | M × M | Denial of Service | FR-09.AC1, FR-10.AC1 |
+
+### RSK-01: Webhook 偽造來源請求
+- **威脅來源**: 攻擊者偽造 Telegram/LINE/Meta/WA 任一平台之 webhook 來源,嘗試觸發後端流程。
+- **機率 × 影響**: M × H (公開端點為標準攻擊面)。
+- **緩解策略**: FR-02 HMAC-SHA256 簽名驗證 + FR-10 CIDR IP 白名單雙重把關。
+- **verified_by**: `tests/security/test_fr02_signature.py::test_fr_02_ac1_signature_invalid_rejected`、`test_fr_02_ac2_replay_window_enforced`。
+
+### RSK-02: Prompt Injection 越獄攻擊
+- **威脅來源**: 使用者輸入含 `Ignore previous instructions` 等越獄字串、Unicode homoglyph 繞道、多輪誘導。
+- **機率 × 影響**: H × H (LLM 應用最高頻攻擊)。
+- **緩解策略**: FR-03 同形異義字標準化 + FR-04 規則過濾 + FR-05 指令層次 + FR-06 語義分類器 + FR-07 Grounding 五層防禦。
+- **verified_by**: `tests/security/test_fr03_homoglyph.py::test_fr_03_ac1_homoglyph_normalized`、`test_fr_04_ac1_injection_blocked`、`test_fr_05_ac1_system_prompt_immutable`、`test_fr_06_ac1_semantic_block_rate_gte_95`、`test_fr_07_ac1_grounding_blocked`。
+
+### RSK-03: PII 偵測失敗 / 敏感資料外洩
+- **威脅來源**: 用戶輸入或回覆中洩漏身分證字號、信用卡號、電話等 PII。
+- **機率 × 影響**: M × H (GDPR + 個資法合規風險)。
+- **緩解策略**: FR-08 Luhn 校驗 + regex 偵測 + 去識別化遮罩。
+- **verified_by**: `tests/security/test_fr08_pii.py::test_fr_08_ac1_luhn_valid_masked`、`test_fr_08_ac2_id_card_masked`。
+
+### RSK-04: LLM 服務中斷導致連帶故障
+- **威脅來源**: OpenAI / Gemini 任一主要供應商發生 region outage 或 rate limit 觸頂。
+- **機率 × 影響**: H × M (高機率但已設計降級)。
+- **緩解策略**: FR-15 多模型備援 + FR-28 Circuit Breaker + Redis Stream 異步解耦。
+- **verified_by**: `tests/integration/test_fr15_fallback.py::test_fr_15_ac1_primary_outage_fallback`、`test_fr_28_ac1_circuit_breaker_open`。
+
+### RSK-05: RBAC 越權存取
+- **威脅來源**: 已登入用戶透過偽造 role claim 或權限升級請求取得更高權限。
+- **機率 × 影響**: L × H (影響高但發生率低,因有裝飾器中間層把關)。
+- **緩解策略**: FR-18 7 角色 RBAC 裝飾器 + FR-26 M2M Token 嚴格 scope 檢查。
+- **verified_by**: `tests/security/test_fr18_rbac.py::test_fr_18_ac1_role_escalation_blocked`、`test_fr_26_ac1_m2m_scope_enforced`。
+
+### RSK-06: 資料庫災難 (硬體故障 / 邏輯損壞)
+- **威脅來源**: PostgreSQL 硬碟故障、誤刪資料表、migration 寫壞資料。
+- **機率 × 影響**: L × H (機率低但影響為全面停機)。
+- **緩解策略**: pg_basebackup + WAL-G 異地備份 + PITR;MTTR < 5 分鐘;`make verify-migration-roundtrip`。
+- **verified_by**: DR drill (季度演練,Gate 5) + `tests/integration/test_migration_roundtrip.py`。
+
+### RSK-07: M2M Token 外洩與重放
+- **威脅來源**: JWT Token 經 log 洩漏、被竊取後重放。
+- **機率 × 影響**: M × H (M2M 為服務間信任骨幹)。
+- **緩解策略**: FR-26 Token TTL 短期化 + Refresh Token rotation + jti 黑名單。
+- **verified_by**: `tests/security/test_fr26_token.py::test_fr_26_ac2_expired_rejected`、`test_fr_26_ac3_replay_blocked`。
+
+### RSK-08: LLM-as-a-Judge 評測結果遭篡改
+- **威脅來源**: 評測樣本被污染、judge LLM 被 prompt injection 影響。
+- **機率 × 影響**: L × M (內部威脅面)。
+- **緩解策略**: FR-20 評測日誌 audit trail + 樣本 hash 鎖定 + 雙 judge 投票。
+- **verified_by**: `tests/integration/test_fr20_judge.py::test_fr_20_ac1_log_immutable`、`test_fr_20_ac2_sample_tamper_detected`。
+
+### RSK-09: GDPR 資料保留過期未刪除
+- **威脅來源**: 用戶要求刪除資料後,因系統設計缺陷未徹底清除 (含備份)。
+- **機率 × 影響**: M × M (合規罰款風險)。
+- **緩解策略**: FR-23 GDPR Export/Delete 端點 + 排程清理 + audit log。
+- **verified_by**: `tests/integration/test_fr23_gdpr.py::test_fr_23_ac1_export_complete`、`test_fr_23_ac2_delete_no_residue`。
+
+### RSK-10: 速率限制繞過
+- **威脅來源**: 攻擊者分散式 IP 或偽造 user_id 繞過 Redis Sliding Window 計數。
+- **機率 × 影響**: M × M。
+- **緩解策略**: FR-09 分散式 Rate Limiter (Redis + Lua atomic) + FR-10 IP 白名單 + 多維度 key (user+ip+platform)。
+- **verified_by**: `tests/security/test_fr09_rate.py::test_fr_09_ac1_distributed_bypass_blocked`、`test_fr_10_ac1_cidr_rejected`。
+
+---
+
+## FR-NN.AC 子編號追溯矩陣(AC Index for 1:1 TEST_SPEC Mapping)
+
+> 本章節為 P1 `01-requirements/SRS.md` 與 `TEST_SPEC.md` 建立 **1:1 追溯矩陣**。每個 FR-NN 對應之 ACx 為既有「4 類邊界測試路徑」(Happy / Auth Boundary / Throttling / Degradation) 之編號化,供下游 `tests/test_fr_NN_*.py` 函式命名對齊使用。
+>
+> **AC 編號契約**: `FR-NN.AC1` = Happy Path (2xx), `FR-NN.AC2` = Auth Boundary (401/403), `FR-NN.AC3` = Throttling (429), `FR-NN.AC4` = Degradation (400/422/5xx)。
+
+### AC 編號映射速查表(28 核心 FR)
+
+| FR | AC1 (2xx) | AC2 (401/403) | AC3 (429) | AC4 (400/422/5xx) |
+|----|-----------|----------------|------------|---------------------|
+| FR-01 | 6 大通路訊息轉 UnifiedMessage (200) | 偽造 platform 拒絕 (401/403) | 限流配額拒絕 (429) | Payload 缺欄位 (422) |
+| FR-02 | 合法簽名 webhook 接收 (200) | 簽名錯誤拒絕 (401) | 重放攻擊拒絕 (429) | Payload 損壞 (422) |
+| FR-03 | 合法訊息通過 L1 (200) | — | 同形異義攻擊攔截 (429) | 損壞編碼 (422/500) |
+| FR-04 | 合法訊息通過 L2 (200) | — | 越獄 prompt 攔截 (429) | 多輪注入污染 (422/500) |
+| FR-05 | 合法 user/system 分層 (200) | — | 偽造 system 指令 (429) | 三明治破壞 (500) |
+| FR-06 | 合法訊息 L4 平行分類 (200) | — | 惡意 LLM 觸發限流 (429) | Classifier 失敗降級 (500) |
+| FR-07 | 合法回覆通過 Grounding (200) | — | — | 幻覺輸出被攔截 (500) |
+| FR-08 | PII 通過遮罩後回應 (200) | 未授權存取 PII log (403) | — | PII 偵測失敗 (500) |
+| FR-09 | 合法流量通過限流 (200) | — | 超額流量拒絕 (429) | Redis 故障 fail-open (500) |
+| FR-10 | 白名單 IP 通過 (200) | 非白名單拒絕 (403) | — | 無效 CIDR 啟動失敗 (500) |
+| FR-11 | 多輪情緒正常衰減 (200) | — | — | 情緒計算溢位 (500) |
+| FR-12 | 合法狀態轉換 (200) | 未授權狀態變更 (403) | — | 狀態機卡死 (500) |
+| FR-13 | Tier 1 命中精確匹配 (200) | — | 知識庫查詢過量 (429) | SQL 注入 (422/500) |
+| FR-14 | pgvector 相似度搜尋 (200) | — | 向量查詢過量 (429) | HNSW 索引失敗 (500) |
+| FR-15 | LLM 生成回覆 (200) | — | LLM 觸發限流 (429) | LLM fallback 切換 (200 降級) |
+| FR-16 | 合法 tool 執行 (200) | 未授權 tool 呼叫 (403) | Tool 過量 (429) | Tool 失敗重試 (500) |
+| FR-17 | 合法回覆生成 (200) | — | LLM 觸發限流 (429) | 模板渲染失敗 (500) |
+| FR-18 | 合法角色存取 (200) | 越權存取 (403) | — | RBAC 中間件故障 (500) |
+| FR-19 | 合法升級人工 (200) | 未授權升級 (403) | 高峰排隊 (429) | WebSocket 斷線 (500) |
+| FR-20 | 評測正常執行 (200) | 未授權評測存取 (403) | LLM-judge 觸發限流 (429) | Judge 失敗標記 (500) |
+| FR-21 | 結構化日誌輸出 (200) | — | Log 過量 (429) | OTel exporter 失敗 (500) |
+| FR-22 | 任務正常 enqueue (200) | 未授權任務 (403) | Queue 滿載 (429) | Worker 失敗重試 (500) |
+| FR-23 | GDPR 匯出成功 (200) | 未授權存取他人資料 (403) | 匯出過量 (429) | 刪除殘留 (500) |
+| FR-24 | A/B 分流正常 (200) | — | — | Hash 衝突降級 (500) |
+| FR-25 | 多媒體正常處理 (200) | 未授權存取 (403) | 多媒體炸彈 (429) | MIME 偽造 (422) |
+| FR-26 | M2M Token 簽發 (200) | 無效憑證 (401) | 簽發過量 (429) | Scope 違規 (403) |
+| FR-27 | Context window 正常管理 (200) | — | Token 超限 (429) | 截斷錯誤 (500) |
+| FR-28 | Circuit Breaker 正常 (200) | — | — | 故障注入觸發熔斷 (500 降級 200) |
+
+> **deferred FRs (FR-29 ~ FR-34)** 不適用 AC 編號 (已標記為未納入範圍,見 `## 延遲與未納入範圍需求清單`)。
+
+---
+
+## STRIDE-Lite 系統級威脅清單(歸納)
+
+> 將 28 個 FR 之 `stride_threats[]` 彙整為單一系統級視圖,供 P7 `RISK_REGISTER.md` 交叉引用。
+
+| STRIDE 分類 | 涉及 FR (節錄) | 系統級防禦 |
+|--------------|----------------|------------|
+| **S**poofing (偽裝) | FR-01, FR-02, FR-10, FR-26 | Webhook HMAC + IP CIDR + JWT 簽章 + M2M Token lifecycle |
+| **T**ampering (竄改) | FR-01, FR-02, FR-03, FR-04, FR-05, FR-25 | TLS 1.3 + 簽章驗證 + 同形異義標準化 + 三明治防護 + MIME 強制 |
+| **R**epudiation (否認) | FR-20, FR-21, FR-26 | Audit log 不可變 + JSON 結構日誌 + jti 黑名單 |
+| **I**nformation Disclosure (資訊洩漏) | FR-08, FR-20, FR-23 | PII 遮罩 + GDPR Export/Delete + LLM judge 日誌隔離 |
+| **D**enial of Service (阻斷服務) | FR-01, FR-03, FR-04, FR-06, FR-09, FR-25, FR-28 | Rate Limiter + Async Pipeline + Circuit Breaker + 多媒體上限 |
+| **E**levation of Privilege (權限提升) | FR-02, FR-05, FR-18, FR-26 | RBAC 7 角色 + 指令層次 + Scope 嚴格 + 裝飾器中間層 |
+
+---
+
+## Given-When-Then 驗收樣板
+
+> 每個 FR-NN 的 ACx 應以下列 Gherkin 風格表達,供 BDD 測試 (`pytest-bdd` / `behave`) 與技術文件 1:1 對齊。本節為模板,實作細節於 `01-requirements/SRS.md` 中各 FR 章節展開。
+
+### 樣板 1: Happy Path
+```gherkin
+Given: <合法前置條件 — 用戶已認證、平台來源正確、payload 完整>
+  And: <系統狀態 — 服務正常、依賴可達>
+When: <觸發動作 — 用戶發送訊息 / 呼叫端點>
+Then: <預期輸出 — HTTP 200 + 回應結構符合 FR-NN schema>
+  And: <副作用 — DB 寫入 / 快取更新 / 日誌輸出>
+```
+
+### 樣板 2: Auth Boundary (401/403)
+```gherkin
+Given: <請求來源未認證或權限不足>
+When: <呼叫受保護端點>
+Then: <預期輸出 — HTTP 401/403 + 對應錯誤碼 AUTH_INVALID_SIGNATURE / AUTHZ_INSUFFICIENT_ROLE>
+  And: <副作用 — Audit log 紀錄失敗原因>
+```
+
+### 樣板 3: Throttling (429)
+```gherkin
+Given: <用戶/IP 在時間窗口內已達請求上限>
+When: <繼續發送請求>
+Then: <預期輸出 — HTTP 429 + Retry-After header>
+  And: <副作用 — Rate limit 計數遞增 + 警示日誌>
+```
+
+### 樣板 4: Degradation (400/422/5xx)
+```gherkin
+Given: <輸入 payload 損壞 / 依賴服務不可用 / 內部狀態異常>
+When: <呼叫受影響功能>
+Then: <預期輸出 — HTTP 400/422/5xx + 對應錯誤碼>
+  And: <副作用 — Circuit Breaker 開啟 / fallback 啟用 / rollback 執行>
+```
+
+---
 
 ## 版本資訊
 
