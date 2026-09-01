@@ -62,7 +62,7 @@
 | 項目 | 內容 |
 |--------|------|
 | **專案名稱** | OmniBot - 多平台客服機器人 |
-| **版本** | v8.1（完整版） |
+| **版本** | v8.2（完整版） |
 | **目標** | 90% FCR + 99.9% 可用性 + 企業級安全 |
 | **開發時間** | 8-11 週 (配置 4 名後端 + 2 名 SRE) |
 | **前置條件** | 無 |
@@ -171,8 +171,8 @@
 | | 測試規格覆蓋率 (D4_SpecCoverage) | Gate 1 ≥ 40%, Gate 2 ≥ 60%, Gate 3 ≥ 80%, Gate 4 ≥ 90% | P3~P6 Gate 1~4 `[Fact]` |
 | **可實現性代碼約束** | 模組函式長度上限 | ≤ 50 行 | P3 實作期 (Constitution §1.2) `[Fact]` |
 | | 循環複雜度 (Cyclomatic Complexity) | ≤ 10 | P3 / P6 Gate 4 (radon-mi) `[Fact]` |
-| **測試與品質門禁** | 單元測試行覆蓋率 (Line Coverage) | P3 ≥ 70% (TH-11), P4+ ≥ 80% (TH-12) | P3 Gate 2, P4 Gate 3 `[Fact]` |
-| | 突變測試存活率 (Mutation Testing) | ≥ 70% (mutmut score) | P3 Gate 2, P4 Gate 3 `[Fact]` |
+| **測試與品質門禁** | 單元測試行覆蓋率 (Line Coverage) | Gate 1 owned 100%, Gate 2/Gate 4 ≥ 90% | P3 Gate 1~2, P5 Gate 4 `[Fact]` |
+| | 突變測試擊殺率 (Mutation Testing) | ≥ 80% (killed score) | P4 Gate 3 `[Fact]` |
 | | 靜態分析與型別檢查 | Ruff ≥ 90, Pyright ≥ 85 | P3 Gate 1 (per-FR), Gate 2~4 `[Fact]` |
 | **NFR 定量 SLA 要求** | 效能指標 (Performance SLA) | P95 Latency ≤ 1.0 s, QPS ≥ 500 (2000 TPS sustained) | P4 Gate 3, P6 Gate 4 `[Fact]` |
 | | 可靠性指標 (Reliability SLA) | Timeout ≤ 2.0 s, Max Retries = 3 (指數退避) | P3 Gate 1, P4 Gate 3 `[Fact]` |
@@ -196,10 +196,10 @@ flowchart TD
 
 1. **P1（需求規格化）**：PRD 的文字經由 `spec_alignment` 驗證，所有 FR-01 ~ FR-28 完整進入 `SRS.md` 的 JSON 區塊，Agent B 審查通過（100% 覆蓋率）。
 2. **P2（架構設計）**：每個 FR-XX 必須被分配到特定 Module；每個 NFR 被解析進 SAB YAML，自動衍生對應維度的最低分數門檻（`gate_score_overrides`）。
-3. **P3（實作段）**：每個 FR 獨立分派工作區，透過 Atomic TDD 實作並通過 Gate 1（Ruff ≥ 90, Pyright ≥ 85, Coverage ≥ 70%），出口達 Gate 2（≥ 75 分，函式 ≤ 50 行，CC ≤ 10）。
-4. **P4（測試驗證）**：依 PRD 驗收條件執行整合測試、壓力測試（2000 TPS）與紅隊威脅滲透，通過 Gate 3（≥ 80 分，Adversarial Bug-hunt 零 Critical/High 漏洞，Mutmut ≥ 70%）。
-5. **P5（交付驗證）**：執行 4a（代碼追溯 100%）、4b（測試追溯 100%）、4c（NFR 追溯 100%）閉環驗證，產出 `attestation.json` 鎖定 `git_sha`，Phase Truth ≥ 90%。
-6. **P6（品質保證）**：Gate 4 進行全專案 14 維度綜合評審（≥ 85 分）。
+3. **P3（實作段）**：每個 FR 獨立分派工作區，透過 Atomic TDD 實作並通過 Gate 1（Ruff ≥ 90, Pyright ≥ 85, 所屬模組 Statement Coverage 100%），出口達 Gate 2（全專案覆蓋率 ≥ 90%，函式 ≤ 50 行，CC ≤ 10）。
+4. **P4（測試驗證）**：依 PRD 驗收條件執行整合測試、壓力測試（2000 TPS）與紅隊威脅滲透，通過 Gate 3（≥ 80 分，Adversarial Bug-hunt 零 Critical/High 漏洞，Mutation Killed Score ≥ 80% 且核心路徑 0 存活突變體）。
+5. **P5（系統驗證與 Gate 4）**：執行 4a（代碼追溯 100%）、4b（測試追溯 100%）、4c（NFR 追溯 100%）閉環驗證，執行 `make verify-system`（DB migration roundtrip + CLI smoke），通過 Gate 4（全專案 16 維度綜合評審 ≥ 90 分），產出 `gate4_result.json` 鎖定 `git_sha`。
+6. **P6（發布簽核）**：產出 `RELEASE_NOTES.md`、`FINAL_SIGN_OFF.md` 與 `QUALITY_REPORT.md`。
 7. **P7（風險管理）**：PRD 定義的異常邊界與安全威脅在 `RISK_REGISTER.md` 關聯並驗證緩解方案。
 8. **P8（配置管理）**：PRD 提及的相依環境變數、配置項與版本號歸檔至 `CONFIG_RECORDS.md` 與 `BASELINE.md`。
 
@@ -237,8 +237,8 @@ nfr_specifications:
     failover_recovery: "LLM fallback switch time < 500ms; Redis fail-open"
     disaster_recovery_mttr: "< 5 minutes MTTR"
   testability:
-    unit_line_coverage: "P3 >= 70% (TH-11), P4+ >= 80% (TH-12)"
-    mutation_testing_score: ">= 70% mutmut survival score"
+    unit_line_coverage: "Gate 1 owned modules = 100% statement coverage, Gate 2/Gate 4 full repo >= 90%"
+    mutation_testing_score: ">= 80% mutation killed score (zero survived mutants on critical paths)"
     spec_coverage_d4: "Gate 1 >= 40%, Gate 2 >= 60%, Gate 3 >= 80%, Gate 4 >= 90%"
     golden_dataset: ">= 500 samples with Cohen's Kappa >= 0.7 human calibration"
     boundary_path_coverage: "100% FRs cover 4 boundary paths (2xx, 401/403, 429, 400/422/5xx)"
@@ -271,10 +271,10 @@ nfr_specifications:
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-20",
     "p2_sad": "eval.judge",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -994,10 +994,10 @@ class PaginatedResponse(ApiResponse[List[T]], Generic[T]):
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-26",
     "p2_sad": "security.user_m2m",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -1180,10 +1180,10 @@ paths:
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-01",
     "p2_sad": "adapters.ingress",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -1299,10 +1299,10 @@ class UnifiedResponse:
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-25",
     "p2_sad": "adapters.media",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -1415,10 +1415,10 @@ media_handling:
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-02",
     "p2_sad": "security.auth",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -1588,10 +1588,10 @@ Layer 5: Output Validation   → Grounding Check 輸出知識對齊驗證
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-03",
     "p2_sad": "security.paladin.l1",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -1698,10 +1698,10 @@ class InputSanitizer:
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-04",
     "p2_sad": "security.paladin.l2",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -1773,10 +1773,10 @@ Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-05",
     "p2_sad": "security.paladin.l3",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -1930,10 +1930,10 @@ class PromptInjectionDefense:
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-06",
     "p2_sad": "security.paladin.l4",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -2177,10 +2177,10 @@ l4_trigger_policy:
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-08",
     "p2_sad": "security.pii",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -2327,10 +2327,10 @@ class PIIMasking:
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-23",
     "p2_sad": "compliance.gdpr",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -2443,10 +2443,10 @@ async def execute_data_deletion(unified_user_id: str, db):
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-09",
     "p2_sad": "gateway.ratelimit",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -2625,10 +2625,10 @@ class RateLimiter:
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-10",
     "p2_sad": "gateway.ipfilter",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -2907,10 +2907,10 @@ class A2AAdapter(ActionAdapter):
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-07",
     "p2_sad": "security.paladin.l5",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -3078,10 +3078,10 @@ class GroundingChecker:
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-13",
     "p2_sad": "knowledge.tier1",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -3154,10 +3154,10 @@ Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-14",
     "p2_sad": "knowledge.tier2",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -3230,10 +3230,10 @@ Then: HTTP 400 / 422 (VALIDATION_ERROR) 或 HTTP 500 / 502 / 504 (INTERNAL_ERROR
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-15",
     "p2_sad": "knowledge.tier3",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -3612,10 +3612,10 @@ class HybridKnowledge:
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-12",
     "p2_sad": "dialogue.dst",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -3762,10 +3762,10 @@ class DialogueState:
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-16",
     "p2_sad": "action.engine",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -3970,10 +3970,10 @@ ESCALATED ──[人工介入]──> RESOLVED
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-27",
     "p2_sad": "dialogue.context",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -4107,10 +4107,10 @@ class ContextWindowManager:
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-11",
     "p2_sad": "nlp.emotion",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -4244,10 +4244,10 @@ class EmotionTracker:
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-19",
     "p2_sad": "escalation.queue",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -4397,10 +4397,10 @@ class EscalationManager:
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-18",
     "p2_sad": "security.rbac",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -4575,10 +4575,10 @@ rbac = RBACEnforcer()
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-24",
     "p2_sad": "experiment.ab",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -4744,10 +4744,10 @@ class ABTestManager:
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-17",
     "p2_sad": "response.generator",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -4946,10 +4946,10 @@ class ResponseGenerator:
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-21",
     "p2_sad": "observability",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -5202,10 +5202,10 @@ groups:
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-22",
     "p2_sad": "background.saq",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -5529,10 +5529,10 @@ T+5-15s: SAQ Worker 完成其餘 chunks → 全部就緒
   "p1_p8_penetration": {
     "p1_srs": "SRS.md#fr-28",
     "p2_sad": "core.ha",
-    "p3_gate": "Gate 1 (Coverage>=70%, Ruff>=90, Pyright>=85) & Gate 2 (Score>=75, CC<=10)",
-    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutmut>=70%, D4_SpecCoverage>=80%)",
-    "p5_trace": "TH-13/TH-14 100% Traceability & 4a/4b/4c verification",
-    "p6_qa": "Gate 4 Quality Audit >= 85",
+    "p3_gate": "Gate 1 (Coverage 100% owned, Ruff>=90, Pyright>=85) & Gate 2 (Coverage>=90%, CC<=10)",
+    "p4_tests": "Unit & Integration 4-Boundary Path Suite (Mutation Killed>=80%, D4_SpecCoverage>=80%)",
+    "p5_trace": "Gate 4 System Verification & 4a/4b/4c 100% Traceability",
+    "p6_qa": "Quality Audit & Release Sign-Off",
     "p7_risk": "STRIDE Threats Verified & Mitigated",
     "p8_config": "CONFIG_RECORDS & BASELINE"
   },
@@ -6972,8 +6972,8 @@ e2e_scenarios:
 | **NFR-Reliability** | **系統錯誤率** | < 1% | Prometheus 錯誤指標 | P4, P6 |
 | **NFR-Maintainability** | **代碼複雜度與長度** | 函式 ≤ 50 行, CC ≤ 10 | Radon-mi & AST 檢查 | P3 Gate 2, P6 |
 | **NFR-Maintainability** | **靜態分析與型別** | Ruff ≥ 90, Pyright ≥ 85 | CI 門禁檢查 | P3 Gate 1~Gate 4 |
-| **NFR-Testability** | **單元測試覆蓋率** | P3 ≥ 70%, P4+ ≥ 80% | pytest-cov (Line Coverage) | P3 Gate 2, P4 Gate 3 |
-| **NFR-Testability** | **突變測試存活率** | ≥ 70% | mutmut mutation score | P3 Gate 2, P4 Gate 3 |
+| **NFR-Testability** | **單元測試覆蓋率** | Gate 1 owned 100%, Gate 2/4 ≥ 90% | pytest-cov (Line Coverage) | P3 Gate 1~2, P5 Gate 4 |
+| **NFR-Testability** | **突變測試擊殺率** | ≥ 80% | mutmut mutation killed score | P4 Gate 3 |
 | **NFR-Security** | **機密掃描與安全分析** | Gitleaks = 100, Bandit ≥ 80 | 安全掃描工具集成 | P3 Gate 2, P4, P6 |
 | **FR-18** (權限) | **RBAC 權限覆蓋** | 7 大角色 100% 阻斷越權 | API 授權邊界測試 | P3 Gate 1 |
 | **FR-24** (實驗) | **A/B Testing 準確率** | ≥ 95% 確定性分流 | 統計顯著性檢定 | P3 Gate 2 |
@@ -7016,12 +7016,12 @@ e2e_scenarios:
 | **FR-26** | 使用者與 M2M Token 管理 API | `security.user_m2m` | `security`, `maintainability` | 200, 401, 403, 422 | **Y (100%)** |
 | **FR-27** | 對話上下文視窗管理 (Sliding Window) | `dialogue.context` | `performance`, `reliability` | 200, 401, 429, 422 | **Y (100%)** |
 | **FR-28** | 高可用性、Redis 異步流與故障隔離 | `core.ha` | `reliability`, `deployability` | 200, 401, 429, 500 | **Y (100%)** |
-| **FR-29-def** | 原生多模態視覺理解 (Vision QA) | `deferred.vision` | `performance`, `scalability` | 依 v9.0 規格規劃 | **Deferred (已標記)** |
-| **FR-30-def** | 檔案與文件 OCR/AI 解析 | `deferred.document` | `performance`, `usability` | 依 v9.1 規格規劃 | **Deferred (已標記)** |
-| **FR-31-def** | 即時語音與音訊串流處理 | `deferred.voice` | `performance`, `reliability` | 依語音專案規劃 | **Deferred (已標記)** |
-| **FR-32-def** | 繁中與英文以外之多語系支援 | `deferred.i18n` | `usability`, `maintainability` | 依國際化專案規劃 | **Deferred (已標記)** |
-| **FR-33-def** | 自建 In-house LLM 微調管線 | `deferred.finetune` | `performance`, `scalability` | 依成本效益規劃 | **Deferred (已標記)** |
-| **FR-34-def** | 原生行動端 App (iOS / Android) | `deferred.mobile` | `deployability`, `usability` | 依托各平台原生 SDK | **Deferred (已標記)** |
+| **FR-29-deferred** | 原生多模態視覺理解 (Vision QA) | `deferred.vision` | `performance`, `scalability` | 依 v9.0 規格規劃 | **Deferred (已標記)** |
+| **FR-30-deferred** | 檔案與文件 OCR/AI 解析 | `deferred.document` | `performance`, `usability` | 依 v9.1 規格規劃 | **Deferred (已標記)** |
+| **FR-31-deferred** | 即時語音與音訊串流處理 | `deferred.voice` | `performance`, `reliability` | 依語音專案規劃 | **Deferred (已標記)** |
+| **FR-32-deferred** | 繁中與英文以外之多語系支援 | `deferred.i18n` | `usability`, `maintainability` | 依國際化專案規劃 | **Deferred (已標記)** |
+| **FR-33-deferred** | 自建 In-house LLM 微調管線 | `deferred.finetune` | `performance`, `scalability` | 依成本效益規劃 | **Deferred (已標記)** |
+| **FR-34-deferred** | 原生行動端 App (iOS / Android) | `deferred.mobile` | `deployability`, `usability` | 依托各平台原生 SDK | **Deferred (已標記)** |
 
 ---
 
@@ -7065,58 +7065,58 @@ e2e_scenarios:
 
 | NFR-NN | 分類 | 量化門檻(SAB YAML 萃取) | 對應驗證工具 / Gate |
 |--------|------|--------------------------|---------------------|
-| NFR-PERF-01 | Performance | p95 e2e ≤ 1.0s @ 2000 TPS sustained | k6 (Gate 3 / Gate 4) |
-| NFR-SECU-02 | Security | OWASP LLM01:2025 100% / Bandit ≥ 80 / Gitleaks = 100 | bandit + semgrep (Gate 4) |
-| NFR-MAIN-03 | Maintainability | ≤ 50 行/函、CC ≤ 10 / Ruff ≥ 90 / Pyright ≥ 85 | radon-mi + ruff + pyright (Gate 1~4) |
-| NFR-RELY-04 | Reliability | 可用性 ≥ 99.9% / MTTR < 5min / 重試 3 次 with exponential backoff + jitter | Prometheus + DR drill (Gate 3 / Gate 4) |
-| NFR-TEST-05 | Testability | Line Cov P3 ≥ 70%, P4+ ≥ 80% / Mutmut ≥ 70% / D4 Spec Cov Gate 4 ≥ 90% | pytest-cov + mutmut (Gate 1~4) |
-| NFR-DEPL-06 | Deployability | Docker Compose + K8s Deployment/Service/HPA / Rollback < 5min | k8s manifest + GitOps (Gate 3 / P8) |
-| NFR-SCAL-07 | Scalability | 2000 TPS sustained / pgvector HNSW 10M chunks / Redis Cluster ready | k6 + load test (Gate 3) |
-| NFR-USA-08 | Usability | CSAT ≥ 4.8 / LLM-Judge Politeness ≥ 4.5 / Accuracy 100% alignment | LLM-as-a-Judge (Gate 3 / Gate 4) |
+| NFR-01 | Performance | p95 e2e ≤ 1.0s @ 2000 TPS sustained | k6 (Gate 3 / Gate 4) |
+| NFR-02 | Security | OWASP LLM01:2025 100% / Bandit ≥ 80 / Gitleaks = 100 | bandit + semgrep (Gate 4) |
+| NFR-03 | Maintainability | ≤ 50 行/函、CC ≤ 10 / Ruff ≥ 90 / Pyright ≥ 85 | radon-mi + ruff + pyright (Gate 1~4) |
+| NFR-04 | Reliability | 可用性 ≥ 99.9% / MTTR < 5min / 重試 3 次 with exponential backoff + jitter | Prometheus + DR drill (Gate 3 / Gate 4) |
+| NFR-05 | Testability | Gate 1 owned 100% / Gate 2/4 ≥ 90% / Mutation Killed ≥ 80% | pytest-cov + mutmut (Gate 1~4) |
+| NFR-06 | Deployability | Docker Compose + K8s Deployment/Service/HPA / Rollback < 5min | k8s manifest + GitOps (Gate 3 / P8) |
+| NFR-07 | Scalability | 2000 TPS sustained / pgvector HNSW 10M chunks / Redis Cluster ready | k6 + load test (Gate 3) |
+| NFR-08 | Usability | CSAT ≥ 4.8 / LLM-Judge Politeness ≥ 4.5 / Accuracy 100% alignment | LLM-as-a-Judge (Gate 3 / Gate 4) |
 
-### NFR-PERF-01: Performance — 端到端延遲與吞吐量門檻
+### NFR-01: Performance — 端到端延遲與吞吐量門檻
 
 - **量化指標**: p95 e2e latency ≤ 1.0s @ 2000 TPS sustained; PALADIN L1~L3 ≤ 5ms; PALADIN L4 async ≤ 200ms; 知識搜尋 p95 ≤ 150ms; Embedding API p95 ≤ 100ms; Admin UI page load ≤ 1.5s。
 - **驗證方法**: k6 4 大場景壓測 (Functional / Stress / Spike / Soak) + Prometheus p95 histogram 觀測。
-- **門禁對應**: Gate 3 (P4) — P95 違反達 10% 即阻擋; Gate 4 (P6) — 連續 24h soak 後再次驗證。
+- **門禁對應**: Gate 3 (P4) — P95 違反達 10% 即阻擋; Gate 4 (P5) — 連續 24h soak 後再次驗證。
 
-### NFR-SECU-02: Security — 縱深防禦與合規
+### NFR-02: Security — 縱深防禦與合規
 
 - **量化指標**: OWASP LLM Top 10 (2025) 100% 條款覆蓋;Gitleaks = 100 (codebase + git log 無 secrets);Bandit ≥ 80 分 (0 High/Critical);PALADIN 五層 Block rate ≥ 95%;RBAC 7 角色強制執行;PostgreSQL TDE + TLS 1.3 + Redis TLS/AUTH/ACL。
 - **驗證方法**: `bandit -r src/`、`gitleaks detect`、`semgrep --config p/owasp-top-ten`、red-team prompt injection 套件。
 - **門禁對應**: Gate 1~4 任一發現 High/Critical = 阻擋;Gate 4 必須 0 殘留。
 
-### NFR-MAIN-03: Maintainability — 程式碼品質與文件耦合
+### NFR-03: Maintainability — 程式碼品質與文件耦合
 
 - **量化指標**: 函式 ≤ 50 行、CC ≤ 10 (radon-mi);Ruff ≥ 90 分;Pyright ≥ 85 分;Alembic 版本化 migration 雙向 100% roundtrip;Code-to-SAD 對映率 = 100%。
 - **驗證方法**: `radon mi -s src/`、`ruff check`、`pyright src/`、`alembic upgrade head && alembic downgrade -1 && alembic upgrade head`、SAD-module mapping 比對。
 - **門禁對應**: Gate 1 / Gate 2 (Per-FR 100% 模組覆蓋 + 0 lint errors);Gate 4 全 repo ≥ 90% line coverage。
 
-### NFR-RELY-04: Reliability — 可用性、降級與災難復原
+### NFR-04: Reliability — 可用性、降級與災難復原
 
 - **量化指標**: 月可用性 ≥ 99.9%;外部 tool / A2A RPC timeout ≤ 2.0s;重試 ≤ 3 次 with exponential backoff + jitter;LLM fallback switch time < 500ms;Redis fail-open;MTTR < 5 分鐘。
 - **驗證方法**: Prometheus uptime SLO calculator;DR 故障演練注入 (Chaos Mesh / 人工 kill -9);Circuit Breaker 開源套件單元測試。
 - **門禁對應**: Gate 3 注入故障演練;Gate 4 / P8 上線前最後驗證。
 
-### NFR-TEST-05: Testability — 覆蓋率、突變測試與黃金數據
+### NFR-05: Testability — 覆蓋率、突變測試與黃金數據
 
-- **量化指標**: Line coverage P3 ≥ 70%、P4+ ≥ 80%;Mutmut mutation score ≥ 70%;D4 Spec coverage Gate 1 ≥ 40% / Gate 2 ≥ 60% / Gate 3 ≥ 80% / Gate 4 ≥ 90%;黃金數據 ≥ 500 samples、Cohen's Kappa ≥ 0.7;4 boundary paths (2xx/401-403/429/400-422-5xx) 100% FR 覆蓋。
-- **驗證方法**: `pytest --cov=src --cov-branch --cov-fail-under=80`、`mutmut run`、`tests/golden/` 校準流程。
-- **門禁對應**: Gate 1 (Per-FR module 100%) / Gate 2 (全 repo ≥ 90%) / Gate 3 (Mutmut ≥ 70%)。
+- **量化指標**: Line coverage Gate 1 owned 100% (無未覆蓋行)、Gate 2/Gate 4 全庫 ≥ 90%;Mutation Killed Score ≥ 80% (核心狀態機與降級路徑 0 存活突變體);D4 Spec coverage Gate 1 ≥ 40% / Gate 2 ≥ 60% / Gate 3 ≥ 80% / Gate 4 ≥ 90%;黃金數據 ≥ 500 samples、Cohen's Kappa ≥ 0.7;4 boundary paths (2xx/401-403/429/400-422-5xx) 100% FR 覆蓋。
+- **驗證方法**: `pytest --cov=src --cov-branch --cov-fail-under=90`、`mutmut run`、`tests/golden/` 校準流程。
+- **門禁對應**: Gate 1 (Per-FR module 100%) / Gate 2 (全 repo ≥ 90%) / Gate 3 (Mutation Killed Score ≥ 80%)。
 
-### NFR-DEPL-06: Deployability — 容器化與零停機部署
+### NFR-06: Deployability — 容器化與零停機部署
 
 - **量化指標**: Docker Compose (dev) + Kubernetes Deployment/Service/HPA (prod);HPA 觸發 CPU > 70% 或 Memory > 80%;RollingUpdate `maxSurge=25%, maxUnavailable=0`;Rollback 可在 5 分鐘內執行。
 - **驗證方法**: `kubectl rollout undo` 演練、`kubectl get hpa` 觀測、Helm chart lint。
 - **門禁對應**: P8 Config Liveness + Git Tag 流程。
 
-### NFR-SCAL-07: Scalability — 持續吞吐量與向量規模
+### NFR-07: Scalability — 持續吞吐量與向量規模
 
 - **量化指標**: 2000 TPS sustained under 4 k6 load scenarios;pgvector HNSW (m=16, ef_construction=64) 支援至 10M chunks;Redis Cluster ready + connection pooling。
 - **驗證方法**: k6 sustained load (≥ 30 min soak)、pgvector benchmark、`redis-cli --cluster create` 演練。
 - **門禁對應**: Gate 3 (壓測通過) + Gate 4 (soak 24h 後再次驗證)。
 
-### NFR-USA-08: Usability — 客戶滿意度與回覆品質
+### NFR-08: Usability — 客戶滿意度與回覆品質
 
 - **量化指標**: CSAT ≥ 4.8/5.0 (vs 2025Q4 baseline 3.2);LLM-Judge Politeness ≥ 4.5/5.0 with zh-TW empathy;Accuracy 100% 知識對齊;Admin/Agent portal WebSocket 即時同步。
 - **驗證方法**: FR-20 LLM-as-a-Judge 自動評測 + 月度真人抽樣校準 (n ≥ 100, Cohen's Kappa ≥ 0.7)。
@@ -7188,16 +7188,16 @@ e2e_scenarios:
 2. **靜態檢查**: `ruff check`, `pyright src/` (0 errors / 0 warnings)。
 3. **資料庫遷移往返**: `alembic upgrade head` → 寫入測試資料 → `alembic downgrade -1` → `alembic upgrade head`,斷言測試資料仍存在且 schema 一致。
 4. **單元與整合測試**: `pytest tests/unit tests/integration --cov=src --cov-fail-under=90`。
-5. **突變測試**: `mutmut run --score 70`,斷言 mutation score ≥ 70% 且核心狀態機 0 存活突變體。
+5. **突變測試**: `mutmut run --score 80`,斷言 mutation score ≥ 80% (killed score) 且核心狀態機 0 存活突變體。
 6. **CLI 冒煙旅程**: 啟動服務 → 註冊測試用戶 → 發送訊息 → 斷言回覆結構 → 觸發升級 → 斷言 WebSocket 推送。
 7. **NFR 閾值驗證**: k6 4 場景壓測,斷言 p95 ≤ 1.0s @ 2000 TPS。
-8. **Audit 與簽核**: 產出 `gate4_result.json` 鎖定 git SHA + 14 維度評分。
+8. **Audit 與簽核**: 產出 `gate4_result.json` 鎖定 git SHA + 16 維度評分。
 
 ### 驗證失敗阻擋規則
 
 - 任一 NFR 量化指標未達 = Gate 4 阻擋,不允許 partial pass。
-- 突變擊殺率 < 70% 或 4 boundary paths 缺失 = Gate 3 阻擋。
-- Migration roundtrip 任何殘留 = Gate 5 阻擋。
+- 突變擊殺率 < 80% 或 4 boundary paths 缺失 = Gate 3 阻擋。
+- Migration roundtrip 任何殘留 = Gate 4 (P5) 阻擋。
 - 0 幽靈 / 0 未宣告 ENV 任一違反 = P8 阻擋。
 
 ---
@@ -7229,7 +7229,7 @@ e2e_scenarios:
 ### C-05: 資料庫遷移版本化
 - **約束**: 所有 schema 變更必須透過 Alembic 版本化 migration,禁止直接 `CREATE TABLE` / `ALTER TABLE` 於 production DB。
 - **理由**: 雙向 roundtrip 可重現 + 災難復原保證。
-- **驗證**: `make verify-migration-roundtrip` (P5 / Gate 5)。
+- **驗證**: `make verify-migration-roundtrip` (P5 / Gate 4)。
 
 ### C-06: 函式長度與複雜度上限
 - **約束**: 任何函式 ≤ 50 行、CC ≤ 10。
@@ -7271,7 +7271,7 @@ e2e_scenarios:
 | RSK-03 | PII 洩漏 | M × H | Information Disclosure | FR-08.AC1, FR-08.AC2 |
 | RSK-04 | LLM 服務中斷 | H × M | Denial of Service | FR-15.AC1, FR-28.AC1 |
 | RSK-05 | RBAC 越權 | L × H | Elevation of Privilege | FR-18.AC1, FR-26.AC1 |
-| RSK-06 | 資料庫災難 | L × H | Denial of Service | DR drill (Gate 5) |
+| RSK-06 | 資料庫災難 | L × H | Denial of Service | DR drill (Gate 4 / P5) |
 | RSK-07 | Token 外洩 / 重放 | M × H | Spoofing / Repudiation | FR-26.AC2, FR-26.AC3 |
 | RSK-08 | 評測結果遭篡改 | L × M | Tampering / Repudiation | FR-20.AC1, FR-20.AC2 |
 | RSK-09 | GDPR 資料保留過期 | M × M | Information Disclosure | FR-23.AC1, FR-23.AC2 |
@@ -7311,7 +7311,7 @@ e2e_scenarios:
 - **威脅來源**: PostgreSQL 硬碟故障、誤刪資料表、migration 寫壞資料。
 - **機率 × 影響**: L × H (機率低但影響為全面停機)。
 - **緩解策略**: pg_basebackup + WAL-G 異地備份 + PITR;MTTR < 5 分鐘;`make verify-migration-roundtrip`。
-- **verified_by**: DR drill (季度演練,Gate 5) + `tests/integration/test_migration_roundtrip.py`。
+- **verified_by**: DR drill (季度演練,Gate 4 / P5) + `tests/integration/test_migration_roundtrip.py`。
 
 ### RSK-07: M2M Token 外洩與重放
 - **威脅來源**: JWT Token 經 log 洩漏、被竊取後重放。
@@ -7448,10 +7448,10 @@ Then: <預期輸出 — HTTP 400/422/5xx + 對應錯誤碼>
 
 ---
 
-*文件版本: v8.1*
-*最後更新: 2026-06-06*
+*文件版本: v8.2*
+*最後更新: 2026-08-25*
 
-> **v8.1 變更摘要**（參見審計報告與改善方案）：
+> **v8.2 變更摘要**（參見審計報告與改善方案）：
 > - P0: 修正 bge-m3 維度錯誤、統一 ToolDefinition、分散式 Rate Limiter、Circuit Breaker 降級
 > - P1: PALADIN 五層防禦、LLM-as-a-Judge 框架、背景任務系統、A2A 雙向協議、WebSocket 端點
 > - P1+: L4 Classifier 平行化管線 (p95 SLA 對策)、同步首 Chunk embedding (搜尋黑暗期對策)
