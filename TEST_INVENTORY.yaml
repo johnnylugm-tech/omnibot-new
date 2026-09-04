@@ -7,66 +7,1033 @@
 format_version: "1.1"
 
 # ── test_inventory ────────────────────────────────────────────────────────
-# Round 74 站5. The P1 prompt (scripts/workflowgen/spec_phase1.py) calls this
-# key REQUIRED — "Non-conforming schema fails the load step" — and this file,
-# which cli/project_cmds.py copies into every new project root on day one, did
-# not contain it. Nor did anything say what goes under it. Seven projects
-# invented four spellings of the same field (test_function, test_name,
-# test_function_name, none at all) and three different container shapes, and
-# the rule in cli/checks/specs.py that reads this block could see three of
-# nine of them.
-#
-# `tests:` is the enumerated 1:1 mapping with TRACEABILITY_MATRIX §1 the
-# prompt already describes; the summary blocks are the arithmetic it already
-# checks. Each entry carries:
+# Round 1 full population. The P1 prompt (scripts/workflowgen/spec_phase1.py)
+# calls this key REQUIRED — "Non-conforming schema fails the load step". The
+# `tests:` block is the enumerated 1:1 mapping with TRACEABILITY_MATRIX §1; the
+# summary blocks are the arithmetic it already checks. Each entry carries:
 #
 #   tc_id          the matrix id, one entry per id — never a range
 #   fr / nfr       the requirement this test verifies (exactly one of them,
 #                  and the whole value is the id — a test that merely touches
 #                  another requirement says so in cross_ref_frs/cross_ref_nfrs)
+#   ac             AC reference (e.g. AC-1.1 for FR §1 AC1, AC-N2.1 for NFR §2)
 #   layer          unit | static | integration | e2e — what runs it, and the
 #                  field the NFR Layering Hard Rule reads
 #   test_function  the name, identical to TEST_SPEC.md's `Test Function` cell
 #   test_file      where it will live
 test_inventory:
   tests:
+    # ── FR-01 Multi-Platform Ingress & Normalization ─────────────────────
     - tc_id: TC-FR01-01
       fr: FR-01
       ac: AC-1.1
       layer: integration
-      test_function: test_fr01_example_integration
+      test_function: test_fr01_ingress_telegram_normalizes_to_envelope
       test_file: tests/integration/test_fr01.py
     - tc_id: TC-FR01-02
       fr: FR-01
       ac: AC-1.2
       layer: unit
-      test_function: test_fr01_example_unit
+      test_function: test_fr01_ingress_missing_auth_header_raises
       test_file: tests/unit/test_fr01.py
-      cross_ref_nfrs: [NFR-02]
-    # An NFR whose verifier is a unit or static check belongs here with its
-    # layer, and in TEST_SPEC.md's "Deferred to Downstream Phases" section.
+    - tc_id: TC-FR01-03
+      fr: FR-01
+      ac: AC-1.3
+      layer: integration
+      test_function: test_fr01_ingress_throttle_yields_to_ratelimit
+      test_file: tests/integration/test_fr01.py
+      cross_ref_frs: [FR-09]
+    - tc_id: TC-FR01-04
+      fr: FR-01
+      ac: AC-1.4
+      layer: integration
+      test_function: test_fr01_ingress_unreachable_webhook_queues_retry
+      test_file: tests/integration/test_fr01.py
+
+    # ── FR-02 Webhook Signature Verification & M2M Authentication ─────────
+    - tc_id: TC-FR02-01
+      fr: FR-02
+      ac: AC-2.1
+      layer: unit
+      test_function: test_fr02_hmac_valid_signature_accepted
+      test_file: tests/unit/test_fr02.py
+    - tc_id: TC-FR02-02
+      fr: FR-02
+      ac: AC-2.2
+      layer: unit
+      test_function: test_fr02_hmac_invalid_signature_rejected_constant_time
+      test_file: tests/unit/test_fr02.py
+    - tc_id: TC-FR02-03
+      fr: FR-02
+      ac: AC-2.3
+      layer: unit
+      test_function: test_fr02_m2m_token_bucket_exhausted_returns_429
+      test_file: tests/unit/test_fr02.py
+    - tc_id: TC-FR02-04
+      fr: FR-02
+      ac: AC-2.4
+      layer: integration
+      test_function: test_fr02_jwks_fallback_to_cache_when_idp_unreachable
+      test_file: tests/integration/test_fr02.py
+
+    # ── FR-03 PALADIN L1 Input Sanitization & Homoglyph Normalization ────
+    - tc_id: TC-FR03-01
+      fr: FR-03
+      ac: AC-3.1
+      layer: unit
+      test_function: test_fr03_l1_nfkc_normalization_roundtrip
+      test_file: tests/unit/test_fr03.py
+    - tc_id: TC-FR03-02
+      fr: FR-03
+      ac: AC-3.2
+      layer: unit
+      test_function: test_fr03_l1_homoglyph_cyrillic_a_translated
+      test_file: tests/unit/test_fr03.py
+    - tc_id: TC-FR03-03
+      fr: FR-03
+      ac: AC-3.3
+      layer: e2e
+      test_function: test_fr03_l1_p95_under_5ms_load
+      test_file: tests/e2e/test_fr03_perf.py
+      cross_ref_nfrs: [NFR-01]
+    - tc_id: TC-FR03-04
+      fr: FR-03
+      ac: AC-3.4
+      layer: unit
+      test_function: test_fr03_l1_degrades_to_nfkc_only_on_table_miss
+      test_file: tests/unit/test_fr03.py
+
+    # ── FR-04 PALADIN L2 Pattern Detection & Anti-Prompt Injection ───────
+    - tc_id: TC-FR04-01
+      fr: FR-04
+      ac: AC-4.1
+      layer: unit
+      test_function: test_fr04_l2_detects_injection_returns_block
+      test_file: tests/unit/test_fr04.py
+    - tc_id: TC-FR04-02
+      fr: FR-04
+      ac: AC-4.2
+      layer: unit
+      test_function: test_fr04_l2_loader_rejects_unsigned_rules
+      test_file: tests/unit/test_fr04.py
+    - tc_id: TC-FR04-03
+      fr: FR-04
+      ac: AC-4.3
+      layer: e2e
+      test_function: test_fr04_l2_sustained_2000_tps_under_5ms_p95
+      test_file: tests/e2e/test_fr04_perf.py
+      cross_ref_nfrs: [NFR-01, NFR-07]
+    - tc_id: TC-FR04-04
+      fr: FR-04
+      ac: AC-4.4
+      layer: unit
+      test_function: test_fr04_l2_fallback_to_denylist_only
+      test_file: tests/unit/test_fr04.py
+
+    # ── FR-05 PALADIN L3 Instruction Hierarchy & Sandwich Defense ─────────
+    - tc_id: TC-FR05-01
+      fr: FR-05
+      ac: AC-5.1
+      layer: unit
+      test_function: test_fr05_l3_sandwich_injects_boundary_markers
+      test_file: tests/unit/test_fr05.py
+    - tc_id: TC-FR05-02
+      fr: FR-05
+      ac: AC-5.2
+      layer: unit
+      test_function: test_fr05_l3_hierarchy_blocks_user_override_of_system
+      test_file: tests/unit/test_fr05.py
+    - tc_id: TC-FR05-03
+      fr: FR-05
+      ac: AC-5.3
+      layer: e2e
+      test_function: test_fr05_l3_template_build_p95_under_5ms
+      test_file: tests/e2e/test_fr05_perf.py
+      cross_ref_nfrs: [NFR-01]
+    - tc_id: TC-FR05-04
+      fr: FR-05
+      ac: AC-5.4
+      layer: unit
+      test_function: test_fr05_l3_fallback_to_bare_passthrough
+      test_file: tests/unit/test_fr05.py
+
+    # ── FR-06 PALADIN L4 Semantic Classifier & Async Pipeline ─────────────
+    - tc_id: TC-FR06-01
+      fr: FR-06
+      ac: AC-6.1
+      layer: integration
+      test_function: test_fr06_l4_async_classifier_labels_benign_safe
+      test_file: tests/integration/test_fr06.py
+    - tc_id: TC-FR06-02
+      fr: FR-06
+      ac: AC-6.2
+      layer: unit
+      test_function: test_fr06_l4_loader_rejects_unsigned_weights
+      test_file: tests/unit/test_fr06.py
+    - tc_id: TC-FR06-03
+      fr: FR-06
+      ac: AC-6.3
+      layer: e2e
+      test_function: test_fr06_l4_async_pipeline_p95_under_200ms
+      test_file: tests/e2e/test_fr06_perf.py
+      cross_ref_nfrs: [NFR-01]
+    - tc_id: TC-FR06-04
+      fr: FR-06
+      ac: AC-6.4
+      layer: integration
+      test_function: test_fr06_l4_fallback_to_l3_when_async_backend_down
+      test_file: tests/integration/test_fr06.py
+
+    # ── FR-07 PALADIN L5 Grounding Check & Hallucination Mitigation ───────
+    - tc_id: TC-FR07-01
+      fr: FR-07
+      ac: AC-7.1
+      layer: integration
+      test_function: test_fr07_grounding_attaches_citation_when_grounded
+      test_file: tests/integration/test_fr07.py
+    - tc_id: TC-FR07-02
+      fr: FR-07
+      ac: AC-7.2
+      layer: unit
+      test_function: test_fr07_grounding_blocks_uncited_response
+      test_file: tests/unit/test_fr07.py
+    - tc_id: TC-FR07-03
+      fr: FR-07
+      ac: AC-7.3
+      layer: e2e
+      test_function: test_fr07_grounding_runs_parallel_with_generator
+      test_file: tests/e2e/test_fr07_perf.py
+      cross_ref_nfrs: [NFR-01]
+    - tc_id: TC-FR07-04
+      fr: FR-07
+      ac: AC-7.4
+      layer: integration
+      test_function: test_fr07_grounding_fallback_to_tier1_only
+      test_file: tests/integration/test_fr07.py
+
+    # ── FR-08 PII Masking & Luhn Credit Card Validation ───────────────────
+    - tc_id: TC-FR08-01
+      fr: FR-08
+      ac: AC-8.1
+      layer: unit
+      test_function: test_fr08_pii_redacts_email_and_phone
+      test_file: tests/unit/test_fr08.py
+    - tc_id: TC-FR08-02
+      fr: FR-08
+      ac: AC-8.2
+      layer: unit
+      test_function: test_fr08_pii_luhn_validates_16_digit_card
+      test_file: tests/unit/test_fr08.py
+    - tc_id: TC-FR08-03
+      fr: FR-08
+      ac: AC-8.3
+      layer: e2e
+      test_function: test_fr08_pii_pipeline_under_5ms_p95
+      test_file: tests/e2e/test_fr08_perf.py
+      cross_ref_nfrs: [NFR-01]
+    - tc_id: TC-FR08-04
+      fr: FR-08
+      ac: AC-8.4
+      layer: unit
+      test_function: test_fr08_pii_fail_closed_logs_and_raw_emit
+      test_file: tests/unit/test_fr08.py
+
+    # ── FR-09 Distributed Rate Limiting with Redis & Lua ──────────────────
+    - tc_id: TC-FR09-01
+      fr: FR-09
+      ac: AC-9.1
+      layer: integration
+      test_function: test_fr09_ratelimit_redis_lua_atomic_increment
+      test_file: tests/integration/test_fr09.py
+    - tc_id: TC-FR09-02
+      fr: FR-09
+      ac: AC-9.2
+      layer: unit
+      test_function: test_fr09_ratelimit_rejects_cross_tenant_key_reuse
+      test_file: tests/unit/test_fr09.py
+    - tc_id: TC-FR09-03
+      fr: FR-09
+      ac: AC-9.3
+      layer: integration
+      test_function: test_fr09_ratelimit_returns_429_after_window_full
+      test_file: tests/integration/test_fr09.py
+    - tc_id: TC-FR09-04
+      fr: FR-09
+      ac: AC-9.4
+      layer: integration
+      test_function: test_fr09_ratelimit_failopen_on_redis_unavailable
+      test_file: tests/integration/test_fr09.py
+      cross_ref_nfrs: [NFR-04]
+
+    # ── FR-10 CIDR-based IP Whitelist Enforcement ─────────────────────────
+    - tc_id: TC-FR10-01
+      fr: FR-10
+      ac: AC-10.1
+      layer: unit
+      test_function: test_fr10_cidr_allows_ip_inside_trusted_block
+      test_file: tests/unit/test_fr10.py
+    - tc_id: TC-FR10-02
+      fr: FR-10
+      ac: AC-10.2
+      layer: unit
+      test_function: test_fr10_cidr_rejects_ip_outside_trusted_block
+      test_file: tests/unit/test_fr10.py
+    - tc_id: TC-FR10-03
+      fr: FR-10
+      ac: AC-10.3
+      layer: e2e
+      test_function: test_fr10_cidr_lookup_p95_under_1ms
+      test_file: tests/e2e/test_fr10_perf.py
+    - tc_id: TC-FR10-04
+      fr: FR-10
+      ac: AC-10.4
+      layer: unit
+      test_function: test_fr10_cidr_deny_all_on_cache_empty
+      test_file: tests/unit/test_fr10.py
+
+    # ── FR-11 Multi-turn Emotion Analyzer & Half-Life Decay ───────────────
+    - tc_id: TC-FR11-01
+      fr: FR-11
+      ac: AC-11.1
+      layer: unit
+      test_function: test_fr11_emotion_multiturn_labels_gratitude
+      test_file: tests/unit/test_fr11.py
+    - tc_id: TC-FR11-02
+      fr: FR-11
+      ac: AC-11.2
+      layer: unit
+      test_function: test_fr11_emotion_rejects_turn_outside_window
+      test_file: tests/unit/test_fr11.py
+    - tc_id: TC-FR11-03
+      fr: FR-11
+      ac: AC-11.3
+      layer: e2e
+      test_function: test_fr11_emotion_half_life_decay_under_5ms_p95
+      test_file: tests/e2e/test_fr11_perf.py
+    - tc_id: TC-FR11-04
+      fr: FR-11
+      ac: AC-11.4
+      layer: unit
+      test_function: test_fr11_emotion_returns_neutral_on_endpoint_down
+      test_file: tests/unit/test_fr11.py
+
+    # ── FR-12 Dialogue State Tracking & Intent Router FSM ─────────────────
+    - tc_id: TC-FR12-01
+      fr: FR-12
+      ac: AC-12.1
+      layer: unit
+      test_function: test_fr12_dst_fsm_transition_greeting_to_resolved
+      test_file: tests/unit/test_fr12.py
+    - tc_id: TC-FR12-02
+      fr: FR-12
+      ac: AC-12.2
+      layer: unit
+      test_function: test_fr12_dst_router_rejects_transition_from_terminal
+      test_file: tests/unit/test_fr12.py
+    - tc_id: TC-FR12-03
+      fr: FR-12
+      ac: AC-12.3
+      layer: e2e
+      test_function: test_fr12_dst_lookup_within_latency_budget
+      test_file: tests/e2e/test_fr12_perf.py
+      cross_ref_nfrs: [NFR-01]
+    - tc_id: TC-FR12-04
+      fr: FR-12
+      ac: AC-12.4
+      layer: unit
+      test_function: test_fr12_dst_fallback_to_stateless_intent
+      test_file: tests/unit/test_fr12.py
+
+    # ── FR-13 Knowledge Retrieval Tier 1 (PostgreSQL Exact/Keyword) ───────
+    - tc_id: TC-FR13-01
+      fr: FR-13
+      ac: AC-13.1
+      layer: integration
+      test_function: test_fr13_tier1_pg_exact_match_returns_kb_article
+      test_file: tests/integration/test_fr13.py
+    - tc_id: TC-FR13-02
+      fr: FR-13
+      ac: AC-13.2
+      layer: integration
+      test_function: test_fr13_tier1_enforces_tenant_filter
+      test_file: tests/integration/test_fr13.py
+    - tc_id: TC-FR13-03
+      fr: FR-13
+      ac: AC-13.3
+      layer: e2e
+      test_function: test_fr13_tier1_search_p95_under_150ms
+      test_file: tests/e2e/test_fr13_perf.py
+      cross_ref_nfrs: [NFR-01]
+    - tc_id: TC-FR13-04
+      fr: FR-13
+      ac: AC-13.4
+      layer: integration
+      test_function: test_fr13_tier1_empty_result_on_pg_outage
+      test_file: tests/integration/test_fr13.py
+
+    # ── FR-14 Knowledge Retrieval Tier 2 (pgvector HNSW + RRF k=60) ───────
+    - tc_id: TC-FR14-01
+      fr: FR-14
+      ac: AC-14.1
+      layer: integration
+      test_function: test_fr14_tier2_hnsw_returns_topk
+      test_file: tests/integration/test_fr14.py
+    - tc_id: TC-FR14-02
+      fr: FR-14
+      ac: AC-14.2
+      layer: unit
+      test_function: test_fr14_tier2_requires_kb_read_permission
+      test_file: tests/unit/test_fr14.py
+    - tc_id: TC-FR14-03
+      fr: FR-14
+      ac: AC-14.3
+      layer: e2e
+      test_function: test_fr14_tier2_rrf_k60_under_150ms_p95
+      test_file: tests/e2e/test_fr14_perf.py
+    - tc_id: TC-FR14-04
+      fr: FR-14
+      ac: AC-14.4
+      layer: integration
+      test_function: test_fr14_tier2_fallback_to_ivfflat
+      test_file: tests/integration/test_fr14.py
+
+    # ── FR-15 Knowledge Retrieval Tier 3 (LLM Generation + Multi-Model) ───
+    - tc_id: TC-FR15-01
+      fr: FR-15
+      ac: AC-15.1
+      layer: integration
+      test_function: test_fr15_tier3_llm_generates_grounded_answer
+      test_file: tests/integration/test_fr15.py
+    - tc_id: TC-FR15-02
+      fr: FR-15
+      ac: AC-15.2
+      layer: unit
+      test_function: test_fr15_tier3_fallback_validates_provider_credentials
+      test_file: tests/unit/test_fr15.py
+    - tc_id: TC-FR15-03
+      fr: FR-15
+      ac: AC-15.3
+      layer: e2e
+      test_function: test_fr15_tier3_fallback_switch_under_500ms
+      test_file: tests/e2e/test_fr15_perf.py
+      cross_ref_nfrs: [NFR-04]
+    - tc_id: TC-FR15-04
+      fr: FR-15
+      ac: AC-15.4
+      layer: integration
+      test_function: test_fr15_tier3_apology_when_all_providers_down
+      test_file: tests/integration/test_fr15.py
+
+    # ── FR-16 Action Execution Engine (MCP / A2A / Function Calling) ──────
+    - tc_id: TC-FR16-01
+      fr: FR-16
+      ac: AC-16.1
+      layer: integration
+      test_function: test_fr16_aee_executes_mcp_tool_call
+      test_file: tests/integration/test_fr16.py
+    - tc_id: TC-FR16-02
+      fr: FR-16
+      ac: AC-16.2
+      layer: unit
+      test_function: test_fr16_aee_rejects_unauthorized_tool_invoke
+      test_file: tests/unit/test_fr16.py
+    - tc_id: TC-FR16-03
+      fr: FR-16
+      ac: AC-16.3
+      layer: integration
+      test_function: test_fr16_aee_tool_rpc_timeout_under_2s
+      test_file: tests/integration/test_fr16.py
+      cross_ref_nfrs: [NFR-04]
+    - tc_id: TC-FR16-04
+      fr: FR-16
+      ac: AC-16.4
+      layer: unit
+      test_function: test_fr16_aee_retry_exponential_backoff_with_jitter
+      test_file: tests/unit/test_fr16.py
+      cross_ref_nfrs: [NFR-04]
+
+    # ── FR-17 Response Generator & Dynamic Tone Adjustment ───────────────
+    - tc_id: TC-FR17-01
+      fr: FR-17
+      ac: AC-17.1
+      layer: unit
+      test_function: test_fr17_response_emits_tone_adapted_zh_tw
+      test_file: tests/unit/test_fr17.py
+    - tc_id: TC-FR17-02
+      fr: FR-17
+      ac: AC-17.2
+      layer: unit
+      test_function: test_fr17_response_rejects_missing_context
+      test_file: tests/unit/test_fr17.py
+    - tc_id: TC-FR17-03
+      fr: FR-17
+      ac: AC-17.3
+      layer: e2e
+      test_function: test_fr17_response_within_e2e_budget
+      test_file: tests/e2e/test_fr17_perf.py
+      cross_ref_nfrs: [NFR-01]
+    - tc_id: TC-FR17-04
+      fr: FR-17
+      ac: AC-17.4
+      layer: unit
+      test_function: test_fr17_response_fallback_to_canned_on_llm_down
+      test_file: tests/unit/test_fr17.py
+
+    # ── FR-18 RBAC & Decorator Middleware ─────────────────────────────────
+    - tc_id: TC-FR18-01
+      fr: FR-18
+      ac: AC-18.1
+      layer: unit
+      test_function: test_fr18_rbac_admin_role_allows_admin_endpoint
+      test_file: tests/unit/test_fr18.py
+    - tc_id: TC-FR18-02
+      fr: FR-18
+      ac: AC-18.2
+      layer: unit
+      test_function: test_fr18_rbac_7_role_matrix_enforced
+      test_file: tests/unit/test_fr18.py
+    - tc_id: TC-FR18-03
+      fr: FR-18
+      ac: AC-18.3
+      layer: e2e
+      test_function: test_fr18_rbac_check_overhead_under_1ms
+      test_file: tests/e2e/test_fr18_perf.py
+    - tc_id: TC-FR18-04
+      fr: FR-18
+      ac: AC-18.4
+      layer: unit
+      test_function: test_fr18_rbac_failclosed_on_role_store_down
+      test_file: tests/unit/test_fr18.py
+
+    # ── FR-19 Human Escalation & Priority Queuing (WebSocket) ─────────────
+    - tc_id: TC-FR19-01
+      fr: FR-19
+      ac: AC-19.1
+      layer: integration
+      test_function: test_fr19_escalation_vip_to_priority_queue
+      test_file: tests/integration/test_fr19.py
+    - tc_id: TC-FR19-02
+      fr: FR-19
+      ac: AC-19.2
+      layer: integration
+      test_function: test_fr19_escalation_requires_agent_availability
+      test_file: tests/integration/test_fr19.py
+    - tc_id: TC-FR19-03
+      fr: FR-19
+      ac: AC-19.3
+      layer: e2e
+      test_function: test_fr19_escalation_ws_fanout_under_200ms_p95
+      test_file: tests/e2e/test_fr19_perf.py
+    - tc_id: TC-FR19-04
+      fr: FR-19
+      ac: AC-19.4
+      layer: integration
+      test_function: test_fr19_escalation_sla_timer_when_agent_offline
+      test_file: tests/integration/test_fr19.py
+
+    # ── FR-20 LLM-as-a-Judge Evaluation Framework ─────────────────────────
+    - tc_id: TC-FR20-01
+      fr: FR-20
+      ac: AC-20.1
+      layer: integration
+      test_function: test_fr20_judge_scores_politeness_gte_4_5
+      test_file: tests/integration/test_fr20.py
+    - tc_id: TC-FR20-02
+      fr: FR-20
+      ac: AC-20.2
+      layer: unit
+      test_function: test_fr20_judge_requires_calibration_token
+      test_file: tests/unit/test_fr20.py
+    - tc_id: TC-FR20-03
+      fr: FR-20
+      ac: AC-20.3
+      layer: e2e
+      test_function: test_fr20_judge_batch_500_samples_within_budget
+      test_file: tests/e2e/test_fr20_perf.py
+    - tc_id: TC-FR20-04
+      fr: FR-20
+      ac: AC-20.4
+      layer: integration
+      test_function: test_fr20_judge_fallback_to_heuristic
+      test_file: tests/integration/test_fr20.py
+
+    # ── FR-21 Structured Logging, Prometheus & OpenTelemetry ──────────────
+    - tc_id: TC-FR21-01
+      fr: FR-21
+      ac: AC-21.1
+      layer: unit
+      test_function: test_fr21_otel_emits_span_per_request
+      test_file: tests/unit/test_fr21.py
+    - tc_id: TC-FR21-02
+      fr: FR-21
+      ac: AC-21.2
+      layer: unit
+      test_function: test_fr21_prometheus_requires_bearer_token
+      test_file: tests/unit/test_fr21.py
+    - tc_id: TC-FR21-03
+      fr: FR-21
+      ac: AC-21.3
+      layer: e2e
+      test_function: test_fr21_metric_scrape_overhead_under_10ms_p95
+      test_file: tests/e2e/test_fr21_perf.py
+    - tc_id: TC-FR21-04
+      fr: FR-21
+      ac: AC-21.4
+      layer: unit
+      test_function: test_fr21_otel_ringbuffer_when_collector_down
+      test_file: tests/unit/test_fr21.py
+
+    # ── FR-22 Background Job System (SAQ Worker & Embedding Pipeline) ─────
+    - tc_id: TC-FR22-01
+      fr: FR-22
+      ac: AC-22.1
+      layer: integration
+      test_function: test_fr22_saq_enqueues_and_processes_embedding
+      test_file: tests/integration/test_fr22.py
+    - tc_id: TC-FR22-02
+      fr: FR-22
+      ac: AC-22.2
+      layer: unit
+      test_function: test_fr22_saq_job_payload_hmac_signed
+      test_file: tests/unit/test_fr22.py
+    - tc_id: TC-FR22-03
+      fr: FR-22
+      ac: AC-22.3
+      layer: e2e
+      test_function: test_fr22_embedding_api_p95_under_100ms
+      test_file: tests/e2e/test_fr22_perf.py
+      cross_ref_nfrs: [NFR-01]
+    - tc_id: TC-FR22-04
+      fr: FR-22
+      ac: AC-22.4
+      layer: integration
+      test_function: test_fr22_saq_requeue_with_backoff_on_transient
+      test_file: tests/integration/test_fr22.py
+
+    # ── FR-23 GDPR Data Lifecycle (Export & Deletion) ─────────────────────
+    - tc_id: TC-FR23-01
+      fr: FR-23
+      ac: AC-23.1
+      layer: integration
+      test_function: test_fr23_gdpr_export_returns_envelope_within_sla
+      test_file: tests/integration/test_fr23.py
+    - tc_id: TC-FR23-02
+      fr: FR-23
+      ac: AC-23.2
+      layer: unit
+      test_function: test_fr23_gdpr_export_requires_verified_identity
+      test_file: tests/unit/test_fr23.py
+    - tc_id: TC-FR23-03
+      fr: FR-23
+      ac: AC-23.3
+      layer: e2e
+      test_function: test_fr23_gdpr_deletion_24h_sla_10m_rows
+      test_file: tests/e2e/test_fr23_perf.py
+    - tc_id: TC-FR23-04
+      fr: FR-23
+      ac: AC-23.4
+      layer: integration
+      test_function: test_fr23_gdpr_fallback_to_soft_delete_on_pg_outage
+      test_file: tests/integration/test_fr23.py
+
+    # ── FR-24 A/B Testing (Deterministic SHA-256 Hash) ────────────────────
+    - tc_id: TC-FR24-01
+      fr: FR-24
+      ac: AC-24.1
+      layer: unit
+      test_function: test_fr24_ab_sha256_assigns_variant_a
+      test_file: tests/unit/test_fr24.py
+    - tc_id: TC-FR24-02
+      fr: FR-24
+      ac: AC-24.2
+      layer: unit
+      test_function: test_fr24_ab_assignment_key_per_tenant
+      test_file: tests/unit/test_fr24.py
+    - tc_id: TC-FR24-03
+      fr: FR-24
+      ac: AC-24.3
+      layer: e2e
+      test_function: test_fr24_ab_assignment_lookup_p95_under_5ms
+      test_file: tests/e2e/test_fr24_perf.py
+    - tc_id: TC-FR24-04
+      fr: FR-24
+      ac: AC-24.4
+      layer: unit
+      test_function: test_fr24_ab_fallback_to_control_on_store_down
+      test_file: tests/unit/test_fr24.py
+
+    # ── FR-25 Multimedia Message Handling & Escalation ────────────────────
+    - tc_id: TC-FR25-01
+      fr: FR-25
+      ac: AC-25.1
+      layer: integration
+      test_function: test_fr25_media_image_handler_runs
+      test_file: tests/integration/test_fr25.py
+    - tc_id: TC-FR25-02
+      fr: FR-25
+      ac: AC-25.2
+      layer: unit
+      test_function: test_fr25_media_url_signature_validated
+      test_file: tests/unit/test_fr25.py
+    - tc_id: TC-FR25-03
+      fr: FR-25
+      ac: AC-25.3
+      layer: e2e
+      test_function: test_fr25_media_download_p95_under_5s
+      test_file: tests/e2e/test_fr25_perf.py
+    - tc_id: TC-FR25-04
+      fr: FR-25
+      ac: AC-25.4
+      layer: integration
+      test_function: test_fr25_media_unparseable_escalates_to_human
+      test_file: tests/integration/test_fr25.py
+      cross_ref_frs: [FR-19]
+
+    # ── FR-26 User Management & M2M Token Lifecycle API ───────────────────
+    - tc_id: TC-FR26-01
+      fr: FR-26
+      ac: AC-26.1
+      layer: integration
+      test_function: test_fr26_user_crud_creates_with_hashed_password
+      test_file: tests/integration/test_fr26.py
+    - tc_id: TC-FR26-02
+      fr: FR-26
+      ac: AC-26.2
+      layer: unit
+      test_function: test_fr26_m2m_rotation_invalidates_previous_token
+      test_file: tests/unit/test_fr26.py
+    - tc_id: TC-FR26-03
+      fr: FR-26
+      ac: AC-26.3
+      layer: e2e
+      test_function: test_fr26_api_p95_under_200ms
+      test_file: tests/e2e/test_fr26_perf.py
+    - tc_id: TC-FR26-04
+      fr: FR-26
+      ac: AC-26.4
+      layer: integration
+      test_function: test_fr26_user_lookup_cache_snapshot_on_pg_outage
+      test_file: tests/integration/test_fr26.py
+
+    # ── FR-27 Conversation Context Window Management ──────────────────────
+    - tc_id: TC-FR27-01
+      fr: FR-27
+      ac: AC-27.1
+      layer: unit
+      test_function: test_fr27_context_window_trims_oldest_turns
+      test_file: tests/unit/test_fr27.py
+    - tc_id: TC-FR27-02
+      fr: FR-27
+      ac: AC-27.2
+      layer: unit
+      test_function: test_fr27_context_rejects_cross_conversation_turn
+      test_file: tests/unit/test_fr27.py
+    - tc_id: TC-FR27-03
+      fr: FR-27
+      ac: AC-27.3
+      layer: e2e
+      test_function: test_fr27_context_trim_p95_under_10ms
+      test_file: tests/e2e/test_fr27_perf.py
+    - tc_id: TC-FR27-04
+      fr: FR-27
+      ac: AC-27.4
+      layer: unit
+      test_function: test_fr27_context_fallback_to_summary_on_tokenizer_error
+      test_file: tests/unit/test_fr27.py
+
+    # ── FR-28 High Availability, Redis Streams & Circuit Breaker ──────────
+    - tc_id: TC-FR28-01
+      fr: FR-28
+      ac: AC-28.1
+      layer: unit
+      test_function: test_fr28_breaker_opens_after_n_failures
+      test_file: tests/unit/test_fr28.py
+    - tc_id: TC-FR28-02
+      fr: FR-28
+      ac: AC-28.2
+      layer: unit
+      test_function: test_fr28_redis_streams_requires_acl_group
+      test_file: tests/unit/test_fr28.py
+    - tc_id: TC-FR28-03
+      fr: FR-28
+      ac: AC-28.3
+      layer: e2e
+      test_function: test_fr28_breaker_failfast_p99_under_50ms
+      test_file: tests/e2e/test_fr28_perf.py
+    - tc_id: TC-FR28-04
+      fr: FR-28
+      ac: AC-28.4
+      layer: integration
+      test_function: test_fr28_breaker_halfopen_probe_after_cooldown
+      test_file: tests/integration/test_fr28.py
+
+    # ── NFR-01 Performance (p95 e2e ≤ 1.0s @ 2000 TPS) ────────────────────
+    - tc_id: TC-N01-01
+      nfr: NFR-01
+      ac: AC-N1.1
+      layer: e2e
+      test_function: test_nfr01_k6_p95_under_1s_sustained_2000_tps
+      test_file: tests/e2e/test_nfr01_perf.py
+    - tc_id: TC-N01-02
+      nfr: NFR-01
+      ac: AC-N1.2
+      layer: e2e
+      test_function: test_nfr01_paladin_l1_l3_micro_bench_under_5ms_p95
+      test_file: tests/e2e/test_nfr01_perf.py
+      cross_ref_frs: [FR-03, FR-04, FR-05]
+    - tc_id: TC-N01-03
+      nfr: NFR-01
+      ac: AC-N1.3
+      layer: e2e
+      test_function: test_nfr01_embedding_api_p95_under_100ms
+      test_file: tests/e2e/test_nfr01_perf.py
+      cross_ref_frs: [FR-22]
+
+    # ── NFR-02 Security (OWASP LLM Top-10, Bandit, Gitleaks, PALADIN) ────
     - tc_id: TC-N02-01
       nfr: NFR-02
       ac: AC-N2.1
       layer: static
-      test_function: test_security_example
+      test_function: test_nfr02_bandit_score_gte_80_no_high_critical
       test_file: tests/static/test_nfr02.py
-    - tc_id: TC-N09-01
-      nfr: NFR-09
-      ac: AC-N9.1
+    - tc_id: TC-N02-02
+      nfr: NFR-02
+      ac: AC-N2.2
+      layer: static
+      test_function: test_nfr02_gitleaks_no_secrets
+      test_file: tests/static/test_nfr02.py
+    - tc_id: TC-N02-03
+      nfr: NFR-02
+      ac: AC-N2.3
       layer: integration
-      test_function: test_deployment_example
-      test_file: tests/integration/test_nfr09.py
+      test_function: test_nfr02_redteam_owasp_llm_top10_suite
+      test_file: tests/integration/test_nfr02_redteam.py
+    - tc_id: TC-N02-04
+      nfr: NFR-02
+      ac: AC-N2.4
+      layer: integration
+      test_function: test_nfr02_paladin_block_rate_gte_95pct
+      test_file: tests/integration/test_nfr02_paladin.py
+      cross_ref_frs: [FR-03, FR-04, FR-05, FR-06]
+    - tc_id: TC-N02-05
+      nfr: NFR-02
+      ac: AC-N2.5
+      layer: static
+      test_function: test_nfr02_storage_tls_and_auth_enforced
+      test_file: tests/static/test_nfr02_storage.py
+
+    # ── NFR-03 Maintainability (ruff, pyright, radon, alembic, SAD map) ───
+    - tc_id: TC-N03-01
+      nfr: NFR-03
+      ac: AC-N3.1
+      layer: static
+      test_function: test_nfr03_ruff_gte_90_pyright_gte_85
+      test_file: tests/static/test_nfr03.py
+    - tc_id: TC-N03-02
+      nfr: NFR-03
+      ac: AC-N3.2
+      layer: static
+      test_function: test_nfr03_radon_function_lines_and_cc
+      test_file: tests/static/test_nfr03.py
+    - tc_id: TC-N03-03
+      nfr: NFR-03
+      ac: AC-N3.3
+      layer: integration
+      test_function: test_nfr03_alembic_upgrade_downgrade_roundtrip
+      test_file: tests/integration/test_nfr03.py
+    - tc_id: TC-N03-04
+      nfr: NFR-03
+      ac: AC-N3.4
+      layer: static
+      test_function: test_nfr03_code_to_sad_mapping_100pct
+      test_file: tests/static/test_nfr03_sad.py
+
+    # ── NFR-04 Reliability (SLO 99.9%, CB, Chaos Mesh, MTTR, fallback) ────
+    - tc_id: TC-N04-01
+      nfr: NFR-04
+      ac: AC-N4.1
+      layer: e2e
+      test_function: test_nfr04_monthly_uptime_slo_gte_99_9pct
+      test_file: tests/e2e/test_nfr04_slo.py
+    - tc_id: TC-N04-02
+      nfr: NFR-04
+      ac: AC-N4.2
+      layer: unit
+      test_function: test_nfr04_circuit_breaker_state_machine
+      test_file: tests/unit/test_nfr04.py
+      cross_ref_frs: [FR-28]
+    - tc_id: TC-N04-03
+      nfr: NFR-04
+      ac: AC-N4.3
+      layer: e2e
+      test_function: test_nfr04_chaos_mesh_dr_drill
+      test_file: tests/e2e/test_nfr04_chaos.py
+    - tc_id: TC-N04-04
+      nfr: NFR-04
+      ac: AC-N4.4
+      layer: unit
+      test_function: test_nfr04_retry_exponential_backoff_with_jitter
+      test_file: tests/unit/test_nfr04.py
+      cross_ref_frs: [FR-16]
+    - tc_id: TC-N04-05
+      nfr: NFR-04
+      ac: AC-N4.5
+      layer: integration
+      test_function: test_nfr04_llm_fallback_switch_under_500ms
+      test_file: tests/integration/test_nfr04.py
+      cross_ref_frs: [FR-15]
+    - tc_id: TC-N04-06
+      nfr: NFR-04
+      ac: AC-N4.6
+      layer: e2e
+      test_function: test_nfr04_mttr_under_5min_drill
+      test_file: tests/e2e/test_nfr04_dr.py
+
+    # ── NFR-05 Testability (pytest-cov, mutmut, D4 spec-cov, golden) ──────
+    - tc_id: TC-N05-01
+      nfr: NFR-05
+      ac: AC-N5.1
+      layer: static
+      test_function: test_nfr05_pytest_cov_line_thresholds
+      test_file: tests/static/test_nfr05.py
+    - tc_id: TC-N05-02
+      nfr: NFR-05
+      ac: AC-N5.2
+      layer: static
+      test_function: test_nfr05_mutation_killed_gte_80pct
+      test_file: tests/static/test_nfr05.py
+    - tc_id: TC-N05-03
+      nfr: NFR-05
+      ac: AC-N5.3
+      layer: static
+      test_function: test_nfr05_d4_spec_cov_thresholds_by_gate
+      test_file: tests/static/test_nfr05.py
+    - tc_id: TC-N05-04
+      nfr: NFR-05
+      ac: AC-N5.4
+      layer: integration
+      test_function: test_nfr05_golden_500_samples_kappa_gte_0_7
+      test_file: tests/integration/test_nfr05_golden.py
+
+    # ── NFR-06 Deployability (kubectl rollout, Helm, HPA, RollingUpdate) ──
+    - tc_id: TC-N06-01
+      nfr: NFR-06
+      ac: AC-N6.1
+      layer: e2e
+      test_function: test_nfr06_kubectl_rollout_undo_under_5min
+      test_file: tests/e2e/test_nfr06_deploy.py
+    - tc_id: TC-N06-02
+      nfr: NFR-06
+      ac: AC-N6.2
+      layer: static
+      test_function: test_nfr06_helm_chart_lint_clean
+      test_file: tests/static/test_nfr06.py
+    - tc_id: TC-N06-03
+      nfr: NFR-06
+      ac: AC-N6.3
+      layer: static
+      test_function: test_nfr06_hpa_cpu_memory_thresholds
+      test_file: tests/static/test_nfr06.py
+    - tc_id: TC-N06-04
+      nfr: NFR-06
+      ac: AC-N6.4
+      layer: static
+      test_function: test_nfr06_rolling_update_strategy_enforced
+      test_file: tests/static/test_nfr06.py
+
+    # ── NFR-07 Scalability (k6 soak, pgvector 10M, Redis Cluster) ─────────
+    - tc_id: TC-N07-01
+      nfr: NFR-07
+      ac: AC-N7.1
+      layer: e2e
+      test_function: test_nfr07_k6_soak_30min_2000tps
+      test_file: tests/e2e/test_nfr07_soak.py
+    - tc_id: TC-N07-02
+      nfr: NFR-07
+      ac: AC-N7.2
+      layer: e2e
+      test_function: test_nfr07_pgvector_hnsw_10m_chunks_benchmark
+      test_file: tests/e2e/test_nfr07_pgvector.py
+      cross_ref_frs: [FR-14]
+    - tc_id: TC-N07-03
+      nfr: NFR-07
+      ac: AC-N7.3
+      layer: integration
+      test_function: test_nfr07_redis_cluster_create_succeeds
+      test_file: tests/integration/test_nfr07.py
+
+    # ── NFR-08 Usability (CSAT, LLM-Judge Politeness, accuracy, WS sync) ──
+    - tc_id: TC-N08-01
+      nfr: NFR-08
+      ac: AC-N8.1
+      layer: integration
+      test_function: test_nfr08_csat_gte_4_8_human_sample
+      test_file: tests/integration/test_nfr08_csat.py
+    - tc_id: TC-N08-02
+      nfr: NFR-08
+      ac: AC-N8.2
+      layer: integration
+      test_function: test_nfr08_llm_judge_politeness_gte_4_5_zh_tw
+      test_file: tests/integration/test_nfr08.py
+      cross_ref_frs: [FR-20]
+    - tc_id: TC-N08-03
+      nfr: NFR-08
+      ac: AC-N8.3
+      layer: integration
+      test_function: test_nfr08_accuracy_100pct_knowledge_alignment
+      test_file: tests/integration/test_nfr08.py
+      cross_ref_frs: [FR-07]
+    - tc_id: TC-N08-04
+      nfr: NFR-08
+      ac: AC-N8.4
+      layer: integration
+      test_function: test_nfr08_admin_portal_websocket_realtime_sync
+      test_file: tests/integration/test_nfr08.py
+
   coverage_summary:
-    total_test_cases: 4
+    total_test_cases: 145
     by_fr:
-      FR-01: {tc_count: 2}
-      NFR-02: {tc_count: 1}
-      NFR-09: {tc_count: 1}
+      FR-01: {tc_count: 4}
+      FR-02: {tc_count: 4}
+      FR-03: {tc_count: 4}
+      FR-04: {tc_count: 4}
+      FR-05: {tc_count: 4}
+      FR-06: {tc_count: 4}
+      FR-07: {tc_count: 4}
+      FR-08: {tc_count: 4}
+      FR-09: {tc_count: 4}
+      FR-10: {tc_count: 4}
+      FR-11: {tc_count: 4}
+      FR-12: {tc_count: 4}
+      FR-13: {tc_count: 4}
+      FR-14: {tc_count: 4}
+      FR-15: {tc_count: 4}
+      FR-16: {tc_count: 4}
+      FR-17: {tc_count: 4}
+      FR-18: {tc_count: 4}
+      FR-19: {tc_count: 4}
+      FR-20: {tc_count: 4}
+      FR-21: {tc_count: 4}
+      FR-22: {tc_count: 4}
+      FR-23: {tc_count: 4}
+      FR-24: {tc_count: 4}
+      FR-25: {tc_count: 4}
+      FR-26: {tc_count: 4}
+      FR-27: {tc_count: 4}
+      FR-28: {tc_count: 4}
+      NFR-01: {tc_count: 3}
+      NFR-02: {tc_count: 5}
+      NFR-03: {tc_count: 4}
+      NFR-04: {tc_count: 6}
+      NFR-05: {tc_count: 4}
+      NFR-06: {tc_count: 4}
+      NFR-07: {tc_count: 3}
+      NFR-08: {tc_count: 4}
     by_layer:
-      integration: {count: 2}
-      unit: {count: 1}
-      static: {count: 1}
+      unit: {count: 56}
+      integration: {count: 44}
+      e2e: {count: 33}
+      static: {count: 12}
 
 # ── fr_tests / cross_cutting ──────────────────────────────────────────────
 # The name-only view, read by spec_coverage._flatten_test_names (P1 Naming
@@ -76,12 +1043,202 @@ test_inventory:
 fr_tests:
   FR-01:
     unit:
-      - test_fr01_example_unit
+      - test_fr01_ingress_missing_auth_header_raises
     integration:
-      - test_fr01_example_integration
+      - test_fr01_ingress_telegram_normalizes_to_envelope
+      - test_fr01_ingress_throttle_yields_to_ratelimit
+      - test_fr01_ingress_unreachable_webhook_queues_retry
+  FR-02:
+    unit:
+      - test_fr02_hmac_valid_signature_accepted
+      - test_fr02_hmac_invalid_signature_rejected_constant_time
+      - test_fr02_m2m_token_bucket_exhausted_returns_429
+    integration:
+      - test_fr02_jwks_fallback_to_cache_when_idp_unreachable
+  FR-03:
+    unit:
+      - test_fr03_l1_nfkc_normalization_roundtrip
+      - test_fr03_l1_homoglyph_cyrillic_a_translated
+      - test_fr03_l1_degrades_to_nfkc_only_on_table_miss
+  FR-04:
+    unit:
+      - test_fr04_l2_detects_injection_returns_block
+      - test_fr04_l2_loader_rejects_unsigned_rules
+      - test_fr04_l2_fallback_to_denylist_only
+  FR-05:
+    unit:
+      - test_fr05_l3_sandwich_injects_boundary_markers
+      - test_fr05_l3_hierarchy_blocks_user_override_of_system
+      - test_fr05_l3_fallback_to_bare_passthrough
+  FR-06:
+    unit:
+      - test_fr06_l4_loader_rejects_unsigned_weights
+    integration:
+      - test_fr06_l4_async_classifier_labels_benign_safe
+      - test_fr06_l4_fallback_to_l3_when_async_backend_down
+  FR-07:
+    unit:
+      - test_fr07_grounding_blocks_uncited_response
+    integration:
+      - test_fr07_grounding_attaches_citation_when_grounded
+      - test_fr07_grounding_fallback_to_tier1_only
+  FR-08:
+    unit:
+      - test_fr08_pii_redacts_email_and_phone
+      - test_fr08_pii_luhn_validates_16_digit_card
+      - test_fr08_pii_fail_closed_logs_and_raw_emit
+  FR-09:
+    unit:
+      - test_fr09_ratelimit_rejects_cross_tenant_key_reuse
+    integration:
+      - test_fr09_ratelimit_redis_lua_atomic_increment
+      - test_fr09_ratelimit_returns_429_after_window_full
+      - test_fr09_ratelimit_failopen_on_redis_unavailable
+  FR-10:
+    unit:
+      - test_fr10_cidr_allows_ip_inside_trusted_block
+      - test_fr10_cidr_rejects_ip_outside_trusted_block
+      - test_fr10_cidr_deny_all_on_cache_empty
+  FR-11:
+    unit:
+      - test_fr11_emotion_multiturn_labels_gratitude
+      - test_fr11_emotion_rejects_turn_outside_window
+      - test_fr11_emotion_returns_neutral_on_endpoint_down
+  FR-12:
+    unit:
+      - test_fr12_dst_fsm_transition_greeting_to_resolved
+      - test_fr12_dst_router_rejects_transition_from_terminal
+      - test_fr12_dst_fallback_to_stateless_intent
+  FR-13:
+    integration:
+      - test_fr13_tier1_pg_exact_match_returns_kb_article
+      - test_fr13_tier1_enforces_tenant_filter
+      - test_fr13_tier1_empty_result_on_pg_outage
+  FR-14:
+    unit:
+      - test_fr14_tier2_requires_kb_read_permission
+    integration:
+      - test_fr14_tier2_hnsw_returns_topk
+      - test_fr14_tier2_fallback_to_ivfflat
+  FR-15:
+    unit:
+      - test_fr15_tier3_fallback_validates_provider_credentials
+    integration:
+      - test_fr15_tier3_llm_generates_grounded_answer
+      - test_fr15_tier3_apology_when_all_providers_down
+  FR-16:
+    unit:
+      - test_fr16_aee_rejects_unauthorized_tool_invoke
+      - test_fr16_aee_retry_exponential_backoff_with_jitter
+    integration:
+      - test_fr16_aee_executes_mcp_tool_call
+      - test_fr16_aee_tool_rpc_timeout_under_2s
+  FR-17:
+    unit:
+      - test_fr17_response_emits_tone_adapted_zh_tw
+      - test_fr17_response_rejects_missing_context
+      - test_fr17_response_fallback_to_canned_on_llm_down
+  FR-18:
+    unit:
+      - test_fr18_rbac_admin_role_allows_admin_endpoint
+      - test_fr18_rbac_7_role_matrix_enforced
+      - test_fr18_rbac_failclosed_on_role_store_down
+  FR-19:
+    integration:
+      - test_fr19_escalation_vip_to_priority_queue
+      - test_fr19_escalation_requires_agent_availability
+      - test_fr19_escalation_sla_timer_when_agent_offline
+  FR-20:
+    unit:
+      - test_fr20_judge_requires_calibration_token
+    integration:
+      - test_fr20_judge_scores_politeness_gte_4_5
+      - test_fr20_judge_fallback_to_heuristic
+  FR-21:
+    unit:
+      - test_fr21_otel_emits_span_per_request
+      - test_fr21_prometheus_requires_bearer_token
+      - test_fr21_otel_ringbuffer_when_collector_down
+  FR-22:
+    unit:
+      - test_fr22_saq_job_payload_hmac_signed
+    integration:
+      - test_fr22_saq_enqueues_and_processes_embedding
+      - test_fr22_saq_requeue_with_backoff_on_transient
+  FR-23:
+    unit:
+      - test_fr23_gdpr_export_requires_verified_identity
+    integration:
+      - test_fr23_gdpr_export_returns_envelope_within_sla
+      - test_fr23_gdpr_fallback_to_soft_delete_on_pg_outage
+  FR-24:
+    unit:
+      - test_fr24_ab_sha256_assigns_variant_a
+      - test_fr24_ab_assignment_key_per_tenant
+      - test_fr24_ab_fallback_to_control_on_store_down
+  FR-25:
+    unit:
+      - test_fr25_media_url_signature_validated
+    integration:
+      - test_fr25_media_image_handler_runs
+      - test_fr25_media_unparseable_escalates_to_human
+  FR-26:
+    unit:
+      - test_fr26_m2m_rotation_invalidates_previous_token
+    integration:
+      - test_fr26_user_crud_creates_with_hashed_password
+      - test_fr26_user_lookup_cache_snapshot_on_pg_outage
+  FR-27:
+    unit:
+      - test_fr27_context_window_trims_oldest_turns
+      - test_fr27_context_rejects_cross_conversation_turn
+      - test_fr27_context_fallback_to_summary_on_tokenizer_error
+  FR-28:
+    unit:
+      - test_fr28_breaker_opens_after_n_failures
+      - test_fr28_redis_streams_requires_acl_group
+    integration:
+      - test_fr28_breaker_halfopen_probe_after_cooldown
 
 cross_cutting:
   security:
-    - test_security_example
-  deployment:
-    - test_deployment_example
+    - test_nfr02_bandit_score_gte_80_no_high_critical
+    - test_nfr02_gitleaks_no_secrets
+    - test_nfr02_redteam_owasp_llm_top10_suite
+    - test_nfr02_paladin_block_rate_gte_95pct
+    - test_nfr02_storage_tls_and_auth_enforced
+  performance:
+    - test_nfr01_k6_p95_under_1s_sustained_2000_tps
+    - test_nfr01_paladin_l1_l3_micro_bench_under_5ms_p95
+    - test_nfr01_embedding_api_p95_under_100ms
+  maintainability:
+    - test_nfr03_ruff_gte_90_pyright_gte_85
+    - test_nfr03_radon_function_lines_and_cc
+    - test_nfr03_alembic_upgrade_downgrade_roundtrip
+    - test_nfr03_code_to_sad_mapping_100pct
+  reliability:
+    - test_nfr04_monthly_uptime_slo_gte_99_9pct
+    - test_nfr04_circuit_breaker_state_machine
+    - test_nfr04_chaos_mesh_dr_drill
+    - test_nfr04_retry_exponential_backoff_with_jitter
+    - test_nfr04_llm_fallback_switch_under_500ms
+    - test_nfr04_mttr_under_5min_drill
+  testability:
+    - test_nfr05_pytest_cov_line_thresholds
+    - test_nfr05_mutation_killed_gte_80pct
+    - test_nfr05_d4_spec_cov_thresholds_by_gate
+    - test_nfr05_golden_500_samples_kappa_gte_0_7
+  deployability:
+    - test_nfr06_kubectl_rollout_undo_under_5min
+    - test_nfr06_helm_chart_lint_clean
+    - test_nfr06_hpa_cpu_memory_thresholds
+    - test_nfr06_rolling_update_strategy_enforced
+  scalability:
+    - test_nfr07_k6_soak_30min_2000tps
+    - test_nfr07_pgvector_hnsw_10m_chunks_benchmark
+    - test_nfr07_redis_cluster_create_succeeds
+  usability:
+    - test_nfr08_csat_gte_4_8_human_sample
+    - test_nfr08_llm_judge_politeness_gte_4_5_zh_tw
+    - test_nfr08_accuracy_100pct_knowledge_alignment
+    - test_nfr08_admin_portal_websocket_realtime_sync
