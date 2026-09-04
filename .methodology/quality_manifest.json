@@ -1,0 +1,161 @@
+{
+  "schema_version": "1.0",
+  "generated_at_phase": 2,
+  "fr_ids": [
+    "FR-01",
+    "FR-02",
+    "FR-03",
+    "FR-04",
+    "FR-05",
+    "FR-06",
+    "FR-07",
+    "FR-08",
+    "FR-09",
+    "FR-10",
+    "FR-11",
+    "FR-12",
+    "FR-13",
+    "FR-14",
+    "FR-15",
+    "FR-16",
+    "FR-17",
+    "FR-18",
+    "FR-19",
+    "FR-20",
+    "FR-21",
+    "FR-22",
+    "FR-23",
+    "FR-24",
+    "FR-25",
+    "FR-26",
+    "FR-27",
+    "FR-28",
+    "FR-29",
+    "FR-30",
+    "FR-31",
+    "FR-32",
+    "FR-33",
+    "FR-34"
+  ],
+  "nfr_dimension_mapping": {
+    "NFR-01": "performance",
+    "NFR-02": "security",
+    "NFR-03": "readability",
+    "NFR-04": "error_handling",
+    "NFR-05": "test_assertion_quality"
+  },
+  "nfr_fr_mapping": {},
+  "nfr_traceability": {
+    "NFR-01": {
+      "type": "performance",
+      "target": "p95_e2e <= 1.0s @ 2000 TPS",
+      "module": "omnibot.security.paladin.l4_semantic"
+    },
+    "NFR-02": {
+      "type": "security",
+      "target": "PALADIN_block_rate >= 95",
+      "module": "omnibot.security.paladin.l4_semantic"
+    },
+    "NFR-03": {
+      "type": "maintainability",
+      "target": "code_to_sad_mapping = 100",
+      "module": "omnibot.app.main"
+    },
+    "NFR-04": {
+      "type": "reliability",
+      "target": "monthly_uptime >= 99.9",
+      "module": "omnibot.infra.ha_circuit_breaker"
+    },
+    "NFR-05": {
+      "type": "testability",
+      "target": "mutation_killed >= 80",
+      "module": "omnibot.core.eval"
+    },
+    "NFR-06": {
+      "type": "deployability",
+      "target": "rollback_time < 5min",
+      "module": "omnibot.infra.observability"
+    },
+    "NFR-07": {
+      "type": "scalability",
+      "target": "2000_TPS_sustained_under_4k6_scenarios",
+      "module": "omnibot.core.knowledge_tier2"
+    },
+    "NFR-08": {
+      "type": "usability",
+      "target": "csat >= 4.8",
+      "module": "omnibot.core.eval"
+    }
+  },
+  "quality_targets": {
+    "max_complexity": 10,
+    "min_coverage": 90,
+    "max_coupling": 0.3
+  },
+  "fr_module_traceability": {
+    "FR-01": "omnibot.api.webhooks",
+    "FR-02": [
+      "omnibot.security.auth",
+      "omnibot.api.webhooks"
+    ],
+    "FR-03": "omnibot.security.paladin.l1_sanitize",
+    "FR-04": "omnibot.security.paladin.l2_pattern",
+    "FR-05": "omnibot.security.paladin.l3_hierarchy",
+    "FR-06": "omnibot.security.paladin.l4_semantic",
+    "FR-07": "omnibot.security.paladin.l5_grounding",
+    "FR-08": "omnibot.security.pii",
+    "FR-09": "omnibot.security.ratelimit",
+    "FR-10": "omnibot.security.ip_whitelist",
+    "FR-11": "omnibot.core.emotion",
+    "FR-12": "omnibot.core.dialog_dst",
+    "FR-13": "omnibot.core.knowledge_tier1",
+    "FR-14": "omnibot.core.knowledge_tier2",
+    "FR-15": "omnibot.core.knowledge_tier3",
+    "FR-16": "omnibot.core.actions",
+    "FR-17": "omnibot.core.response",
+    "FR-18": "omnibot.api.rbac",
+    "FR-19": "omnibot.api.escalation",
+    "FR-20": "omnibot.core.eval",
+    "FR-21": "omnibot.infra.observability",
+    "FR-22": "omnibot.infra.jobs",
+    "FR-23": "omnibot.security.gdpr",
+    "FR-24": "omnibot.core.experiment",
+    "FR-25": "omnibot.api.media",
+    "FR-26": [
+      "omnibot.api.users",
+      "omnibot.api.m2m"
+    ],
+    "FR-27": "omnibot.core.dialog_context",
+    "FR-28": [
+      "omnibot.infra.ha_redis",
+      "omnibot.infra.ha_circuit_breaker"
+    ]
+  },
+  "architecture_constraints": [
+    "no_circular_dependencies",
+    "api_must_not_import_app",
+    "core_must_not_import_api",
+    "infra_must_not_import_api_or_core"
+  ],
+  "high_risk_modules": [
+    "omnibot.app.main",
+    "omnibot.api.webhooks",
+    "omnibot.security.paladin.l4_semantic",
+    "omnibot.core.knowledge_tier2",
+    "omnibot.infra.ha_circuit_breaker"
+  ],
+  "gate_score_overrides": {
+    "performance": 75.0,
+    "security": 95.0,
+    "readability": 80.0,
+    "error_handling": 99.9,
+    "test_assertion_quality": 80.0,
+    "test_coverage": 90.0
+  },
+  "gate_results": {
+    "gate1": {},
+    "gate2": null,
+    "gate3": null,
+    "gate4": null
+  }
+}
