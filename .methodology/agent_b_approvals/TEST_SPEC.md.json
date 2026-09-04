@@ -1,0 +1,34 @@
+{
+  "fr": "TEST_SPEC.md",
+  "review_status": "APPROVE",
+  "reason": "TEST_SPEC.md v2.13.0 is a complete, schema-compliant Named Test-Case Catalog. Every in-scope FR (FR-01..FR-28) carries the mandatory quartet (happy_path/validation/nfr_pattern/fault_injection) plus a per-FR sub-assertions table (rule_id+predicate+applies_to); the 6 deferred FRs (FR-29..FR-34) follow the documented Stub-Only exemption with a single deferred_stub row each. The NFR Pattern Activation table (TEST_SPEC.md:19-46) correctly fires NP-13 for api.webhooks/core.dialog_dst/infra.ha_circuit_breaker/core.dialog_context and NP-15 for core.actions per SAD §2.4, NP-07 for infra.ha_redis/security.ratelimit per NFR-04 fail-open, and all 9 SAD §6 STRIDE-lite threats T-01..T-09 map1:1 to named `test_sec_tNN_*` cases (FR-01, FR-02, FR-06, FR-08, FR-09, FR-16, FR-18, FR-21, FR-28). Inputs are TR",
+  "citations": [
+    "TEST_SPEC.md:19",
+    "TEST_SPEC.md:46",
+    "TEST_SPEC.md:59",
+    "TEST_SPEC.md:93",
+    "TEST_SPEC.md:115",
+    "TEST_SPEC.md:142",
+    "TEST_SPEC.md:163",
+    "TEST_SPEC.md:184",
+    "TEST_SPEC.md:207",
+    "TEST_SPEC.md:228",
+    "TEST_SPEC.md:251",
+    "TEST_SPEC.md:280",
+    "TEST_SPEC.md:301",
+    "TEST_SPEC.md:322",
+    "TEST_SPEC.md:343",
+    "TEST_SPEC.md:364",
+    "TEST_SPEC.md:385",
+    "TEST_SPEC.md:406",
+    "TEST_SPEC.md:429",
+    "TEST_SPEC.md:450"
+  ],
+  "docs_embedded": [
+    "SRS.md",
+    "SAD.md",
+    "TEST_SPEC.md",
+    "ADR.md"
+  ],
+  "confidence": 0.9
+}

@@ -1,0 +1,310 @@
+{
+  "version": "1.0",
+  "created_at": "2026-09-04",
+  "phase": 2,
+  "project": "omnibot",
+  "layers": [
+    {
+      "name": "api",
+      "modules": [
+        {
+          "name": "omnibot.api.webhooks"
+        },
+        {
+          "name": "omnibot.api.media"
+        },
+        {
+          "name": "omnibot.api.users"
+        },
+        {
+          "name": "omnibot.api.m2m"
+        },
+        {
+          "name": "omnibot.api.rbac"
+        },
+        {
+          "name": "omnibot.api.escalation"
+        },
+        {
+          "name": "omnibot.api.hub"
+        }
+      ],
+      "allowed_dependencies": [
+        "security",
+        "core",
+        "infra"
+      ]
+    },
+    {
+      "name": "security",
+      "modules": [
+        {
+          "name": "omnibot.security.auth"
+        },
+        {
+          "name": "omnibot.security.ratelimit"
+        },
+        {
+          "name": "omnibot.security.pii"
+        },
+        {
+          "name": "omnibot.security.ip_whitelist"
+        },
+        {
+          "name": "omnibot.security.gdpr"
+        },
+        {
+          "name": "omnibot.security.paladin.l1_sanitize"
+        },
+        {
+          "name": "omnibot.security.paladin.l2_pattern"
+        },
+        {
+          "name": "omnibot.security.paladin.l3_hierarchy"
+        },
+        {
+          "name": "omnibot.security.paladin.l4_semantic"
+        },
+        {
+          "name": "omnibot.security.paladin.l5_grounding"
+        },
+        {
+          "name": "omnibot.security.paladin.hub"
+        },
+        {
+          "name": "omnibot.security.hub"
+        }
+      ],
+      "allowed_dependencies": [
+        "core",
+        "infra"
+      ]
+    },
+    {
+      "name": "core",
+      "modules": [
+        {
+          "name": "omnibot.core.emotion"
+        },
+        {
+          "name": "omnibot.core.dialog_dst"
+        },
+        {
+          "name": "omnibot.core.dialog_context"
+        },
+        {
+          "name": "omnibot.core.knowledge_tier1"
+        },
+        {
+          "name": "omnibot.core.knowledge_tier2"
+        },
+        {
+          "name": "omnibot.core.knowledge_tier3"
+        },
+        {
+          "name": "omnibot.core.actions"
+        },
+        {
+          "name": "omnibot.core.response"
+        },
+        {
+          "name": "omnibot.core.experiment"
+        },
+        {
+          "name": "omnibot.core.eval"
+        },
+        {
+          "name": "omnibot.core.hub"
+        }
+      ],
+      "allowed_dependencies": [
+        "infra"
+      ]
+    },
+    {
+      "name": "infra",
+      "modules": [
+        {
+          "name": "omnibot.infra.observability"
+        },
+        {
+          "name": "omnibot.infra.jobs"
+        },
+        {
+          "name": "omnibot.infra.ha_redis"
+        },
+        {
+          "name": "omnibot.infra.ha_circuit_breaker"
+        },
+        {
+          "name": "omnibot.infra.hub"
+        }
+      ],
+      "allowed_dependencies": []
+    },
+    {
+      "name": "app",
+      "modules": [
+        {
+          "name": "omnibot.app.main"
+        },
+        {
+          "name": "omnibot.app.config"
+        },
+        {
+          "name": "omnibot.app.hub"
+        }
+      ],
+      "allowed_dependencies": [
+        "api",
+        "security",
+        "core",
+        "infra"
+      ]
+    }
+  ],
+  "dependencies": {
+    "app": [
+      "api",
+      "security",
+      "core",
+      "infra"
+    ],
+    "api": [
+      "security",
+      "core",
+      "infra"
+    ],
+    "security": [
+      "core",
+      "infra"
+    ],
+    "core": [
+      "infra"
+    ]
+  },
+  "quality_targets": {
+    "max_complexity": 10,
+    "min_coverage": 90,
+    "max_coupling": 0.3
+  },
+  "nfr_dimension_mapping": {
+    "NFR-01": "performance",
+    "NFR-02": "security",
+    "NFR-03": "readability",
+    "NFR-04": "error_handling",
+    "NFR-05": "test_assertion_quality"
+  },
+  "nfr_traceability": {
+    "NFR-01": {
+      "type": "performance",
+      "target": "p95_e2e <= 1.0s @ 2000 TPS",
+      "module": "omnibot.security.paladin.l4_semantic"
+    },
+    "NFR-02": {
+      "type": "security",
+      "target": "PALADIN_block_rate >= 95",
+      "module": "omnibot.security.paladin.l4_semantic"
+    },
+    "NFR-03": {
+      "type": "maintainability",
+      "target": "code_to_sad_mapping = 100",
+      "module": "omnibot.app.main"
+    },
+    "NFR-04": {
+      "type": "reliability",
+      "target": "monthly_uptime >= 99.9",
+      "module": "omnibot.infra.ha_circuit_breaker"
+    },
+    "NFR-05": {
+      "type": "testability",
+      "target": "mutation_killed >= 80",
+      "module": "omnibot.core.eval"
+    },
+    "NFR-06": {
+      "type": "deployability",
+      "target": "rollback_time < 5min",
+      "module": "omnibot.infra.observability"
+    },
+    "NFR-07": {
+      "type": "scalability",
+      "target": "2000_TPS_sustained_under_4k6_scenarios",
+      "module": "omnibot.core.knowledge_tier2"
+    },
+    "NFR-08": {
+      "type": "usability",
+      "target": "csat >= 4.8",
+      "module": "omnibot.core.eval"
+    }
+  },
+  "advisory_only": [
+    "deployability",
+    "scalability",
+    "usability"
+  ],
+  "gate_score_overrides": {
+    "performance": 75.0,
+    "security": 95.0,
+    "readability": 80.0,
+    "error_handling": 99.9,
+    "test_assertion_quality": 80.0
+  },
+  "fr_module_traceability": {
+    "FR-01": "omnibot.api.webhooks",
+    "FR-02": [
+      "omnibot.security.auth",
+      "omnibot.api.webhooks"
+    ],
+    "FR-03": "omnibot.security.paladin.l1_sanitize",
+    "FR-04": "omnibot.security.paladin.l2_pattern",
+    "FR-05": "omnibot.security.paladin.l3_hierarchy",
+    "FR-06": "omnibot.security.paladin.l4_semantic",
+    "FR-07": "omnibot.security.paladin.l5_grounding",
+    "FR-08": "omnibot.security.pii",
+    "FR-09": "omnibot.security.ratelimit",
+    "FR-10": "omnibot.security.ip_whitelist",
+    "FR-11": "omnibot.core.emotion",
+    "FR-12": "omnibot.core.dialog_dst",
+    "FR-13": "omnibot.core.knowledge_tier1",
+    "FR-14": "omnibot.core.knowledge_tier2",
+    "FR-15": "omnibot.core.knowledge_tier3",
+    "FR-16": "omnibot.core.actions",
+    "FR-17": "omnibot.core.response",
+    "FR-18": "omnibot.api.rbac",
+    "FR-19": "omnibot.api.escalation",
+    "FR-20": "omnibot.core.eval",
+    "FR-21": "omnibot.infra.observability",
+    "FR-22": "omnibot.infra.jobs",
+    "FR-23": "omnibot.security.gdpr",
+    "FR-24": "omnibot.core.experiment",
+    "FR-25": "omnibot.api.media",
+    "FR-26": [
+      "omnibot.api.users",
+      "omnibot.api.m2m"
+    ],
+    "FR-27": "omnibot.core.dialog_context",
+    "FR-28": [
+      "omnibot.infra.ha_redis",
+      "omnibot.infra.ha_circuit_breaker"
+    ]
+  },
+  "architecture_constraints": [
+    "no_circular_dependencies",
+    "api_must_not_import_app",
+    "core_must_not_import_api",
+    "infra_must_not_import_api_or_core"
+  ],
+  "high_risk_modules": [
+    "omnibot.app.main",
+    "omnibot.api.webhooks",
+    "omnibot.security.paladin.l4_semantic",
+    "omnibot.core.knowledge_tier2",
+    "omnibot.infra.ha_circuit_breaker"
+  ],
+  "required_artifacts": [
+    ".env.example",
+    "docker-compose.dev.yml",
+    "infra/k8s/deployment.yaml",
+    "tests/golden/conversations.jsonl"
+  ]
+}

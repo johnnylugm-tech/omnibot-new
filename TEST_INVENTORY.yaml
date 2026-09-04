@@ -767,6 +767,54 @@ test_inventory:
       test_function: test_fr28_breaker_halfopen_probe_after_cooldown
       test_file: tests/integration/test_fr28.py
 
+    # ── FR-29 Deferred: Native multimodal vision understanding (v9.0) ─────
+    - tc_id: TC-FR29-01
+      fr: FR-29
+      ac: AC-29.1
+      layer: integration
+      test_function: test_fr29_vision_deferred_stub_returns_not_implemented
+      test_file: tests/integration/test_fr29.py
+
+    # ── FR-30 Deferred: File & document OCR/AI parsing (v9.1) ─────────────
+    - tc_id: TC-FR30-01
+      fr: FR-30
+      ac: AC-30.1
+      layer: integration
+      test_function: test_fr30_ocr_deferred_stub_returns_not_implemented
+      test_file: tests/integration/test_fr30.py
+
+    # ── FR-31 Deferred: Real-time voice & audio streaming (voice track) ───
+    - tc_id: TC-FR31-01
+      fr: FR-31
+      ac: AC-31.1
+      layer: integration
+      test_function: test_fr31_voice_deferred_stub_returns_not_implemented
+      test_file: tests/integration/test_fr31.py
+
+    # ── FR-32 Deferred: Multi-lingual beyond zh-TW/en (i18n phase) ────────
+    - tc_id: TC-FR32-01
+      fr: FR-32
+      ac: AC-32.1
+      layer: integration
+      test_function: test_fr32_i18n_deferred_stub_returns_not_implemented
+      test_file: tests/integration/test_fr32.py
+
+    # ── FR-33 Deferred: In-house LLM fine-tuning pipeline ──────────────────
+    - tc_id: TC-FR33-01
+      fr: FR-33
+      ac: AC-33.1
+      layer: integration
+      test_function: test_fr33_finetune_deferred_stub_returns_not_implemented
+      test_file: tests/integration/test_fr33.py
+
+    # ── FR-34 Deferred: Native mobile App ──────────────────────────────────
+    - tc_id: TC-FR34-01
+      fr: FR-34
+      ac: AC-34.1
+      layer: integration
+      test_function: test_fr34_mobile_deferred_stub_returns_not_implemented
+      test_file: tests/integration/test_fr34.py
+
     # ── NFR-01 Performance (p95 e2e ≤ 1.0s @ 2000 TPS) ────────────────────
     - tc_id: TC-N01-01
       nfr: NFR-01
@@ -1199,6 +1247,24 @@ fr_tests:
       - test_fr28_redis_streams_requires_acl_group
     integration:
       - test_fr28_breaker_halfopen_probe_after_cooldown
+  FR-29:
+    integration:
+      - test_fr29_vision_deferred_stub_returns_not_implemented
+  FR-30:
+    integration:
+      - test_fr30_ocr_deferred_stub_returns_not_implemented
+  FR-31:
+    integration:
+      - test_fr31_voice_deferred_stub_returns_not_implemented
+  FR-32:
+    integration:
+      - test_fr32_i18n_deferred_stub_returns_not_implemented
+  FR-33:
+    integration:
+      - test_fr33_finetune_deferred_stub_returns_not_implemented
+  FR-34:
+    integration:
+      - test_fr34_mobile_deferred_stub_returns_not_implemented
 
 cross_cutting:
   security:
