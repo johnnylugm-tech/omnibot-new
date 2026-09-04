@@ -2,7 +2,7 @@
 
 **Checkpoint**: `P2-exit-20260904`  
 **Phase**: P2 — Architecture & Design  
-**Generated**: 2026-09-04T14:51:07Z
+**Generated**: 2026-09-04T14:51:30Z
 
 > ⚠️  **開始下一個工作階段前，請先執行 `/compact` 壓縮上下文**，再從「接下來的工作」繼續。
 
@@ -124,26 +124,26 @@ P2 phase completed — pushed for record.
   - ? / aci-post-sab: **complete**
 
 **Recently Committed Files:**
+  - `harness`
+  - `.methodology/SAB.json`
+  - `.methodology/agent_b_approvals/ADR.md.json`
+  - `.methodology/agent_b_approvals/SAD.md.json`
+  - `.methodology/agent_b_approvals/TEST_SPEC.md.json`
   - `.methodology/state.json`
+  - `.methodology/trace/attestation.json`
+  - `.methodology/workflow_blocks.jsonl`
+  - `02-architecture/SAD.md`
+  - `02-architecture/TEST_SPEC.md`
+  - `02-architecture/adr/ADR.md`
+  - `HANDOVER.md`
+  - `TEST_INVENTORY.yaml`
   - `.methodology/fr_progress.json`
   - `00-summary/Phase1_STAGE_PASS.md`
   - `CLAUDE.md`
-  - `HANDOVER.md`
   - `.github/workflows/harness_quality_gate.yml`
   - `.methodology/.state.lock`
   - `.methodology/agent_b_approvals/SPEC_TRACKING.md.json`
   - `.methodology/agent_b_approvals/SRS.md.json`
-  - `.methodology/agent_b_approvals/TEST_INVENTORY.yaml.json`
-  - `.methodology/agent_b_approvals/TRACEABILITY_MATRIX.md.json`
-  - `.methodology/phase1_plan.md`
-  - `.methodology/phase2_plan.md`
-  - `.methodology/phase3_plan.md`
-  - `.methodology/phase4_plan.md`
-  - `.methodology/phase5_plan.md`
-  - `.methodology/phase6_plan.md`
-  - `.methodology/phase7_plan.md`
-  - `.methodology/phase8_plan.md`
-  - `.methodology/phase9_plan.md`
 
 ## 接下來的工作
 
